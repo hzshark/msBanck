@@ -4,6 +4,7 @@ namespace Home\Controller;
 
 use Think\Controller;
 use Home\Service\Home;
+use Home\Service\MSBank;
 
 class ApiController extends Controller
 {
@@ -107,7 +108,8 @@ class ApiController extends Controller
         );
 
         $SourceData = json_encode($postdata);
-        $base64SourceData = base64_encode($SourceData);
+        $msbank = new MSBank();
+        $msbank->registerStore($SourceData);
     }
 
 

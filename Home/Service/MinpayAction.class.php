@@ -12,7 +12,7 @@ class MinpayAction{
 		 //exit($this->cer_cust_min());//直接读取民生公钥内容
 		 require_once("../Lib/php_java.php");
 		 require_once("../Utils/basic.class.php");
-	     
+
 		 $SourceData='{"amount":"1","defaultTradeType":"H5_WXJSAPI","merchantName":"XXXXXX公众号","merchantNo":"M01002016090000001273","merchantSeq":"A00002016120000000294T143301951","notifyUrl":"http://111.205.207.103/cmbcpaydemo/NoticeServlet?name=notice","orderInfo":"公众号跳转支付订单信息","platformId":"A00002016120000000294","redirectUrl":"http://111.205.207.103/cmbcpaydemo/","remark":"","selectTradeType":"H5_WXJSAPI","subAppId":"","subOpenId":"","transDate":"20170117","transTime":"20170117143301951"}';//原文
 	     $base64SourceData = base64_encode($SourceData);//原文BASE64
 	     $base64P12Data = 'MIIDfgIBATBHBgoqgRzPVQYBBAIBBgcqgRzPVQFoBDClyXV+hNlZh3J71DfGgmQuXE/Meyqo68/F
@@ -51,38 +51,40 @@ dQUAA0kAMEYCIQCba06exmipgEcbA1uhsM19ldoVY6QDlIqx1+8fjy7xAgIhALbo
 idd/NmhTdWKgbs8FRyaYuEbHuu6BNWYeC46GWzTD';//民生公钥
 		 $signAlg1 = 'SM3withSM2';//加密方式1，用于签名和校验签名
 		 $signAlg2 = 'SM4/CBC/PKCS7Padding';//加密方式2，用于加密信封和解密信封
-		 
+
 		 echo'原文：'.$SourceData.'<br><br>';
 		 echo'原文Base64：'.$base64SourceData.'<br><br>';
-	
+
 	     $sign = lajp_call("cfca.sadk.api.SignatureKit::P1SignMessage",  $signAlg1,$base64SourceData, $base64P12Data,$p12Password);
 		 $sign = json_decode($sign,true);$sign =$sign['Base64SignatureData'];
 		 echo'签名：'.$sign.'<br><br>';
 
-		 
+
 		 //$SourceData='{"sign":"'.$sign.'","body":"'.$SourceData.'"}';//拼凑后的原文
 		 $SourceData = addslashes($SourceData);
 		 $SourceData='{"sign":"'.$sign.'","body":"'.$SourceData.'"}';//拼凑后的原文
 		 $base64SourceData = base64_encode($SourceData);//拼凑后的原文Base64
 		 echo'拼凑后的原文：'.$SourceData.'<br><br>';
 		 echo'拼凑后的原文Base64：'.$base64SourceData.'<br><br>';
-		
+
 
 		 $sendstr = lajp_call("cfca.sadk.api.EnvelopeKit::envelopeMessage",  $base64SourceData,$signAlg2, $base64X509CertData);
 		 $sendstr=json_decode($sendstr,true);$sendstr =$sendstr['Base64EnvelopeMessage'];
 		 echo "拼凑后原文加密：$sendstr<br><br>";
-		 $sendstrUrl = 'http://wxpay.cmbc.com.cn/mobilePlatform/cmbcPayweb.do?context=$sendstr';
+		 $sendstrUrl = 'http://wxpay.cmbc.com.cn/mobilePlatform/cmbcPayweb.do?context='.$sendstr;
 		 echo'---------------------------------------------------------------------<br>';
 		 echo "<a href='".$sendstrUrl."'>将此加密内容发送到接口</a><br>";
 		 echo'---------------------------------------------------------------------<br>';
-		 $ret1 = post($sendstrUrl);
+		 $businessContext ='{"businessContext":"'.$sendstr.'","MerchantNo":"","merchantSeq":"","reserve1":"","reserve2":"","reserve3":"","reserve4":"","reserve5":"","reserveJson":"","securityType":"","sessionId":"","source":"","transCode":"","transDate":"","transTime":"","version":""}';
+//     $businessContext = '{"businessContext":"MIICeAYKKoEcz1UGAQQCA6CCAmgwggJkAgECMYGdMIGaAgECgBRZlNziHI2cFrW5Ep1ym13ckOMoGTANBgkqgRzPVQGCLQMFAARwblrKrOfe//oc8k5F9/DLppFncGulTFoQHY0TaJ1+WNo7SrhyvQP1Ii0cR4cQNmhrBd9y7XK96ZSLlPNahXCm5AYDXTGD8IdRnnelwGYp7o7yP+ybBgFABw1P7OX/O2fPLXsnS4Ywv9hwDwg2yHimQzCCAb0GCiqBHM9VBgEEAgEwGwYHKoEcz1UBaAQQFFEmLZcBxEUZLkV04QtCYYCCAZBXI5OIhtPlGhNHfUtNOgCihUyAo/y2HpTnHupZSIvQ4qYVscciLOrriJ31aQofH+RWlfojF8wa3fZBuR1vZ2/LJgUNQT+Q8YlhDDdrUh6trC6hb05eWCUqOoGe11v+LsxS/bOZCuhvsLy7dwXQKt7TOVCxy2s8fukF7RyfeJgp1EArHPWQpGIEf6kVmE/tgZrfhABjTFJJBbC+jKFeBukdfkXXPnKoRAz3ZXysn+gl6rvb+td75AzgO9Ro2jaqHRyCYxVuFF2Va76UhemGaNV2yhNpp5AG9pRJd+1R8JazhQ2p9DsLs76g/y3CZtlx3Ssx/cO9gv+bBfZkPdx+poSyvGlJnS31Tr0KcPQjUa3oRGWVoomrfgtVpx5ccjl9SbbDDJhmU+36v1oYeqdA6MC4Og2WzkT3Rl79SiS8+mYdzmgEjQzEki/maL25LnLMwVxz0j6CX5qB1BmSbXAgoYpMJm32VhqLOIFg32DL9UbEZCuU8v432FOAFQJwBTQpMXYLJ7VirzveMW+FoMtQdXtJ","gateReturnCode":"","gateReturnMessage":"","gateReturnType":"S","gateSeq":"20170215221456266","gateTransDate":"20170215","gateTransTime":"20170215221456266","merchantSeq":"","reserve1":"","reserve2":"","reserve3":"","reserveJson":"","transCode":""}';
+		 $ret1 = http_post_data('http://wxpay.cmbc.com.cn/cmbcpaydemo/MerchantIncomServlet?name=merchantIncomAdd?name=merchantIncomAdd', $businessContext);
 		 var_dump($ret1);
 		 echo'---------------------------------------------------------------------<br>';
-		 
+
 		 $backstr = lajp_call("cfca.sadk.api.EnvelopeKit::openEvelopedMessage",  $sendstr, $signAlg2, $base64P12Data, $p12Password);
 		 var_dump($backstr);
 		 $backstr=json_decode($backstr,true);
-		 
+
 		 $backstr =$backstr['Base64SourceString'];
 		 $base64SourceData=$backstr;
 		 $SourceData=base64_decode($backstr);
@@ -95,24 +97,24 @@ idd/NmhTdWKgbs8FRyaYuEbHuu6BNWYeC46GWzTD';//民生公钥
 		 $ret = lajp_call("cfca.sadk.api.SignatureKit::P1VerifyMessage", $signAlg1,base64_encode($SourceData['body']), $base64X509CertData,$sign);
     	 echo "校验签名：{$ret}<br><br>";
 		 exit;
-		 
-		 
-		 
-		 
-		 
-		 
-		 
+
+
+
+
+
+
+
 		 $oldstr='Y2ZjYTEyMzQ=';
 		 $base64P12Data=$this->cer_sm2();
 		 $p12Password='123123';
 		 $sign = lajp_call("cfca.sadk.api.SignatureKit::P1SignMessage",$signAlg1,$oldstr, $this->cer_sm2(),$p12Password);
 		 echo '签名：'.$sign.'<br>';exit;
 		 $sign = json_decode($sign,true);$sign =$sign['Base64SignatureData'];
-		 
-		 
+
+
 		 $sendstr='{"sign":"'.$sign.'","body":"'.$backstr.'"}';
 		 echo 'BODY:'.$sendstr.'<br>';
-		 
+
 		 $sendstr=lajp_call("cfca.sadk.api.EnvelopeKit::envelopeMessage",  base64_encode($sendstr),'DESede/CBC/PKCS7Padding',$this->cer_cust_min());
 		 $sendstr=json_decode($sendstr,true);$sendstr =$sendstr['Base64EnvelopeMessage'];
 		 echo '加密BODY:'.$sendstr.'<br>';
