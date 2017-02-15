@@ -1,10 +1,8 @@
 <?php
 namespace Home\Controller;
 
+
 use Think\Controller;
-use Home\Service\Version;
-use Home\Service\Series;
-use Home\Service\Toys;
 use Home\Service\Home;
 
 class ApiController extends Controller
@@ -108,8 +106,8 @@ class ApiController extends Controller
             'message'=>$message
         );
 
-        $post_json = json_encode($postdata);
-        var_dump($post_json);
+        $SourceData = json_encode($postdata);
+        $base64SourceData = base64_encode($SourceData);
     }
 
 
