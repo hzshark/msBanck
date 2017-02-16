@@ -20,6 +20,7 @@ define('APP_DEBUG',True);
 // 定义应用目录
 define('COMMON_PATH',dirname(__FILE__) . '/Common/');
 define('RUNTIME_PATH','./Runtime/');
+define('STATIC','./Public/');
 define('BUILD_DIR_SECURE', true);//如果你的环境足够安全，不希望生成目录安全文件，可以在入口文件里面关闭目录安全文件的生成
 define("__ROOT__", $_SERVER["REQUEST_SCHEME"].'://'.$_SERVER["SERVER_NAME"].':'.$_SERVER['SERVER_PORT'].'/');
 // // 绑定Admin模块到当前入口文件
@@ -30,7 +31,6 @@ define("__ROOT__", $_SERVER["REQUEST_SCHEME"].'://'.$_SERVER["SERVER_NAME"].':'.
 
 // define('BIND_MODULE', 'Home'); // 绑定Home模块到当前入口文件
 // define('BIND_CONTROLLER','Index'); // 绑定Index控制器到当前入口文件
-
 # the custom variables
 define('PAGE_SIZE', 15);
 define('CR', "\r");

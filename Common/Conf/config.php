@@ -10,9 +10,8 @@ return array(
     'DB_PREFIX'         =>  '',      	// 数据库表前缀
     'DB_DEBUG'  		=>  true, 			// 数据库调试模式 开启后可以记录SQL日志
     'SHOW_PAGE_TRACE'   =>	false,   		// 显示页面Trace信息
-    'APP_GROUP_LIST' => 'Home,Api', //项目分组设定
-    'DEFAULT_MODULE'     => 'Home', //默认模块
-//     'DEFAULT_MODULE'       =>    'Admin',
+    'APP_GROUP_LIST' => 'MSBank', //项目分组设定
+    'DEFAULT_MODULE'     => 'MSBank', //默认模块
     // 设置禁止访问的模块列表
     'MODULE_DENY_LIST'      =>  array('Common','Runtime'),
     'SESSION_AUTO_START' => true, //是否开启session
