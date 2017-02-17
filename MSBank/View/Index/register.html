@@ -1,0 +1,123 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="app">
+<head>
+<meta charset="utf-8" />
+<title>Notebook | Web Application</title>
+<meta name="description" content="app, web app, responsive, admin dashboard, admin, flat, flat ui, ui kit, off screen nav" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<link rel="stylesheet" href="__PUBLIC__/css/app.v2.css" type="text/css" />
+<!--[if lt IE 9]> <script src="js/ie/html5shiv.js" cache="false"></script> <script src="js/ie/respond.min.js" cache="false"></script> <script src="js/ie/excanvas.js" cache="false"></script> <![endif]-->
+</head>
+<body>
+<section class="vbox">
+  <section>
+    <section class="hbox stretch"> 
+      <section id="content">
+        <section class="vbox">
+          <section class="scrollable padder">
+            <div class="row">
+              <div class="col-sm-6">
+                <form data-validate="parsley" method="post" name="RegisterStore" action="Addcartoon">
+                  <section class="panel panel-default">
+                    <header class="panel-heading"> <span class="h4">商户注册</span> </header>
+                    <div class="panel-body">
+                      <p class="text-muted">Please fill the information to continue</p>
+                      <div class="form-group">
+                        <label>商户简称</label>
+                        <input type="text" class="form-control" data-required="true">
+                      </div>
+                      <div class="form-group">
+                        <label>商户全称</label>
+                        <input type="text" class="form-control" data-type="email" data-required="true">
+                      </div>
+                      <div class="form-group pull-in clearfix">
+                        <div  class="col-sm-3">
+                        <label>省份</label>
+                          <select data-required="true" class="form-control m-t">
+                            <option value="">Please choose</option>
+                            <option value="foo">Foo</option>
+                            <option value="bar">Bar</option>
+                          </select>
+                        </div>
+                        <div class="col-sm-3">
+                          <label>城市</label>
+                          <select data-required="true" class="form-control m-t">
+                            <option value="">Please choose</option>
+                            <option value="foo">Foo</option>
+                            <option value="bar">Bar</option>
+                          </select>
+                        </div>
+                        <div class="col-sm-3">
+                          <label>区/镇</label>
+                          <select data-required="true" class="form-control m-t">
+                            <option value="">Please choose</option>
+                            <option value="foo">Foo</option>
+                            <option value="bar">Bar</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label>地址</label>
+                        <input type="text" class="form-control" data-type="email" data-required="true">
+                      </div>
+                      <div class="form-group pull-in clearfix">
+                      <div class="col-sm-6">
+                        <label>营业执照号</label>
+                        <input type="text" class="form-control" data-type="email" data-required="true">
+                        </div>
+                        <div class="col-sm-6">
+                        <label>营业执照有效期</label>
+                        <input type="text" class="form-control" data-type="email" data-required="true">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label>法人/联系人</label>
+                        <input type="text" class="form-control" data-type="email" data-required="true">
+                      </div>
+                      <div class="form-group">
+                        <label>法人/联系人证件号</label>
+                        <input type="text" class="form-control" data-type="email" data-required="true">
+                      </div>
+                      <div class="form-group">
+                        <label>负责人</label>
+                        <input type="text" class="form-control" data-type="email" data-required="true">
+                      </div>
+                      <div class="form-group">
+                        <label>负责人手机号</label>
+                        <input type="text" class="form-control" data-type="email" data-required="true">
+                      </div>
+                      <div class="form-group">
+                        <label>客服电话</label>
+                        <input type="text" class="form-control" data-type="email" data-required="true">
+                      </div>
+                     
+                      <div class="form-group">
+                        <label>结算方式</label>
+                        <select data-required="true" class="form-control m-t">
+                            <option value="">--请选择--</option>
+                            <option value="1">自动结算</option>
+                            <option value="2">手工提现</option>
+                          </select>
+                      </div>
+                    </div>
+                    <footer class="panel-footer text-right bg-light lter">
+                      <button type="submit" class="btn btn-success btn-s-xs">Submit</button>
+                    </footer>
+                  </section>
+                </form>
+              </div>
+            </div>
+          </section>
+        </section>
+      </section>
+      <aside class="bg-light lter b-l aside-md hide" id="notes">
+        <div class="wrapper">Notification</div>
+      </aside>
+    </section>
+  </section>
+</section>
+<script src="__PUBLIC__/js/app.v2.js"></script> <!-- Bootstrap --> <!-- App --> <!-- parsley -->
+<script src="__PUBLIC__/js/parsley/parsley.min.js" cache="false"></script>
+<script src="__PUBLIC__/js/parsley/parsley.extend.js" cache="false"></script>
+</body>
+</html>

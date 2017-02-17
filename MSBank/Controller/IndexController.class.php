@@ -1,7 +1,7 @@
 <?php
 namespace MSBank\Controller;
 
-
+require_once ("MSBank/Utils/basic.class.php");
 use Think\Controller;
 use MSBank\Service\MSBank;
 
@@ -57,14 +57,18 @@ class IndexController extends Controller
         header("Content-Type:text/html; charset=utf-8");
         $this->display('index', 'utf-8');
     }
+    public function Register(){
+        header("Content-Type:text/html; charset=utf-8");
+        $this->display('register', 'utf-8');
+    }
     
     
     public function RegisterStore(){
-        $txnSeq = '100860001111111000';// 流水号, 调用方生成，确保唯一
-        $platformId = 'A00002016120000000294';// 平台号, 民生银行生成
-        $operId = '10010A0001';//拓展人员编号
-        $dataSrc = '2';// 进件渠道, 填固定值2
-        $outMchntId = 'O931T20170214220101820'; //外部商户号, 商户自己生成，确保唯一
+        $txnSeq = create_guid();// 流水号, 调用方生成，确保唯一
+        $platformId = C('platformId');// 平台号, 民生银行生成
+        $operId = C('operId');//拓展人员编号
+        $dataSrc = C('dataSrc');// 进件渠道, 填固定值2
+        $outMchntId = create_guid(); //外部商户号, 商户自己生成，确保唯一
         $mchntName = 'Demo进件测试商户'; //商户简称|
         $mchntFullName = '中国移动';//商户全称, 请填写营业执照上的全称
         $parentMchntId = ''; //父商户,  非必输
@@ -115,7 +119,8 @@ class IndexController extends Controller
 
         $SourceData = json_encode($postdata);
         $msbank = new MSBank();
-        $msbank->registerStore($SourceData);
+        $ret = $msbank->registerStore($SourceData);
+        $this->show(json_encode($ret));
     }
 
 

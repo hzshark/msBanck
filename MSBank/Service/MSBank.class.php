@@ -1,5 +1,5 @@
 <?php
-namespace Home\Service;
+namespace MSBank\Service;
 
 require_once ("MSBank/Lib/php_java.php");
 require_once ("MSBank/Utils/basic.class.php");
@@ -31,8 +31,9 @@ class MSBank
         $base64X509CertData = C('BASE64X509CERTDATA');
         $sendstr = lajp_call("cfca.sadk.api.EnvelopeKit::envelopeMessage", $base64SourceData, $signAlg2, $base64X509CertData);
         $sendstr = json_decode($sendstr, true);
+        
         if (array_key_exists('Base64EnvelopeMessage', $sendstr)) {
-            return $sendstr['Base64SignatureData'];
+            return $sendstr['Base64EnvelopeMessage'];
         } else {
             return null;
         }
@@ -49,9 +50,8 @@ class MSBank
         $base64P12Data = C('BASE64P12DATA');
         $p12Password = C('P12PASSWORD');
         $backstr = lajp_call("cfca.sadk.api.EnvelopeKit::openEvelopedMessage",  $encryptedData, $signAlg2, $base64P12Data, $p12Password);
-        __PUBLIC__;
         $backstr=json_decode($backstr,true);
-        
+
         $backstr =$backstr['Base64SourceString'];
         $base64SourceData=$backstr;
         $SourceData=base64_decode($backstr);
@@ -86,20 +86,20 @@ class MSBank
         
         $encryptedData = $this->encryptedSendData($base64SourceData);
         $sendMsg = $this->generateSendMessage($encryptedData);
-        $regURL = "http://wxpay.cmbc.com.cn/mobilePlatform/lcbpService/mchntAdd.do";
+        $regURL = C('REG_URL');
         $httpreps = http_post_data($regURL, $sendMsg);
         if ($httpreps[0] == 200){
-            
             $repdata = json_decode($httpreps[1], true);
             $reps_encryptedData = $repdata['businessContext'];
             $decryptRes = $this->decryptRespone($reps_encryptedData);
             $check_ret = $this->check_sign(decryptRes);
             $ret = json_decode($check_ret, true);
+            
             if ($ret['Result'] == 'True'){
                 $result['status'] = 0;
                 $result['msg'] = 'Register Store Successfully. And Return Code:'.$ret['Code'];
             }else{
-                $result['status'] = 0;
+                $result['status'] = 4;
                 $result['msg'] = 'Register Store Failed. And Return Code:'.$ret['Code'];
             }
         }else{

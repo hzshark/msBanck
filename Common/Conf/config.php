@@ -12,6 +12,14 @@ return array(
     'SHOW_PAGE_TRACE'   =>	false,   		// 显示页面Trace信息
     'APP_GROUP_LIST' => 'MSBank', //项目分组设定
     'DEFAULT_MODULE'     => 'MSBank', //默认模块
+    'TMPL_PARSE_STRING'=>
+    array(
+    
+        '__STATIC__'
+    
+        => __PUBLIC__,
+    ),
+    
     // 设置禁止访问的模块列表
     'MODULE_DENY_LIST'      =>  array('Common','Runtime'),
     'SESSION_AUTO_START' => true, //是否开启session
