@@ -1,7 +1,7 @@
 <?php
 return array(
 	//'配置项'=>'配置值'
-	
+    'LOG_RECORD' => true, // 开启日志记录
     'platformId'=> 'A00002016120000000294',
     'operId'=>'10010A0001',
     'dataSrc'=>'2',
@@ -12,5 +12,9 @@ return array(
     'BASE64X509CERTDATA' => 'MIIDGjCCAr2gAwIBAgIFMAE1UAQwDAYIKoEcz1UBg3UFADArMQswCQYDVQQGEwJDTjEcMBoGA1UECgwTQ0ZDQSBTTTIgVEVTVCBPQ0EyMTAeFw0xNTEyMDQwODU4MDlaFw0xNjEyMDQwODU4MDlaMHQxCzAJBgNVBAYTAkNOMQ0wCwYDVQQKDARDTUJDMRIwEAYDVQQLDAlDTUJDX0RDTVMxFTATBgNVBAsMDEluZGl2aWR1YWwtMTErMCkGA1UEAwwiMDMwNUAwMzE4NzQ0ODYyNzc5ODM3QHVzZXIwMDMyNDRAMTBZMBMGByqGSM49AgEGCCqBHM9VAYItA0IABMaqALdw4tIJEcYg2Bv6TMNj8Odv9cmK5+QVnrjjwxnLMOoXuzn17R0E7YBAe7j87Krhxqstx6qLcuvGh2jJGUOjggGBMIIBfTAfBgNVHSMEGDAWgBTifrYQu5TrFeau0RUK/+jXoFc5nTBIBgNVHSAEQTA/MD0GCGCBHIbvKgICMDEwLwYIKwYBBQUHAgEWI2h0dHA6Ly93d3cuY2ZjYS5jb20uY24vdXMvdXMtMTMuaHRtMIHOBgNVHR8EgcYwgcMwgZKggY+ggYyGgYlsZGFwOi8vMjEwLjc0LjQyLjEwOjM4OS9jbj1jcmw5NSxvdT1TTTIsT1U9Q1JMLE89Q0ZDQSBTTTIgVEVTVCBPQ0EyMSxDPUNOP2NlcnRpZmljYXRlUmV2b2NhdGlvbkxpc3Q/YmFzZT9vYmplY3RjbGFzcz1jUkxEaXN0cmlidXRpb25Qb2ludDAsoCqgKIYmaHR0cDovLzIxMC43NC40Mi4zL09DQTIxL1NNMi9jcmw5NS5jcmwwCwYDVR0PBAQDAgPoMB0GA1UdDgQWBBS1x/e/puEJbLQnTtwm2y/+fP1b2jATBgNVHSUEDDAKBggrBgEFBQcDAjAMBggqgRzPVQGDdQUAA0kAMEYCIQCba06exmipgEcbA1uhsM19ldoVY6QDlIqx1+8fjy7xAgIhALboidd/NmhTdWKgbs8FRyaYuEbHuu6BNWYeC46GWzTD',
     'SIGNALG1' => 'SM3withSM2',//加密方式1，用于签名和校验签名
     'SIGNALG2' => 'SM4/CBC/PKCS7Padding',//加密方式2，用于加密信封和解密信封'
-    'REG_URL' => "http://wxpay.cmbc.com.cn/mobilePlatform/lcbpService/mchntAdd.do",
+    'REG_STORE_URL' => "http://wxpay.cmbc.com.cn/mobilePlatform/lcbpService/mchntAdd.do",
+    'MOD_STORE_URL' => "http://wxpay.cmbc.com.cn/mobilePlatform/lcbpService/mchntUpd.do",
+    'BIND_PAY_URL' =>"http://wxpay.cmbc.com.cn/mobilePlatform/lcbpService/chnlAdd.do",
+    'MOD_PAY_URL' => "http://wxpay.cmbc.com.cn/mobilePlatform/lcbpService/chnlUpd.do",
+
 );

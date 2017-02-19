@@ -86,7 +86,7 @@ idd/NmhTdWKgbs8FRyaYuEbHuu6BNWYeC46GWzTD';//民生公钥
          $repdata = json_decode($ret1[1]);
          var_dump($repdata);
          $fanhui_miwen = $repdata->businessContext;
-         
+
 		 $backstr = lajp_call("cfca.sadk.api.EnvelopeKit::openEvelopedMessage",  $fanhui_miwen, $signAlg2, $base64P12Data, $p12Password);
 		 echo "================================".PHP_EOL;
 		 var_dump($backstr);
@@ -103,7 +103,7 @@ idd/NmhTdWKgbs8FRyaYuEbHuu6BNWYeC46GWzTD';//民生公钥
 
 		 $ret = lajp_call("cfca.sadk.api.SignatureKit::P1VerifyMessage", $signAlg1,base64_encode($SourceData['body']), $base64X509CertData,$SourceData['sign']);
     	 echo "校验签名：{$ret}<br><br>";
-    	 
+
     	 var_dump($ret);
 		 exit;
 

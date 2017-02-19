@@ -1010,3 +1010,249 @@ Caused by: java.lang.StringIndexOutOfBoundsException: String index out of range:
 	at cfca.util.Base64.decode(Base64.java:99) ~[SADK-CMBC-3.1.1.0.jar:na]
 	at cfca.sadk.api.BaseKit.base64Decode(BaseKit.java:189) ~[PHPKit-CMBC-3.0.0.1.jar:na]
 	... 5 common frames omitted
+[2017-02-19 17:11:51.353][ERROR][Thread-3][cfca.sadk.api.BaseKit] base64Decode exception
+java.lang.StringIndexOutOfBoundsException: String index out of range: -3
+	at java.lang.String.charAt(Unknown Source) ~[na:1.8.0_91]
+	at cfca.org.bouncycastle.util.encoders.Base64Encoder.decode(Base64Encoder.java:245) ~[SADK-CMBC-3.1.1.0.jar:na]
+	at cfca.util.Base64.decode(Base64.java:99) ~[SADK-CMBC-3.1.1.0.jar:na]
+	at cfca.sadk.api.BaseKit.base64Decode(BaseKit.java:189) ~[PHPKit-CMBC-3.0.0.1.jar:na]
+	at cfca.sadk.api.SignatureKit.P1VerifyMessage(SignatureKit.java:116) [PHPKit-CMBC-3.0.0.1.jar:na]
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:1.8.0_91]
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source) ~[na:1.8.0_91]
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source) ~[na:1.8.0_91]
+	at java.lang.reflect.Method.invoke(Unknown Source) ~[na:1.8.0_91]
+	at lajpsocket.SingleThread.run(SingleThread.java:242) [lajp-10.05.jar:na]
+[2017-02-19 17:11:51.364][ERROR][Thread-3][cfca.sadk.api.BaseKit] 01
+cfca.sadk.exception.CodeException: base64Decode exception
+	at cfca.sadk.api.BaseKit.base64Decode(BaseKit.java:192) ~[PHPKit-CMBC-3.0.0.1.jar:na]
+	at cfca.sadk.api.SignatureKit.P1VerifyMessage(SignatureKit.java:116) ~[PHPKit-CMBC-3.0.0.1.jar:na]
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:1.8.0_91]
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source) ~[na:1.8.0_91]
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source) ~[na:1.8.0_91]
+	at java.lang.reflect.Method.invoke(Unknown Source) ~[na:1.8.0_91]
+	at lajpsocket.SingleThread.run(SingleThread.java:242) [lajp-10.05.jar:na]
+Caused by: java.lang.StringIndexOutOfBoundsException: String index out of range: -3
+	at java.lang.String.charAt(Unknown Source) ~[na:1.8.0_91]
+	at cfca.org.bouncycastle.util.encoders.Base64Encoder.decode(Base64Encoder.java:245) ~[SADK-CMBC-3.1.1.0.jar:na]
+	at cfca.util.Base64.decode(Base64.java:99) ~[SADK-CMBC-3.1.1.0.jar:na]
+	at cfca.sadk.api.BaseKit.base64Decode(BaseKit.java:189) ~[PHPKit-CMBC-3.0.0.1.jar:na]
+	... 6 common frames omitted
+[2017-02-19 17:15:26.167][ERROR][Thread-7][cfca.sadk.api.BaseKit] base64Decode exception
+java.lang.StringIndexOutOfBoundsException: String index out of range: -3
+	at java.lang.String.charAt(Unknown Source) ~[na:1.8.0_91]
+	at cfca.org.bouncycastle.util.encoders.Base64Encoder.decode(Base64Encoder.java:245) ~[SADK-CMBC-3.1.1.0.jar:na]
+	at cfca.util.Base64.decode(Base64.java:99) ~[SADK-CMBC-3.1.1.0.jar:na]
+	at cfca.sadk.api.BaseKit.base64Decode(BaseKit.java:189) ~[PHPKit-CMBC-3.0.0.1.jar:na]
+	at cfca.sadk.api.SignatureKit.P1VerifyMessage(SignatureKit.java:116) [PHPKit-CMBC-3.0.0.1.jar:na]
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:1.8.0_91]
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source) ~[na:1.8.0_91]
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source) ~[na:1.8.0_91]
+	at java.lang.reflect.Method.invoke(Unknown Source) ~[na:1.8.0_91]
+	at lajpsocket.SingleThread.run(SingleThread.java:242) [lajp-10.05.jar:na]
+[2017-02-19 17:15:26.171][ERROR][Thread-7][cfca.sadk.api.BaseKit] 01
+cfca.sadk.exception.CodeException: base64Decode exception
+	at cfca.sadk.api.BaseKit.base64Decode(BaseKit.java:192) ~[PHPKit-CMBC-3.0.0.1.jar:na]
+	at cfca.sadk.api.SignatureKit.P1VerifyMessage(SignatureKit.java:116) ~[PHPKit-CMBC-3.0.0.1.jar:na]
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:1.8.0_91]
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source) ~[na:1.8.0_91]
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source) ~[na:1.8.0_91]
+	at java.lang.reflect.Method.invoke(Unknown Source) ~[na:1.8.0_91]
+	at lajpsocket.SingleThread.run(SingleThread.java:242) [lajp-10.05.jar:na]
+Caused by: java.lang.StringIndexOutOfBoundsException: String index out of range: -3
+	at java.lang.String.charAt(Unknown Source) ~[na:1.8.0_91]
+	at cfca.org.bouncycastle.util.encoders.Base64Encoder.decode(Base64Encoder.java:245) ~[SADK-CMBC-3.1.1.0.jar:na]
+	at cfca.util.Base64.decode(Base64.java:99) ~[SADK-CMBC-3.1.1.0.jar:na]
+	at cfca.sadk.api.BaseKit.base64Decode(BaseKit.java:189) ~[PHPKit-CMBC-3.0.0.1.jar:na]
+	... 6 common frames omitted
+[2017-02-19 17:15:43.121][ERROR][Thread-11][cfca.sadk.api.BaseKit] base64Decode exception
+java.lang.StringIndexOutOfBoundsException: String index out of range: -3
+	at java.lang.String.charAt(Unknown Source) ~[na:1.8.0_91]
+	at cfca.org.bouncycastle.util.encoders.Base64Encoder.decode(Base64Encoder.java:245) ~[SADK-CMBC-3.1.1.0.jar:na]
+	at cfca.util.Base64.decode(Base64.java:99) ~[SADK-CMBC-3.1.1.0.jar:na]
+	at cfca.sadk.api.BaseKit.base64Decode(BaseKit.java:189) ~[PHPKit-CMBC-3.0.0.1.jar:na]
+	at cfca.sadk.api.SignatureKit.P1VerifyMessage(SignatureKit.java:116) [PHPKit-CMBC-3.0.0.1.jar:na]
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:1.8.0_91]
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source) ~[na:1.8.0_91]
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source) ~[na:1.8.0_91]
+	at java.lang.reflect.Method.invoke(Unknown Source) ~[na:1.8.0_91]
+	at lajpsocket.SingleThread.run(SingleThread.java:242) [lajp-10.05.jar:na]
+[2017-02-19 17:15:43.122][ERROR][Thread-11][cfca.sadk.api.BaseKit] 01
+cfca.sadk.exception.CodeException: base64Decode exception
+	at cfca.sadk.api.BaseKit.base64Decode(BaseKit.java:192) ~[PHPKit-CMBC-3.0.0.1.jar:na]
+	at cfca.sadk.api.SignatureKit.P1VerifyMessage(SignatureKit.java:116) ~[PHPKit-CMBC-3.0.0.1.jar:na]
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:1.8.0_91]
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source) ~[na:1.8.0_91]
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source) ~[na:1.8.0_91]
+	at java.lang.reflect.Method.invoke(Unknown Source) ~[na:1.8.0_91]
+	at lajpsocket.SingleThread.run(SingleThread.java:242) [lajp-10.05.jar:na]
+Caused by: java.lang.StringIndexOutOfBoundsException: String index out of range: -3
+	at java.lang.String.charAt(Unknown Source) ~[na:1.8.0_91]
+	at cfca.org.bouncycastle.util.encoders.Base64Encoder.decode(Base64Encoder.java:245) ~[SADK-CMBC-3.1.1.0.jar:na]
+	at cfca.util.Base64.decode(Base64.java:99) ~[SADK-CMBC-3.1.1.0.jar:na]
+	at cfca.sadk.api.BaseKit.base64Decode(BaseKit.java:189) ~[PHPKit-CMBC-3.0.0.1.jar:na]
+	... 6 common frames omitted
+[2017-02-19 17:29:12.917][ERROR][Thread-15][cfca.sadk.api.BaseKit] base64Decode exception
+java.lang.StringIndexOutOfBoundsException: String index out of range: -3
+	at java.lang.String.charAt(Unknown Source) ~[na:1.8.0_91]
+	at cfca.org.bouncycastle.util.encoders.Base64Encoder.decode(Base64Encoder.java:245) ~[SADK-CMBC-3.1.1.0.jar:na]
+	at cfca.util.Base64.decode(Base64.java:99) ~[SADK-CMBC-3.1.1.0.jar:na]
+	at cfca.sadk.api.BaseKit.base64Decode(BaseKit.java:189) ~[PHPKit-CMBC-3.0.0.1.jar:na]
+	at cfca.sadk.api.SignatureKit.P1VerifyMessage(SignatureKit.java:116) [PHPKit-CMBC-3.0.0.1.jar:na]
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:1.8.0_91]
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source) ~[na:1.8.0_91]
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source) ~[na:1.8.0_91]
+	at java.lang.reflect.Method.invoke(Unknown Source) ~[na:1.8.0_91]
+	at lajpsocket.SingleThread.run(SingleThread.java:242) [lajp-10.05.jar:na]
+[2017-02-19 17:29:12.920][ERROR][Thread-15][cfca.sadk.api.BaseKit] 01
+cfca.sadk.exception.CodeException: base64Decode exception
+	at cfca.sadk.api.BaseKit.base64Decode(BaseKit.java:192) ~[PHPKit-CMBC-3.0.0.1.jar:na]
+	at cfca.sadk.api.SignatureKit.P1VerifyMessage(SignatureKit.java:116) ~[PHPKit-CMBC-3.0.0.1.jar:na]
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:1.8.0_91]
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source) ~[na:1.8.0_91]
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source) ~[na:1.8.0_91]
+	at java.lang.reflect.Method.invoke(Unknown Source) ~[na:1.8.0_91]
+	at lajpsocket.SingleThread.run(SingleThread.java:242) [lajp-10.05.jar:na]
+Caused by: java.lang.StringIndexOutOfBoundsException: String index out of range: -3
+	at java.lang.String.charAt(Unknown Source) ~[na:1.8.0_91]
+	at cfca.org.bouncycastle.util.encoders.Base64Encoder.decode(Base64Encoder.java:245) ~[SADK-CMBC-3.1.1.0.jar:na]
+	at cfca.util.Base64.decode(Base64.java:99) ~[SADK-CMBC-3.1.1.0.jar:na]
+	at cfca.sadk.api.BaseKit.base64Decode(BaseKit.java:189) ~[PHPKit-CMBC-3.0.0.1.jar:na]
+	... 6 common frames omitted
+[2017-02-19 17:31:21.775][ERROR][Thread-19][cfca.sadk.api.BaseKit] base64Decode exception
+java.lang.StringIndexOutOfBoundsException: String index out of range: -3
+	at java.lang.String.charAt(Unknown Source) ~[na:1.8.0_91]
+	at cfca.org.bouncycastle.util.encoders.Base64Encoder.decode(Base64Encoder.java:245) ~[SADK-CMBC-3.1.1.0.jar:na]
+	at cfca.util.Base64.decode(Base64.java:99) ~[SADK-CMBC-3.1.1.0.jar:na]
+	at cfca.sadk.api.BaseKit.base64Decode(BaseKit.java:189) ~[PHPKit-CMBC-3.0.0.1.jar:na]
+	at cfca.sadk.api.SignatureKit.P1VerifyMessage(SignatureKit.java:116) [PHPKit-CMBC-3.0.0.1.jar:na]
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:1.8.0_91]
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source) ~[na:1.8.0_91]
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source) ~[na:1.8.0_91]
+	at java.lang.reflect.Method.invoke(Unknown Source) ~[na:1.8.0_91]
+	at lajpsocket.SingleThread.run(SingleThread.java:242) [lajp-10.05.jar:na]
+[2017-02-19 17:31:21.776][ERROR][Thread-19][cfca.sadk.api.BaseKit] 01
+cfca.sadk.exception.CodeException: base64Decode exception
+	at cfca.sadk.api.BaseKit.base64Decode(BaseKit.java:192) ~[PHPKit-CMBC-3.0.0.1.jar:na]
+	at cfca.sadk.api.SignatureKit.P1VerifyMessage(SignatureKit.java:116) ~[PHPKit-CMBC-3.0.0.1.jar:na]
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:1.8.0_91]
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source) ~[na:1.8.0_91]
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source) ~[na:1.8.0_91]
+	at java.lang.reflect.Method.invoke(Unknown Source) ~[na:1.8.0_91]
+	at lajpsocket.SingleThread.run(SingleThread.java:242) [lajp-10.05.jar:na]
+Caused by: java.lang.StringIndexOutOfBoundsException: String index out of range: -3
+	at java.lang.String.charAt(Unknown Source) ~[na:1.8.0_91]
+	at cfca.org.bouncycastle.util.encoders.Base64Encoder.decode(Base64Encoder.java:245) ~[SADK-CMBC-3.1.1.0.jar:na]
+	at cfca.util.Base64.decode(Base64.java:99) ~[SADK-CMBC-3.1.1.0.jar:na]
+	at cfca.sadk.api.BaseKit.base64Decode(BaseKit.java:189) ~[PHPKit-CMBC-3.0.0.1.jar:na]
+	... 6 common frames omitted
+[2017-02-19 17:43:09.060][ERROR][Thread-23][cfca.sadk.api.BaseKit] base64Decode exception
+java.lang.StringIndexOutOfBoundsException: String index out of range: -3
+	at java.lang.String.charAt(Unknown Source) ~[na:1.8.0_91]
+	at cfca.org.bouncycastle.util.encoders.Base64Encoder.decode(Base64Encoder.java:245) ~[SADK-CMBC-3.1.1.0.jar:na]
+	at cfca.util.Base64.decode(Base64.java:99) ~[SADK-CMBC-3.1.1.0.jar:na]
+	at cfca.sadk.api.BaseKit.base64Decode(BaseKit.java:189) ~[PHPKit-CMBC-3.0.0.1.jar:na]
+	at cfca.sadk.api.SignatureKit.P1VerifyMessage(SignatureKit.java:116) [PHPKit-CMBC-3.0.0.1.jar:na]
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:1.8.0_91]
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source) ~[na:1.8.0_91]
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source) ~[na:1.8.0_91]
+	at java.lang.reflect.Method.invoke(Unknown Source) ~[na:1.8.0_91]
+	at lajpsocket.SingleThread.run(SingleThread.java:242) [lajp-10.05.jar:na]
+[2017-02-19 17:43:09.061][ERROR][Thread-23][cfca.sadk.api.BaseKit] 01
+cfca.sadk.exception.CodeException: base64Decode exception
+	at cfca.sadk.api.BaseKit.base64Decode(BaseKit.java:192) ~[PHPKit-CMBC-3.0.0.1.jar:na]
+	at cfca.sadk.api.SignatureKit.P1VerifyMessage(SignatureKit.java:116) ~[PHPKit-CMBC-3.0.0.1.jar:na]
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:1.8.0_91]
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source) ~[na:1.8.0_91]
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source) ~[na:1.8.0_91]
+	at java.lang.reflect.Method.invoke(Unknown Source) ~[na:1.8.0_91]
+	at lajpsocket.SingleThread.run(SingleThread.java:242) [lajp-10.05.jar:na]
+Caused by: java.lang.StringIndexOutOfBoundsException: String index out of range: -3
+	at java.lang.String.charAt(Unknown Source) ~[na:1.8.0_91]
+	at cfca.org.bouncycastle.util.encoders.Base64Encoder.decode(Base64Encoder.java:245) ~[SADK-CMBC-3.1.1.0.jar:na]
+	at cfca.util.Base64.decode(Base64.java:99) ~[SADK-CMBC-3.1.1.0.jar:na]
+	at cfca.sadk.api.BaseKit.base64Decode(BaseKit.java:189) ~[PHPKit-CMBC-3.0.0.1.jar:na]
+	... 6 common frames omitted
+[2017-02-19 17:47:06.648][ERROR][Thread-27][cfca.sadk.api.BaseKit] base64Decode exception
+java.lang.StringIndexOutOfBoundsException: String index out of range: -3
+	at java.lang.String.charAt(Unknown Source) ~[na:1.8.0_91]
+	at cfca.org.bouncycastle.util.encoders.Base64Encoder.decode(Base64Encoder.java:245) ~[SADK-CMBC-3.1.1.0.jar:na]
+	at cfca.util.Base64.decode(Base64.java:99) ~[SADK-CMBC-3.1.1.0.jar:na]
+	at cfca.sadk.api.BaseKit.base64Decode(BaseKit.java:189) ~[PHPKit-CMBC-3.0.0.1.jar:na]
+	at cfca.sadk.api.SignatureKit.P1VerifyMessage(SignatureKit.java:116) [PHPKit-CMBC-3.0.0.1.jar:na]
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:1.8.0_91]
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source) ~[na:1.8.0_91]
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source) ~[na:1.8.0_91]
+	at java.lang.reflect.Method.invoke(Unknown Source) ~[na:1.8.0_91]
+	at lajpsocket.SingleThread.run(SingleThread.java:242) [lajp-10.05.jar:na]
+[2017-02-19 17:47:06.654][ERROR][Thread-27][cfca.sadk.api.BaseKit] 01
+cfca.sadk.exception.CodeException: base64Decode exception
+	at cfca.sadk.api.BaseKit.base64Decode(BaseKit.java:192) ~[PHPKit-CMBC-3.0.0.1.jar:na]
+	at cfca.sadk.api.SignatureKit.P1VerifyMessage(SignatureKit.java:116) ~[PHPKit-CMBC-3.0.0.1.jar:na]
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:1.8.0_91]
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source) ~[na:1.8.0_91]
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source) ~[na:1.8.0_91]
+	at java.lang.reflect.Method.invoke(Unknown Source) ~[na:1.8.0_91]
+	at lajpsocket.SingleThread.run(SingleThread.java:242) [lajp-10.05.jar:na]
+Caused by: java.lang.StringIndexOutOfBoundsException: String index out of range: -3
+	at java.lang.String.charAt(Unknown Source) ~[na:1.8.0_91]
+	at cfca.org.bouncycastle.util.encoders.Base64Encoder.decode(Base64Encoder.java:245) ~[SADK-CMBC-3.1.1.0.jar:na]
+	at cfca.util.Base64.decode(Base64.java:99) ~[SADK-CMBC-3.1.1.0.jar:na]
+	at cfca.sadk.api.BaseKit.base64Decode(BaseKit.java:189) ~[PHPKit-CMBC-3.0.0.1.jar:na]
+	... 6 common frames omitted
+[2017-02-19 20:16:06.686][ERROR][Thread-31][cfca.sadk.api.BaseKit] base64Decode exception
+java.lang.StringIndexOutOfBoundsException: String index out of range: -3
+	at java.lang.String.charAt(Unknown Source) ~[na:1.8.0_91]
+	at cfca.org.bouncycastle.util.encoders.Base64Encoder.decode(Base64Encoder.java:245) ~[SADK-CMBC-3.1.1.0.jar:na]
+	at cfca.util.Base64.decode(Base64.java:99) ~[SADK-CMBC-3.1.1.0.jar:na]
+	at cfca.sadk.api.BaseKit.base64Decode(BaseKit.java:189) ~[PHPKit-CMBC-3.0.0.1.jar:na]
+	at cfca.sadk.api.SignatureKit.P1VerifyMessage(SignatureKit.java:116) [PHPKit-CMBC-3.0.0.1.jar:na]
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:1.8.0_91]
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source) ~[na:1.8.0_91]
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source) ~[na:1.8.0_91]
+	at java.lang.reflect.Method.invoke(Unknown Source) ~[na:1.8.0_91]
+	at lajpsocket.SingleThread.run(SingleThread.java:242) [lajp-10.05.jar:na]
+[2017-02-19 20:16:06.688][ERROR][Thread-31][cfca.sadk.api.BaseKit] 01
+cfca.sadk.exception.CodeException: base64Decode exception
+	at cfca.sadk.api.BaseKit.base64Decode(BaseKit.java:192) ~[PHPKit-CMBC-3.0.0.1.jar:na]
+	at cfca.sadk.api.SignatureKit.P1VerifyMessage(SignatureKit.java:116) ~[PHPKit-CMBC-3.0.0.1.jar:na]
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:1.8.0_91]
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source) ~[na:1.8.0_91]
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source) ~[na:1.8.0_91]
+	at java.lang.reflect.Method.invoke(Unknown Source) ~[na:1.8.0_91]
+	at lajpsocket.SingleThread.run(SingleThread.java:242) [lajp-10.05.jar:na]
+Caused by: java.lang.StringIndexOutOfBoundsException: String index out of range: -3
+	at java.lang.String.charAt(Unknown Source) ~[na:1.8.0_91]
+	at cfca.org.bouncycastle.util.encoders.Base64Encoder.decode(Base64Encoder.java:245) ~[SADK-CMBC-3.1.1.0.jar:na]
+	at cfca.util.Base64.decode(Base64.java:99) ~[SADK-CMBC-3.1.1.0.jar:na]
+	at cfca.sadk.api.BaseKit.base64Decode(BaseKit.java:189) ~[PHPKit-CMBC-3.0.0.1.jar:na]
+	... 6 common frames omitted
+[2017-02-19 20:24:20.317][ERROR][Thread-43][cfca.sadk.api.BaseKit] 01
+cfca.sm2rsa.common.PKIException: ¥ÌŒÛ¬Î£∫851001  ¥ÌŒÛ–≈œ¢£∫The signData is wrong!
+	at cfca.util.SignatureUtil.decodedSignValue(SignatureUtil.java:559) ~[SADK-CMBC-3.1.1.0.jar:na]
+	at cfca.util.SignatureUtil.p1VerifyMessage(SignatureUtil.java:230) ~[SADK-CMBC-3.1.1.0.jar:na]
+	at cfca.sadk.api.SignatureKit.P1VerifyMessage(SignatureKit.java:122) ~[PHPKit-CMBC-3.0.0.1.jar:na]
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:1.8.0_91]
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source) ~[na:1.8.0_91]
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source) ~[na:1.8.0_91]
+	at java.lang.reflect.Method.invoke(Unknown Source) ~[na:1.8.0_91]
+	at lajpsocket.SingleThread.run(SingleThread.java:242) [lajp-10.05.jar:na]
+[2017-02-19 20:28:48.386][ERROR][Thread-53][cfca.sadk.api.BaseKit] 01
+cfca.sm2rsa.common.PKIException: ¥ÌŒÛ¬Î£∫851001  ¥ÌŒÛ–≈œ¢£∫The signData is wrong!
+	at cfca.util.SignatureUtil.decodedSignValue(SignatureUtil.java:559) ~[SADK-CMBC-3.1.1.0.jar:na]
+	at cfca.util.SignatureUtil.p1VerifyMessage(SignatureUtil.java:230) ~[SADK-CMBC-3.1.1.0.jar:na]
+	at cfca.sadk.api.SignatureKit.P1VerifyMessage(SignatureKit.java:122) ~[PHPKit-CMBC-3.0.0.1.jar:na]
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:1.8.0_91]
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source) ~[na:1.8.0_91]
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source) ~[na:1.8.0_91]
+	at java.lang.reflect.Method.invoke(Unknown Source) ~[na:1.8.0_91]
+	at lajpsocket.SingleThread.run(SingleThread.java:242) [lajp-10.05.jar:na]
+[2017-02-19 20:29:20.332][ERROR][Thread-57][cfca.sadk.api.BaseKit] 01
+cfca.sm2rsa.common.PKIException: ¥ÌŒÛ¬Î£∫851001  ¥ÌŒÛ–≈œ¢£∫The signData is wrong!
+	at cfca.util.SignatureUtil.decodedSignValue(SignatureUtil.java:559) ~[SADK-CMBC-3.1.1.0.jar:na]
+	at cfca.util.SignatureUtil.p1VerifyMessage(SignatureUtil.java:230) ~[SADK-CMBC-3.1.1.0.jar:na]
+	at cfca.sadk.api.SignatureKit.P1VerifyMessage(SignatureKit.java:122) ~[PHPKit-CMBC-3.0.0.1.jar:na]
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:1.8.0_91]
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source) ~[na:1.8.0_91]
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source) ~[na:1.8.0_91]
+	at java.lang.reflect.Method.invoke(Unknown Source) ~[na:1.8.0_91]
+	at lajpsocket.SingleThread.run(SingleThread.java:242) [lajp-10.05.jar:na]

@@ -3,9 +3,9 @@ return array(
 	'DB_TYPE'           =>  'mysql',     	// 数据库类型
 //     'DB_HOST'           =>  '10.27.165.76', 	// 服务器地址
     'DB_HOST'           =>  '106.14.77.254', 	// 服务器地址
-    'DB_NAME'           =>  'toys',        // 数据库名
-    'DB_USER'           =>  'toys',     	// 用户名
-    'DB_PWD'            =>  'qizhiwj888',     	// 密码
+    'DB_NAME'           =>  'test',        // 数据库名
+    'DB_USER'           =>  'root',     	// 用户名
+    'DB_PWD'            =>  'ssqian123',     	// 密码
     'DB_PORT'           =>  '3306',     	// 端口
     'DB_PREFIX'         =>  '',      	// 数据库表前缀
     'DB_DEBUG'  		=>  true, 			// 数据库调试模式 开启后可以记录SQL日志
@@ -14,12 +14,10 @@ return array(
     'DEFAULT_MODULE'     => 'MSBank', //默认模块
     'TMPL_PARSE_STRING'=>
     array(
-    
         '__STATIC__'
-    
         => __PUBLIC__,
     ),
-    
+
     // 设置禁止访问的模块列表
     'MODULE_DENY_LIST'      =>  array('Common','Runtime'),
     'SESSION_AUTO_START' => true, //是否开启session
@@ -62,7 +60,7 @@ return array(
 
     /* 网站设置 */
     'SITE_TITLE' => 'QZWJ', //网站title
-'UPLOAD_PATH' => './Uploads/',
+    'UPLOAD_PATH' => './Uploads/',
     'UPLOAD_MAX_SIZE' => '31457280',
     /* 网站日志设置 */
     'WEB_LOG_RECORD' => false, // 默认不记录日志
