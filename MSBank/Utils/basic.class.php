@@ -11,6 +11,12 @@ function mkdirs($dir, $mode = 0777)
     return @mkdir($dir, $mode);
 }
 
+function getMillisecond() {
+    list($s1, $s2) = explode(' ', microtime());
+    return (float)sprintf('%.0f', (floatval($s1) + floatval($s2)) * 1000);
+}
+
+
 function create_guid($namespace = '')
 {
     static $guid = '';

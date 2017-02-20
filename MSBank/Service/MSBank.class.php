@@ -233,6 +233,12 @@ class MSBank
         return $this->cmbcAction($SourceData, $URL);
     }
 
+    public function pay($SourceData)
+    {
+        $URL = C('PAY_URL');
+        return $this->cmbcAction($SourceData, $URL);
+    }
+
     public function uploadElectronicData()
     {}
 

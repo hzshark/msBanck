@@ -62,6 +62,7 @@ class IndexController extends Controller
         $this->display('register', 'utf-8');
     }
     public function RegisterStore(){
+        header("Content-Type:text/html; charset=utf-8");
         $txnSeq = generateOrderno();// 流水号, 调用方生成，确保唯一
         $platformId = C('platformId');// 平台号, 民生银行生成
         $operId = C('operId');//拓展人员编号
@@ -124,6 +125,7 @@ class IndexController extends Controller
     }
 
     public function ModStore(){
+        header("Content-Type:text/html; charset=utf-8");
         $txnSeq = generateOrderno();// 流水号, 调用方生成，确保唯一
         $platformId = C('platformId');// 平台号, 民生银行生成
         $operId = C('operId');//拓展人员编号
@@ -177,6 +179,7 @@ class IndexController extends Controller
     }
 
     public function BindPayment(){
+        header("Content-Type:text/html; charset=utf-8");
         $txnSeq = generateOrderno();// 流水号, 调用方生成，确保唯一
         $platformId = C('platformId');// 平台号, 民生银行生成
         $operId = '10086A0001';//拓展人员编号
@@ -224,6 +227,7 @@ class IndexController extends Controller
     }
 
     public function ModPayment(){
+        header("Content-Type:text/html; charset=utf-8");
         $txnSeq = generateOrderno();// 流水号, 调用方生成，确保唯一
         $platformId = C('platformId');// 平台号, 民生银行生成
         $operId = '10086A0001';//拓展人员编号
@@ -264,6 +268,45 @@ class IndexController extends Controller
         $SourceData = json_encode($postdata);
         $msbank = new MSBank();
         $ret = $msbank->modPaumentInfo($SourceData);
+        if ($ret['status'] == 0){
+            $msbank->ModStoreOder($postdata, $ret);
+        }
+        $this->show(json_encode($ret));
+    }
+
+    public function pay(){
+        header("Content-Type:text/html; charset=utf-8");
+        $platformId = C('platformId');// 平台号, 民生银行生成
+        $operId = '10086A0001';//拓展人员编号
+        $merchantNo = "M29002017020000012847";//该订单对应的民生统一商户号
+        $selectTradeType = 'API_WXQRCODE';//支付类型的标识信息
+       // 类型代码对应：
+        //微信 	微信正扫：API_WXQRCODE 	微信反扫：API_WXSCAN 	微信公众号：H5_WXJSAPI
+       // 支付宝 	支付宝正扫：API_ZFBQRCODE 	支付宝反扫：API_ZFBSCAN 	支付宝服务窗：H5_ZFBJSAPI
+        //QQ钱包 	QQ钱包正扫：API_QQQRCODE 	QQ钱包反扫：API_QQSCAN 	QQ钱包公众号：H5_QQJSAPI
+
+        $amount = '1'; //交易金额，以分为单位
+        $orderInfo = '统一下单API测试-'.$selectTradeType;
+        $merchantSeq = $platformId.generateOrderno(); // 流水号, 调用方生成，确保唯一
+        $transDate = date('Ymd', time());//格式：yyyyMMdd
+        $transTime = date('YmdHis', time())."000";//格式：yyyyMMddHHmmssSSS
+        $notifyUrl = C('NOTIFY_URL');//户实现的接收异步通知的url地址
+        $remark = '';  //备注
+        $postdata = array(
+            'platformId'=>$platformId,
+            'operId' => $operId,
+            'selectTradeType'=>$selectTradeType,
+            'amount' => $amount,
+            'orderInfo'=>$orderInfo,
+            'merchantSeq'=>$merchantSeq,
+            'transDate'=>$transDate,
+            'transTime'=>$transTime,
+            'notifyUrl'=>$notifyUrl,
+            'remark '=>$remark
+        );
+        $SourceData = json_encode($postdata);
+        $msbank = new MSBank();
+        $ret = $msbank->pay($SourceData);
         if ($ret['status'] == 0){
             $msbank->ModStoreOder($postdata, $ret);
         }

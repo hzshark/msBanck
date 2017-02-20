@@ -17,4 +17,6 @@ return array(
     'BIND_PAY_URL' =>"http://wxpay.cmbc.com.cn/mobilePlatform/lcbpService/chnlAdd.do",
     'MOD_PAY_URL' => "http://wxpay.cmbc.com.cn/mobilePlatform/lcbpService/chnlUpd.do",
 
+    'PAY_URL' => "http://wxpay.cmbc.com.cn/mobilePlatform/appserver/lcbpPay.do",
+    'NOTIFY_URL' => "http://wxpay.cmbc.com.cn/cmbcpaydemo/NoticeServlet?name=notice",
 );
