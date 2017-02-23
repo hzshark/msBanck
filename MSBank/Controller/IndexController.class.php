@@ -4,6 +4,7 @@ namespace MSBank\Controller;
 require_once ("MSBank/Utils/basic.class.php");
 use Think\Controller;
 use MSBank\Service\MSBank;
+use MSBank\Service\StoreInfo;
 
 class IndexController extends Controller
 {
@@ -55,6 +56,10 @@ class IndexController extends Controller
     public function Index()
     {
         header("Content-Type:text/html; charset=utf-8");
+        $store = new StoreInfo();
+        $storesInfo = $store->queryAllStores();
+//         var_dump($storesInfo);
+        $this->assign("stores", $storesInfo);
         $this->display('index', 'utf-8');
     }
     public function Register(){
@@ -126,6 +131,13 @@ class IndexController extends Controller
 
     public function ModStore(){
         header("Content-Type:text/html; charset=utf-8");
+        if (IS_GET){
+            $store = new StoreInfo();
+            $id = isset($_GET['id']) ? $_GET['id'] : '';
+            $storeInfo = $store->queryStoreinfoById($id);
+            $this->assign("store", $storeInfo);
+            $this->display('modstore', 'utf-8');
+        }else{
         $txnSeq = generateOrderno();// 流水号, 调用方生成，确保唯一
         $platformId = C('platformId');// 平台号, 民生银行生成
         $operId = C('operId');//拓展人员编号
@@ -176,10 +188,20 @@ class IndexController extends Controller
             $msbank->ModStoreOder($postdata, $ret);
         }
         $this->show(json_encode($ret));
+        }
     }
 
     public function BindPayment(){
         header("Content-Type:text/html; charset=utf-8");
+        if (IS_GET){
+            $store = new StoreInfo();
+            $id = isset($_GET['id']) ? $_GET['id'] : '';
+            $storeInfo = $store->queryStoreinfoById($id);
+            $txnSeq = generateOrderno();// 流水号, 调用方生成，确保唯一
+            $this->assign("txnSeq", $txnSeq);
+            $this->assign("store", $storeInfo);
+            $this->display('bindPayment','utf-8');
+        }else{
         $txnSeq = generateOrderno();// 流水号, 调用方生成，确保唯一
         $platformId = C('platformId');// 平台号, 民生银行生成
         $operId = '10086A0001';//拓展人员编号
@@ -224,6 +246,7 @@ class IndexController extends Controller
             $msbank->ModStoreOder($postdata, $ret);
         }
         $this->show(json_encode($ret));
+        }
     }
 
     public function ModPayment(){
@@ -284,14 +307,14 @@ class IndexController extends Controller
         //微信 	微信正扫：API_WXQRCODE 	微信反扫：API_WXSCAN 	微信公众号：H5_WXJSAPI
        // 支付宝 	支付宝正扫：API_ZFBQRCODE 	支付宝反扫：API_ZFBSCAN 	支付宝服务窗：H5_ZFBJSAPI
         //QQ钱包 	QQ钱包正扫：API_QQQRCODE 	QQ钱包反扫：API_QQSCAN 	QQ钱包公众号：H5_QQJSAPI
-
+        $payment_code = "12312414";
         $amount = '1'; //交易金额，以分为单位
         $orderInfo = '统一下单API测试-'.$selectTradeType;
         $merchantSeq = $platformId.generateOrderno(); // 流水号, 调用方生成，确保唯一
         $transDate = date('Ymd', time());//格式：yyyyMMdd
         $transTime = date('YmdHis', time())."000";//格式：yyyyMMddHHmmssSSS
         $notifyUrl = C('NOTIFY_URL');//户实现的接收异步通知的url地址
-        $remark = '';  //备注
+        $remark = base64_encode($payment_code);  //备注
         $postdata = array(
             'platformId'=>$platformId,
             'operId' => $operId,

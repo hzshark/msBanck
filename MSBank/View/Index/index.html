@@ -13,7 +13,7 @@
 <body>
 <section class="vbox">
   <section>
-    <section class="hbox stretch"> <!-- .aside -->
+    <section class="hbox stretch">
       <section id="content">
         <section class="vbox">
           <section class="scrollable padder">
@@ -30,15 +30,30 @@
               <header class="panel-heading"> 民生门户</header>
               <header class="panel-heading">  <a href="{:U('Index/Register')}" class="btn btn-s-md btn-primary btn-rounded">新增门店</a></header>
               <div class="table-responsive">
-                <table class="table table-striped m-b-none" data-ride="datatables">
+                <table class="table table-striped m-b-none" >
                   <thead>
                     <tr>
-                      <th width="20%">门店id</th>
+                      <th width="10%">门店id</th>
                       <th width="25%">名店名称</th>
-                      <th width="25%">类别</th>
-                      <th width="15%">状态</th>
-                      <th width="15%">操作</th>
+                      <th width="5%">类别</th>
+                      <th width="5%">状态</th>
+                      <th width="55%">操作</th>
                     </tr>
+                    <foreach name="stores" item="vo" >
+	                    <tr>
+	                    <td>{$vo.id}</td>
+	                    <td>{$vo.mchntname}</td>
+	                    <td></td>
+	                    <td></td>
+                    <td>
+                    <div class="button-group">
+						 <a href="{:U('Index/BindPayment')}?id={$vo.id}" class="btn btn-s-md btn-primary btn-rounded">绑定支付</a>
+						 <a href="{:U('Index/Register')}?id={$vo.id}" class="btn btn-s-md btn-primary btn-rounded">修改支付</a>
+						 <a href="{:U('Index/ModStore')}?id={$vo.id}" class="btn btn-s-md btn-primary btn-rounded">修改门店</a>
+					</div>
+					</td>
+                    </tr>
+                    </foreach>
                   </thead>
                   <tbody>
                   </tbody>

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" class="app">
 <head>
 <meta charset="utf-8" />
@@ -19,76 +19,74 @@
           <section class="scrollable padder">
             <div class="row">
               <div class="col-sm-6">
-                <form data-validate="parsley" method="post" name="ModStore" action="ModStore">
+                <form data-validate="parsley" method="post" name="BindPayment" action="BindPayment">
                   <input type="hidden" name="id" value="{$store.id}">
                   <section class="panel panel-default">
                     <header class="panel-heading"> <span class="h4">商户注册</span> </header>
                     <div class="panel-body">
                       <p class="text-muted">Please fill the information to continue</p>
                       <div class="form-group">
-                        <label>商户简称</label>
-                        <input type="text" class="form-control" data-required="true" value="{$store.mchntname}">
-                      </div>
-                      <div class="form-group">
                         <label>商户全称</label>
-                        <input type="text" class="form-control"  data-required="true" value="{$store.mchntfullname}">
+                        <input type="text" class="form-control"  data-required="true" value="{$store.mchntfullname}"  readonly="true">
                       </div>
-                      <div class="form-group pull-in clearfix">
-                        <div  class="col-sm-3">
-                        <label>省份</label>
-                          <div id="slt_sheng"></div>
-                        </div>
-                        <div class="col-sm-3">
-                          <label>城市</label>
-                          <div id="slt_shi"></div>
-                        </div>
-                        <div class="col-sm-3">
-                          <label>区/镇</label>
-                          <div id="slt_xian"></div>
-                        </div>
+						<div class="form-group">
+                        <label>支付通道</label>
+                        <select data-required="true" class="form-control m-t" name="apiCode">
+                            <option value="">--请选择--</option>
+                            <option value="0005" >微信</option>
+                            <option value="0007" >支付宝</option>
+                            <option value="0008" >QQ钱包</option>
+                          </select>
                       </div>
                       <div class="form-group">
-                        <label>详细地址</label>
-                        <input type="text" class="form-control" data-required="true" value="{$store.address}">
+                        <label>接入类型</label>
+                        <select data-required="true" class="form-control m-t" name="operateType">
+                            <option value="">--请选择--</option>
+                            <option value="1" >间联</option>
+                            <option value="2" >直联</option>
+                          </select>
+                      </div>
+                      <div class="form-group">
+                        <label>商户类别</label>
+                        <input type="text" class="form-control" name="industryId" data-required="true" value="">
                       </div>
                       <div class="form-group pull-in clearfix">
                       <div class="col-sm-6">
-                        <label>营业执照号</label>
-                        <input type="text" class="form-control" value="{$store.licid}" data-required="true">
+                        <label>日限额</label>
+                        <input type="text" name="dayLimit" class="form-control" value="" data-required="true">
                         </div>
                         <div class="col-sm-6">
-                        <label>营业执照有效期</label>
-                        <input type="text" class="form-control"  value="{$store.licvalidity}" data-required="true">
+                        <label>月限额</label>
+                        <input type="text" name="monthLimit" class="form-control"  value="" data-required="true">
                         </div>
                       </div>
                       <div class="form-group">
-                        <label>法人/联系人</label>
-                        <input type="text" class="form-control" value="{$store.corpname}" data-required="true">
+                        <label>固定比例费率</label>
+                        <input type="text" name="fixFeeRate" class="form-control" value="" data-required="true">
                       </div>
                       <div class="form-group">
-                        <label>法人/联系人证件号</label>
-                        <input type="text" class="form-control" value="{$store.idtcard}" data-required="true">
+                        <label>特殊费率</label>
+                        <input type="text" name="specFeeRate" class="form-control" value="" data-required="true">
                       </div>
                       <div class="form-group">
-                        <label>负责人</label>
-                        <input type="text" class="form-control" value="{$store.contactname}" data-required="true">
+                        <label>结算账号</label>
+                        <input type="text" name="account" class="form-control" value="" data-required="true">
                       </div>
                       <div class="form-group">
-                        <label>负责人手机号</label>
-                        <input type="text" class="form-control" value="{$store.telephone}" data-required="true">
+                        <label>开户行号</label>
+                        <input type="text" name="pbcBankId" class="form-control" value="" data-required="true">
                       </div>
                       <div class="form-group">
-                        <label>客户识别码</label>
-                        <input type="text" class="form-control" value="{$store.identification}" data-required="true">
-                      </div>
-
-                      <div class="form-group">
-                        <label>结算方式</label>
-                        <select data-required="true" class="form-control m-t">
+                        <label>账户类型</label>
+                        <select name="acctType" data-required="true" class="form-control m-t">
                             <option value="">--请选择--</option>
-                            <option value="1" <if condition="$store.autosettle == '1' ">selected = "selected"</if>>自动结算</option>
-                            <option value="2" <if condition="$store.autosettle == '2' ">selected = "selected"</if>>手工提现</option>
+                            <option value="1">对私</option>
+                            <option value="2" >对公</option>
                           </select>
+                      </div>
+                      <div class="form-group">
+                        <label>message</label>
+                        <input type="text" name="message" class="form-control" value="" data-required="true">
                       </div>
                     </div>
                     <footer class="panel-footer text-right bg-light lter">
