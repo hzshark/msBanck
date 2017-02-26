@@ -2,5 +2,5 @@
 namespace MSBank\Model;
 use Think\Model;
 class PayinfoModel extends Model {
-    protected $trueTableName = 'payinfo';
+    protected $tableName = 'payinfo';
 }
