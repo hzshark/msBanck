@@ -8,11 +8,6 @@ use MSBank\Service\StoreInfo;
 
 class IndexController extends Controller
 {
-
-    private $IS_ISO = '1';
-
-    private $IS_ANDROID = '0';
-
     private $SUCCESS = 0;
 
     private $ERROR = 1;
@@ -73,14 +68,29 @@ class IndexController extends Controller
         $operId = C('operId');//拓展人员编号
         $dataSrc = C('dataSrc');// 进件渠道, 填固定值2
         $outMchntId = create_guid(); //外部商户号, 商户自己生成，确保唯一
-        $mchntName = 'Demo进件测试商户'; //商户简称|
-        $mchntFullName = '中国移动';//商户全称, 请填写营业执照上的全称
-        $parentMchntId = ''; //父商户,  非必输
-        $devType = '1'; //拓展模式, 类型代码对应：1-第三方,2-民生银行
-        $acdCode = '350203';
-        $province = '河北省';// 省份
-        $city = '石家庄市';//城市
-        $address = '新华区华西路53号';// 地址
+
+        if (IS_POST){
+            $store = new StoreInfo();
+            $mchntName = isset($_POST['mchntName']) ? $_POST['mchntName'] : 'Demo进件测试商户';
+            $mchntFullName = isset($_POST['mchntFullName']) ? $_POST['mchntFullName'] : '中国移动';
+            $parentMchntId = isset($_POST['parentMchntId']) ? $_POST['parentMchntId'] : '';
+            $acdCode = isset($_POST['acdCode']) ? $_POST['acdCode'] : '350203';
+            $province = isset($_POST['province']) ? $_POST['province'] : '河北省';
+            $city = isset($_POST['city']) ? $_POST['city'] : '石家庄市';
+            $mchntFullName = isset($_POST['mchntFullName']) ? $_POST['mchntFullName'] : '中国移动';
+            $addr = isset($_POST['addr']) ? $_POST['addr'] : '中国移动';
+            $address = '华西路53号';// 地址
+            $mchntFullName = isset($_POST['mchntFullName']) ? $_POST['mchntFullName'] : '中国移动';
+            $mchntFullName = isset($_POST['mchntFullName']) ? $_POST['mchntFullName'] : '中国移动';
+            $mchntFullName = isset($_POST['mchntFullName']) ? $_POST['mchntFullName'] : '中国移动';
+            $mchntFullName = isset($_POST['mchntFullName']) ? $_POST['mchntFullName'] : '中国移动';
+            $mchntFullName = isset($_POST['mchntFullName']) ? $_POST['mchntFullName'] : '中国移动';
+            $mchntFullName = isset($_POST['mchntFullName']) ? $_POST['mchntFullName'] : '中国移动';
+            $mchntFullName = isset($_POST['mchntFullName']) ? $_POST['mchntFullName'] : '中国移动';
+            $mchntFullName = isset($_POST['mchntFullName']) ? $_POST['mchntFullName'] : '中国移动';
+            $mchntFullName = isset($_POST['mchntFullName']) ? $_POST['mchntFullName'] : '中国移动';
+
+
         $isCert = '0'; //是否持证,0-非持证商户,1-持证商户
         $licId = '35020320160831'; // 营业执照号, 若没有，可填默认值-
         $licValidity = '20301231'; //营业执照有效期,若没有，可填默认值-
