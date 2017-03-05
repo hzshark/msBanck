@@ -17,7 +17,7 @@ function getMillisecond() {
 }
 
 
-function create_guid($namespace = '')
+function generate_guid($namespace = '')
 {
     static $guid = '';
     $uid = uniqid("", true);

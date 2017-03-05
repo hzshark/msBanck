@@ -1,13 +1,19 @@
 <?php
 namespace MSBank\Service;
 
-class AreaService
+class Areas
 {
     public function getAreas(){
 
     }
 
-    private function queryAreas(){
+    public function queryNameByAreaCode($area_code) {
+        $area = D("Areas");
+        $where['area_code'] = $area_code;
+        return $area->where($where)->field('name')->find();
+    }
+
+    public function queryAreas($conent){
         $help = D("Areas");
         $data['info'] = $conent;
         if ($id > 0){
