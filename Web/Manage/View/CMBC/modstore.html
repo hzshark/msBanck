@@ -2,7 +2,7 @@
 <html lang="en" class="app">
 <head>
 <meta charset="utf-8" />
-<title>Notebook | Web Application</title>
+<title>民生商户注册</title>
 <meta name="description" content="app, web app, responsive, admin dashboard, admin, flat, flat ui, ui kit, off screen nav" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 <link rel="stylesheet" href="__PUBLIC__/CMBC/css/app.v2.css" type="text/css" />
@@ -19,19 +19,18 @@
           <section class="scrollable padder">
             <div class="row">
               <div class="col-sm-6">
-                <form data-validate="parsley" method="post" name="ModStore" action="ModStore">
-                  <input type="hidden" name="id" value="{$store.id}">
+                <form data-validate="parsley" method="post" name="RegisterStore" action="CMBC/RegisterStore">
                   <section class="panel panel-default">
                     <header class="panel-heading"> <span class="h4">商户注册</span> </header>
                     <div class="panel-body">
                       <p class="text-muted">Please fill the information to continue</p>
                       <div class="form-group">
                         <label>商户简称</label>
-                        <input type="text" class="form-control" data-required="true" value="{$store.mchntname}">
+                        <input type="text" name="mchntName" class="form-control" data-required="true">
                       </div>
                       <div class="form-group">
                         <label>商户全称</label>
-                        <input type="text" class="form-control"  data-required="true" value="{$store.mchntfullname}">
+                        <input type="text" name="mchntFullName"  class="form-control"   data-required="true">
                       </div>
                       <div class="form-group pull-in clearfix">
                         <div  class="col-sm-3">
@@ -49,50 +48,50 @@
                       </div>
                       <div class="form-group">
                         <label>详细地址</label>
-                        <input type="text" class="form-control" data-required="true" value="{$store.address}">
+                        <input type="text" class="form-control" name="addr" data-required="true">
                       </div>
                       <div class="form-group pull-in clearfix">
                       <div class="col-sm-6">
                         <label>营业执照号</label>
-                        <input type="text" class="form-control" value="{$store.licid}" data-required="true">
+                        <input type="text" class="form-control" name="licId" data-type="number" data-required="true">
                         </div>
                         <div class="col-sm-6">
                         <label>营业执照有效期</label>
-                        <input type="text" class="form-control"  value="{$store.licvalidity}" data-required="true">
+                        <input type="text" class="form-control" name="licValidity"  data-type="number" data-required="true">
                         </div>
                       </div>
                       <div class="form-group">
                         <label>法人/联系人</label>
-                        <input type="text" class="form-control" value="{$store.corpname}" data-required="true">
+                        <input type="text" class="form-control" name="corpName" data-required="true">
                       </div>
                       <div class="form-group">
                         <label>法人/联系人证件号</label>
-                        <input type="text" class="form-control" value="{$store.idtcard}" data-required="true">
+                        <input type="text" class="form-control" name="idtCard" data-type="number" data-required="true">
                       </div>
                       <div class="form-group">
                         <label>负责人</label>
-                        <input type="text" class="form-control" value="{$store.contactname}" data-required="true">
+                        <input type="text" class="form-control" name="contactName" data-required="true">
                       </div>
                       <div class="form-group">
                         <label>负责人手机号</label>
-                        <input type="text" class="form-control" value="{$store.telephone}" data-required="true">
+                        <input type="text" class="form-control" name="telephone" data-type="phone" data-required="true">
                       </div>
                       <div class="form-group">
-                        <label>客户识别码</label>
-                        <input type="text" class="form-control" value="{$store.identification}" data-required="true">
+                        <label>客服电话</label>
+                        <input type="text" class="form-control" name="servTel" data-type="phone" data-required="true">
                       </div>
 
                       <div class="form-group">
                         <label>结算方式</label>
-                        <select data-required="true" class="form-control m-t">
+                        <select data-required="true" name="autoSettle"  class="form-control m-t">
                             <option value="">--请选择--</option>
-                            <option value="1" <if condition="$store.autosettle == '1' ">selected = "selected"</if>>自动结算</option>
-                            <option value="2" <if condition="$store.autosettle == '2' ">selected = "selected"</if>>手工提现</option>
+                            <option value="1">自动结算</option>
+                            <option value="2">手工提现</option>
                           </select>
                       </div>
                     </div>
                     <footer class="panel-footer text-right bg-light lter">
-                      <button type="submit" class="btn btn-success btn-s-xs">Submit</button>
+                      <button type="submit" class="btn btn-success btn-s-xs">提交</button>
                     </footer>
                   </section>
                 </form>

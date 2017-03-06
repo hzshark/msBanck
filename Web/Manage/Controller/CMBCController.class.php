@@ -1,14 +1,17 @@
 <?php
 namespace Manage\Controller;
 
-require_once ("Web/Manage/Utils/basic.class.php");
-use Think\Controller;
+require_once (APP_PATH."Manage/Utils/basic.class.php");
 use Manage\Service\MSBank;
 use Manage\Service\AlipaymaStores;
 use Manage\Service\Areas;
 
-class IndexController extends Controller
+class CMBCController extends BaseDealUserController
 {
+    public function __construct(){
+
+        parent::__construct();
+    }
 
     private $SUCCESS = 0;
 
@@ -21,6 +24,7 @@ class IndexController extends Controller
         $storesInfo = $stores->queryAllStores();
         // var_dump($storesInfo);
         $this->assign("stores", $storesInfo);
+
         $this->display('index', 'utf-8');
     }
 

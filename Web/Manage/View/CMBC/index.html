@@ -1,16 +1,5 @@
-﻿<!DOCTYPE html>
-<html lang="en" class="app">
-<head>
-<meta charset="utf-8" />
-<title>民生门户</title>
-<meta name="description" content="app, web app, responsive, admin dashboard, admin, flat, flat ui, ui kit, off screen nav" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-<link rel="stylesheet" href="__PUBLIC__/CMBC/css/app.v2.css" type="text/css" />
-<link rel="stylesheet" href="__PUBLIC__/CMBC/css/font.css" type="text/css" cache="false" />
-<link rel="stylesheet" href="__PUBLIC__/CMBC/js/datatables/datatables.css" type="text/css" cache="false">
-<!--[if lt IE 9]> <script src="js/ie/html5shiv.js" cache="false"></script> <script src="js/ie/respond.min.js" cache="false"></script> <script src="js/ie/excanvas.js" cache="false"></script> <![endif]-->
-</head>
-<body>
+﻿<extend name="Public/base_logged" />
+<block name="body">
 <section class="vbox">
   <section>
     <section class="hbox stretch">
@@ -26,7 +15,7 @@
             </div>
             <section class="panel panel-default">
               <header class="panel-heading"> 民生门户</header>
-              <header class="panel-heading">  <a href="{:U('Index/Register')}" class="btn btn-s-md btn-primary btn-rounded">新增门店</a></header>
+              <header class="panel-heading">  <a href="{:U('CMBC/Register')}" class="btn btn-s-md btn-primary btn-rounded">新增门店</a></header>
               <div class="table-responsive">
                 <table class="table table-striped m-b-none" >
                   <thead>
@@ -45,10 +34,11 @@
 	                    <td></td>
                     <td>
                     <div class="button-group">
-                    	<a href="{:U('Index/VerifyStore')}?id={$vo.id}" class="btn btn-s-md btn-primary btn-rounded">审核入驻</a>
-						 <a href="{:U('Index/BindPayment')}?id={$vo.id}" class="btn btn-s-md btn-primary btn-rounded">绑定支付</a>
-						 <a href="{:U('Index/Register')}?id={$vo.id}" class="btn btn-s-md btn-primary btn-rounded">修改支付</a>
-						 <a href="{:U('Index/ModStore')}?id={$vo.id}" class="btn btn-s-md btn-primary btn-rounded">修改门店</a>
+                    	<a href="{:U('CMBC/VerifyStore')}?id={$vo.id}" class="btn btn-s-md btn-primary btn-rounded">审核入驻</a>
+						 <!-- <a href="{:U('CMBC/BindPayment')}?id={$vo.id}" class="btn btn-s-md btn-primary btn-rounded">绑定支付</a>
+						 <a href="{:U('CMBC/Register')}?id={$vo.id}" class="btn btn-s-md btn-primary btn-rounded">修改支付</a>
+						 <a href="{:U('CMBC/ModStore')}?id={$vo.id}" class="btn btn-s-md btn-primary btn-rounded">修改门店</a>
+						  -->
 					</div>
 					</td>
                     </tr>
@@ -68,6 +58,12 @@
     </section>
   </section>
 </section>
-<script src="__PUBLIC__/CMBC/js/app.v2.js"></script> <!-- Bootstrap --> <!-- App --> <!-- datatables --><script src="__PUBLIC__/js/datatables/jquery.dataTables.min.js" cache="false"></script>
-</body>
-</html>
+</block>
+
+<block name="script">
+  <script type="text/javascript">
+  jQuery(document).ready(function($) {
+      $('.popup-qrcode-view').magnificPopup();
+  })
+  </script>
+</block>
