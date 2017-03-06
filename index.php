@@ -16,7 +16,10 @@ if(version_compare(PHP_VERSION,'5.3.0','<'))  die('require PHP > 5.3.0 !');
 
 // 开启调试模式 建议开发阶段开启 部署阶段注释或者设为false
 define('APP_DEBUG',True);
-
+// 创建一个新项目
+define('APP_NAME', 'Web');
+// 定义应用目录
+define('APP_PATH','./Web/');
 // 定义应用目录
 define('COMMON_PATH',dirname(__FILE__) . '/Common/');
 define('RUNTIME_PATH','./Runtime/');

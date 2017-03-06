@@ -4,7 +4,7 @@ namespace CMBC\Controller;
 require_once ("Web/CMBC/Utils/basic.class.php");
 use Think\Controller;
 use CMBC\Service\MSBank;
-use CMBC\Service\StoreInfo;
+use CMBC\Service\AlipaymaStores;
 use CMBC\Service\Areas;
 
 class IndexController extends Controller
@@ -14,47 +14,11 @@ class IndexController extends Controller
 
     private $ERROR = 1;
 
-    private function getIPaddress()
-
-    {
-        $IPaddress = '';
-
-        if (isset($_SERVER)) {
-
-            if (isset($_SERVER["HTTP_X_FORWARDED_FOR"])) {
-
-                $IPaddress = $_SERVER["HTTP_X_FORWARDED_FOR"];
-            } else
-                if (isset($_SERVER["HTTP_CLIENT_IP"])) {
-
-                    $IPaddress = $_SERVER["HTTP_CLIENT_IP"];
-                } else {
-
-                    $IPaddress = $_SERVER["REMOTE_ADDR"];
-                }
-        } else {
-
-            if (getenv("HTTP_X_FORWARDED_FOR")) {
-
-                $IPaddress = getenv("HTTP_X_FORWARDED_FOR");
-            } else
-                if (getenv("HTTP_CLIENT_IP")) {
-
-                    $IPaddress = getenv("HTTP_CLIENT_IP");
-                } else {
-
-                    $IPaddress = getenv("REMOTE_ADDR");
-                }
-        }
-
-        return $IPaddress;
-    }
-
     public function Index()
     {
         header("Content-Type:text/html; charset=utf-8");
-        $store = new StoreInfo();
-        $storesInfo = $store->queryAllStores();
+        $stores = new AlipaymaStores();
+        $storesInfo = $stores->queryAllStores();
         // var_dump($storesInfo);
         $this->assign("stores", $storesInfo);
         $this->display('index', 'utf-8');
@@ -66,22 +30,71 @@ class IndexController extends Controller
         $this->display('register', 'utf-8');
     }
 
-    public function RegisterStore()
+    public function VerifyStore()
     {
         header("Content-Type:text/html; charset=utf-8");
         $txnSeq = generateOrderno(); // 流水号, 调用方生成，确保唯一
         $platformId = C('platformId'); // 平台号, 民生银行生成
         $operId = C('operId'); // 拓展人员编号
         $dataSrc = C('dataSrc'); // 进件渠道, 填固定值2
-        $outMchntId = generate_guid(); // 外部商户号, 商户自己生成，确保唯一
-        $devType = 1;//拓展模式,类型代码对应： 1-第三方 2-民生银行
-        if (IS_POST) {
-            $store = new StoreInfo();
-            $area = new Areas();
-            $mchntName = isset($_POST['mchntName']) ? $_POST['mchntName'] : '';//商户简称
-            $mchntFullName = isset($_POST['mchntFullName']) ? $_POST['mchntFullName'] : '';// 商户全称,请填写营业执照上的全称
-            $parentMchntId = isset($_POST['parentMchntId']) ? $_POST['parentMchntId'] : '';
 
+        $devType = 1; // 拓展模式,类型代码对应： 1-第三方 2-民生银行
+        $postdata = array(
+            'txnSeq' => $txnSeq,
+            'platformId' => $platformId,
+            'operId' => $operId,
+            'dataSrc' => $dataSrc,
+            'devType' => '' . $devType
+        );
+
+        $id = isset($_GET['id']) ? $_GET['id'] : '';
+        if ($id == '') {
+            $this->error("缺少参数,商家id");
+        }
+        $stores = new AlipaymaStores();
+
+        $ret = $stores->queryStoreinfoById($id);
+        $postdata['outMchntId'] = $ret['outmchntid'];
+        $postdata['mchntName'] = $ret['mchntname'];
+        $postdata['mchntFullName'] = $ret['mchntfullname'];
+        $postdata['parentMchntId'] = $ret['parentmchntId'];
+        $postdata['acdCode'] = $ret['acdcode'];
+        $postdata['province'] = $ret['province'];
+        $postdata['city'] = $ret['city'];
+        $postdata['address'] = $ret['address'];
+        $postdata['isCert'] = $ret['iscert'];
+        $postdata['licId'] = $ret['licid'];
+        $postdata['licValidity'] = $ret['licvalidity'];
+        $postdata['corpName'] = $ret['corpname'];
+        $postdata['idtCard'] = $ret['idtcard'];
+        $postdata['contactName'] = $ret['contactname'];
+        $postdata['telephone'] = $ret['telephone'];
+        $postdata['servTel'] = $ret['servtel'];
+        $postdata['identification'] = $ret['identification'];
+        $postdata['autoSettle'] = $ret['autosettle'];
+        $postdata['remark'] = $ret['remark'];
+        $postdata['message'] = $ret['message'];
+        $sourceData = json_encode($postdata);
+        $cmbc = new MSBank();
+        $ret = $cmbc->registerStore($sourceData);
+        $stores->registerOder($id, $postdata, $ret);
+        if ($ret['status'] == 0) {
+            $this->success("商户入驻成功,返回结果:<br />" . json_encode($ret['respone']));
+        } else {
+            $this->error("商户入驻失败,失败原因:" . $ret['msg'],'Index', 10);
+        }
+    }
+
+    public function RegisterStore()
+    {
+        header("Content-Type:text/html; charset=utf-8");
+
+        if (IS_POST) {
+            $outMchntId = generate_guid(); // 外部商户号, 商户自己生成，确保唯一
+            $mchntName = isset($_POST['mchntName']) ? $_POST['mchntName'] : ''; // 商户简称
+            $mchntFullName = isset($_POST['mchntFullName']) ? $_POST['mchntFullName'] : ''; // 商户全称,请填写营业执照上的全称
+            $parentMchntId = isset($_POST['parentMchntId']) ? $_POST['parentMchntId'] : '';
+            $area = new Areas();
             $province = isset($_POST['province']) ? $_POST['province'] : '';
             $city = isset($_POST['city']) ? $_POST['city'] : '';
             $acdCode = isset($_POST['area']) ? $_POST['area'] : '';
@@ -89,7 +102,7 @@ class IndexController extends Controller
             $province_name = $area->queryNameByAreaCode($province);
             $city_name = $area->queryNameByAreaCode($city);
             $area_name = $area->queryNameByAreaCode($acdCode);
-            $address = $area_name['name'].$addr; // 地址
+            $address = $area_name['name'] . $addr; // 地址
             $isCert = isset($_POST['isCert']) ? $_POST['isCert'] : '0';
             $licId = isset($_POST['licId']) ? $_POST['licId'] : '-'; // 营业执照号, 若没有，可填默认值-
             $licValidity = isset($_POST['licValidity']) ? $_POST['licValidity'] : '-'; // 营业执照有效期,若没有，可填默认值-
@@ -104,15 +117,10 @@ class IndexController extends Controller
             $message = isset($_POST['message']) ? $_POST['message'] : ''; // 备用字段
 
             $postdata = array(
-                'txnSeq' => $txnSeq,
-                'platformId' => $platformId,
-                'operId' => $operId,
-                'dataSrc' => $dataSrc,
                 'outMchntId' => $outMchntId,
                 'mchntName' => $mchntName,
                 'mchntFullName' => $mchntFullName,
                 'parentMchntId' => $parentMchntId,
-                'devType' => $devType,
                 'acdCode' => $acdCode,
                 'province' => $province_name['name'],
                 'city' => $city_name['name'],
@@ -130,15 +138,9 @@ class IndexController extends Controller
                 'remark' => $remark,
                 'message' => $message
             );
-            $SourceData = json_encode($postdata);
-            $msbank = new MSBank();
-            $ret = $msbank->registerStore($SourceData);
-            if ($ret['status'] == 0) {
-                $storeId = $msbank->createStoreAndReturnId($postdata);
-                $msbank->registerOder($storeId, $postdata, $ret);
-            }
+            $stores = new AlipaymaStores();
+            $stores->createStoreAndReturnId($postdata);
             $this->success("商家入驻成功", "Index", 1);
-//             $this->show(json_encode($ret));
         }
     }
 
@@ -210,9 +212,9 @@ class IndexController extends Controller
     {
         header("Content-Type:text/html; charset=utf-8");
         if (IS_GET) {
-            $store = new StoreInfo();
+            $stores = new AlipaymaStores();
             $id = isset($_GET['id']) ? $_GET['id'] : '';
-            $storeInfo = $store->queryStoreinfoById($id);
+            $storeInfo = $stores->queryStoreinfoById($id);
             $txnSeq = generateOrderno(); // 流水号, 调用方生成，确保唯一
             $this->assign("txnSeq", $txnSeq);
             $this->assign("store", $storeInfo);

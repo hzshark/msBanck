@@ -1,8 +1,8 @@
 <?php
 namespace CMBC\Service;
 
-require_once ("CMBC/Lib/php_java.php");
-require_once ("CMBC/Utils/basic.class.php");
+require_once ("Web/CMBC/Lib/php_java.php");
+require_once ("Web/CMBC/Utils/basic.class.php");
 
 use Think\Log;
 
@@ -55,11 +55,11 @@ class MSBank
         $p12Password = C('P12PASSWORD');
         $backstr = lajp_call("cfca.sadk.api.EnvelopeKit::openEvelopedMessage", $encryptedData, $signAlg2, $base64P12Data, $p12Password);
         $backstr = json_decode($backstr, true);
-    if (array_key_exists('Base64SourceString', $backstr)) {
+        if (array_key_exists('Base64SourceString', $backstr)) {
             if ("90000000" == $backstr['Code']) {
                 return $backstr['Base64SourceString'];
             }
-        }else{
+        } else {
             Log::write("Encrypted Send Data failed:" . $backstr['Base64SignatureData'], 'ERROR');
             return null;
         }
@@ -77,7 +77,7 @@ class MSBank
         $result = array(
             'status' => 1,
             'msg' => '',
-            'respone'=>array()
+            'respone' => array()
         );
         Log::write('CMBC Action:' . $SourceData, 'DEBUG');
         $base64SourceData = base64_encode($SourceData); // 原文BASE64
@@ -100,20 +100,27 @@ class MSBank
             $decryptRes = $this->decryptRespone($reps_encryptedData);
             $backstr = base64_decode($decryptRes);
             $backarray = json_decode($backstr, true);
-//             var_dump($backarray['body']);
-            $check_ret = $this->check_sign($backarray);
-            $ret = json_decode($check_ret, true);
-            if ($ret['Code'] == '90000000') {
-                $result['status'] = 0;
-                $result['respone'] = $backarray;
-                $result['msg'] = 'CMBC Action Successfully. Chenk Sign Result:' . $ret['Result'];
+            $result_body = $backarray['body'];
+            $result_bodyarray = json_decode($result_body, true);
+            if ($result_bodyarray['respCode'] != '0000') {
+                $result['status'] = 5;
+                $result['msg'] = 'CMBC Action Failed. Result:' . $result_bodyarray['errorMsg'];
             } else {
-                $result['status'] = 4;
-                $result['msg'] = 'CMBC Action Failed. Chenk Sign Result:' . $ret['Result'];
+                $check_ret = $this->check_sign($backarray);
+
+                $ret = json_decode($check_ret, true);
+                if ($ret['Code'] == '90000000') {
+                    $result['status'] = 0;
+                    $result['respone'] = $backarray;
+                    $result['msg'] = 'CMBC Action Successfully. Chenk Sign Result:' . $ret['Result'];
+                } else {
+                    $result['status'] = 4;
+                    $result['msg'] = 'CMBC Action Failed. Chenk Sign Result:' . $ret['Result'];
+                }
             }
         } else {
             $result['status'] = 3;
-            $result['msg'] = 'http request api failed, return http status:'.$httpreps[0];
+            $result['msg'] = 'http request api failed, return http status:' . $httpreps[0];
         }
         return $result;
     }
@@ -124,69 +131,15 @@ class MSBank
         return $this->cmbcAction($SourceData, $URL);
     }
 
-    private function createCmbcStore($storeid, $cmbcMchntId){
-        $cmbc = D('Cmbcstore');
-        $data['storeid'] = $storeid;
-        $data['cmbcMchntId'] = $cmbcMchntId;
-        $cmbc->add($data);
-    }
-
-    private function setOderLog($storeid, $sendData, $reponseData){
-        $model = D('Orderlog');
-        $data['storeid'] = $storeid;
-        $data['senddata'] = json_encode($sendData);
-        $data['respone'] = json_encode($reponseData);
-        $model->add($data);
-    }
-
-    public function registerOder($storeId, $senddata, $respone){
-            $this->addPayInfo($storeId, $senddata, $respone);
-            $res = $respone['respone'];
-            $res_body = $res['body'];
-            $res = json_decode($res_body, true);
-            $cmbcMchntId = $res['cmbcMchntId'];
-            $this->createCmbcStore($storeId, $cmbcMchntId);
-            $this->setOderLog($storeId, $senddata, $respone);
-    }
-
-    public function createStoreAndReturnId($postdata)
+    private function queryStoreIdByOutMchntId($outMchntId)
     {
-        $model = D("store");
-        $indate = date('Y-m-d H:i:s', time());
-        $data['indate'] = $indate;
-        $data['outMchntId'] = $postdata['outMchntId'];
-        $data['mchntName'] = $postdata['mchntName'];
-        $data['mchntFullName'] = $postdata['mchntFullName'];
-        $data['parentMchntId'] = $postdata['parentMchntId'];
-        $data['acdCode'] = $postdata['acdCode'];
-        $data['province'] = $postdata['province'];
-        $data['city'] = $postdata['city'];
-        $data['address'] = $postdata['address'];
-        $data['isCert'] = $postdata['isCert'];
-        $data['licId'] = $postdata['licId'];
-        $data['licValidity'] = $postdata['licValidity'];
-        $data['corpName'] = $postdata['corpName'];
-        $data['idtCard'] = $postdata['idtCard'];
-        $data['contactName'] = $postdata['contactName'];
-        $data['telephone'] = $postdata['telephone'];
-        $data['servTel'] = $postdata['servTel'];
-        $data['identification'] = $postdata['identification'];
-        $data['autoSettle'] = $postdata['autoSettle'];
-        $data['remark'] = $postdata['remark'];
-        $data['message'] = $postdata['message'];
-        $model->add($data);
-        $store = $model->where($data)->find();
-        $storeId = $store['id'];
-        return $storeId;
-    }
-
-    private function queryStoreIdByOutMchntId($outMchntId){
         $model = D("store");
         $where['outMchntId'] = $outMchntId;
         return $model->where($where)->find();
     }
 
-    private function addPayInfo($storeId, $senddata=array() , $reponseData=array()){
+    private function addPayInfo($storeId, $senddata = array(), $reponseData = array())
+    {
         $paydata['storeid'] = $storeId;
         $paydata['txnSeq'] = $senddata['txnSeq'];
         $paydata['platformId'] = $senddata['platformId'];
@@ -201,12 +154,13 @@ class MSBank
         $paymodel->add($paydata);
     }
 
-    public function ModStoreOder($postdata, $reponseData){
+    public function ModStoreOder($postdata, $reponseData)
+    {
         $outMchntId = $postdata['outMchntId'];
         $store = $this->queryStoreIdByOutMchntId($outMchntId);
         $storeId = $store['id'];
         $this->setOderLog($storeId, $postdata, $reponseData);
-        $this->addPayInfo($storeId,$postdata, $reponseData);
+        $this->addPayInfo($storeId, $postdata, $reponseData);
     }
 
     public function modStoreInfo($SourceData)

@@ -53,37 +53,37 @@
                       <div class="form-group pull-in clearfix">
                       <div class="col-sm-6">
                         <label>营业执照号</label>
-                        <input type="text" class="form-control" data-type="number" data-required="true">
+                        <input type="text" class="form-control" name="licId" data-type="number" data-required="true">
                         </div>
                         <div class="col-sm-6">
                         <label>营业执照有效期</label>
-                        <input type="text" class="form-control" data-type="number" data-required="true">
+                        <input type="text" class="form-control" name="licValidity"  data-type="number" data-required="true">
                         </div>
                       </div>
                       <div class="form-group">
                         <label>法人/联系人</label>
-                        <input type="text" class="form-control"  data-required="true">
+                        <input type="text" class="form-control" name="corpName" data-required="true">
                       </div>
                       <div class="form-group">
                         <label>法人/联系人证件号</label>
-                        <input type="text" class="form-control" data-type="number" data-required="true">
+                        <input type="text" class="form-control" name="idtCard" data-type="number" data-required="true">
                       </div>
                       <div class="form-group">
                         <label>负责人</label>
-                        <input type="text" class="form-control"   data-required="true">
+                        <input type="text" class="form-control" name="contactName" data-required="true">
                       </div>
                       <div class="form-group">
                         <label>负责人手机号</label>
-                        <input type="text" class="form-control" data-type="phone" data-required="true">
+                        <input type="text" class="form-control" name="telephone" data-type="phone" data-required="true">
                       </div>
                       <div class="form-group">
                         <label>客服电话</label>
-                        <input type="text" class="form-control" data-type="phone" data-required="true">
+                        <input type="text" class="form-control" name="servTel" data-type="phone" data-required="true">
                       </div>
 
                       <div class="form-group">
                         <label>结算方式</label>
-                        <select data-required="true" class="form-control m-t">
+                        <select data-required="true" name="autoSettle"  class="form-control m-t">
                             <option value="">--请选择--</option>
                             <option value="1">自动结算</option>
                             <option value="2">手工提现</option>
@@ -91,7 +91,7 @@
                       </div>
                     </div>
                     <footer class="panel-footer text-right bg-light lter">
-                      <button type="submit" class="btn btn-success btn-s-xs">Submit</button>
+                      <button type="submit" class="btn btn-success btn-s-xs">提交</button>
                     </footer>
                   </section>
                 </form>

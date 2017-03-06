@@ -2,7 +2,7 @@
 <html lang="en" class="app">
 <head>
 <meta charset="utf-8" />
-<title>Notebook | Web Application</title>
+<title>民生门户</title>
 <meta name="description" content="app, web app, responsive, admin dashboard, admin, flat, flat ui, ui kit, off screen nav" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 <link rel="stylesheet" href="__PUBLIC__/CMBC/css/app.v2.css" type="text/css" />
@@ -18,10 +18,8 @@
         <section class="vbox">
           <section class="scrollable padder">
             <ul class="breadcrumb no-border no-radius b-b b-light pull-in">
-              <li><a href="index.html"><i class="fa fa-home"></i> Home</a></li>
-              <li><a href="#">UI kit</a></li>
-              <li><a href="#">Table</a></li>
-              <li class="active">Datatable</li>
+              <li><a href="index.html"><i class="fa fa-home"></i> 首页</a></li>
+              <li class="active">民生门户</li>
             </ul>
             <div class="m-b-md">
               <h3 class="m-b-none">民生门户</h3>
@@ -47,6 +45,7 @@
 	                    <td></td>
                     <td>
                     <div class="button-group">
+                    	<a href="{:U('Index/VerifyStore')}?id={$vo.id}" class="btn btn-s-md btn-primary btn-rounded">审核入驻</a>
 						 <a href="{:U('Index/BindPayment')}?id={$vo.id}" class="btn btn-s-md btn-primary btn-rounded">绑定支付</a>
 						 <a href="{:U('Index/Register')}?id={$vo.id}" class="btn btn-s-md btn-primary btn-rounded">修改支付</a>
 						 <a href="{:U('Index/ModStore')}?id={$vo.id}" class="btn btn-s-md btn-primary btn-rounded">修改门店</a>
