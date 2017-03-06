@@ -1,5 +1,5 @@
 <?php
-namespace CMBC\Service;
+namespace Manage\Service;
 
 class AlipaymaStores
 {

@@ -1,5 +1,5 @@
 <?php
-require_once("../../CMBC/Lib/php_java.php");//引用LAJP提供的PHP脚本
+require_once("../../Manage/Lib/php_java.php");//引用LAJP提供的PHP脚本
 try
 {
    $signAlg = $_REQUEST['signAlg'];

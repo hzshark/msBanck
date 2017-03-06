@@ -1,11 +1,11 @@
 <?php
-namespace CMBC\Controller;
+namespace Manage\Controller;
 
-require_once ("Web/CMBC/Utils/basic.class.php");
+require_once ("Web/Manage/Utils/basic.class.php");
 use Think\Controller;
-use CMBC\Service\MSBank;
-use CMBC\Service\AlipaymaStores;
-use CMBC\Service\Areas;
+use Manage\Service\MSBank;
+use Manage\Service\AlipaymaStores;
+use Manage\Service\Areas;
 
 class IndexController extends Controller
 {

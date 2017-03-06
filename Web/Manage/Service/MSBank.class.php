@@ -1,8 +1,8 @@
 <?php
-namespace CMBC\Service;
+namespace Manage\Service;
 
-require_once ("Web/CMBC/Lib/php_java.php");
-require_once ("Web/CMBC/Utils/basic.class.php");
+require_once ("Web/Manage/Lib/php_java.php");
+require_once ("Web/Manage/Utils/basic.class.php");
 
 use Think\Log;
 

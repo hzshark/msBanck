@@ -1,6 +1,6 @@
 <?php
 
-require_once("../../CMBC/Lib/php_java.php");//����LAJP�ṩ��PHP�ű�
+require_once("../../Manage/Lib/php_java.php");//����LAJP�ṩ��PHP�ű�
 
 $name ="LAJP";  //����һ������
 
