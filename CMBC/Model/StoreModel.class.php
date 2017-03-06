@@ -1,5 +1,5 @@
 <?php
-namespace MSBank\Model;
+namespace CMBC\Model;
 use Think\Model;
 class StoreModel extends Model {
     protected $tableName  = 'storeinfo';

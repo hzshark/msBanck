@@ -1,5 +1,5 @@
 <?php
-namespace MSBank\Model;
+namespace CMBC\Model;
 use Think\Model;
 class OrderlogModel extends Model {
     protected $tableName = 'order_log';

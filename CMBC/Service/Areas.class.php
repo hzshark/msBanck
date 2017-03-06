@@ -1,5 +1,5 @@
 <?php
-namespace MSBank\Service;
+namespace CMBC\Service;
 
 class Areas
 {

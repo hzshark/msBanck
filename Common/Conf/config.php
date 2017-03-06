@@ -10,8 +10,8 @@ return array(
     'DB_PREFIX'         =>  '',      	// 数据库表前缀
     'DB_DEBUG'  		=>  true, 			// 数据库调试模式 开启后可以记录SQL日志
     'SHOW_PAGE_TRACE'   =>	false,   		// 显示页面Trace信息
-    'APP_GROUP_LIST' => 'MSBank', //项目分组设定
-    'DEFAULT_MODULE'     => 'MSBank', //默认模块
+    'APP_GROUP_LIST' => 'CMBC', //项目分组设定
+    'DEFAULT_MODULE'     => 'CMBC', //默认模块
     'TMPL_PARSE_STRING'=>
     array(
         '__STATIC__'

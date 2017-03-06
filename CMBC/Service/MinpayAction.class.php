@@ -10,8 +10,8 @@ class MinpayAction{
 	public function index(){
 		 //exit($this->cer_sm2());//直接读取私钥内容
 		 //exit($this->cer_cust_min());//直接读取民生公钥内容
-		 require_once("MSBank/Lib/php_java.php");
-		 require_once("MSBank/Utils/basic.class.php");
+		 require_once("CMBC/Lib/php_java.php");
+		 require_once("CMBC/Utils/basic.class.php");
 
 		 $SourceData='{"amount":"1","defaultTradeType":"H5_WXJSAPI","merchantName":"XXXXXX公众号","merchantNo":"M01002016090000001273","merchantSeq":"A00002016120000000294T143301951","notifyUrl":"http://111.205.207.103/cmbcpaydemo/NoticeServlet?name=notice","orderInfo":"公众号跳转支付订单信息","platformId":"A00002016120000000294","redirectUrl":"http://111.205.207.103/cmbcpaydemo/","remark":"","selectTradeType":"H5_WXJSAPI","subAppId":"","subOpenId":"","transDate":"20170117","transTime":"20170117143301951"}';//原文
 	     $base64SourceData = base64_encode($SourceData);//原文BASE64

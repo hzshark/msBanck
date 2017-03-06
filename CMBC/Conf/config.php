@@ -1,7 +1,7 @@
 <?php
 return array(
 	//'配置项'=>'配置值'
-    'DB_PREFIX'         =>  '',
+    'DB_DEBUG'  		=>  true,
     'LOG_RECORD' => true, // 开启日志记录
     'platformId'=> 'A00002016120000000294',
     'operId'=>'10010A0001',

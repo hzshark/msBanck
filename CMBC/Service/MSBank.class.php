@@ -1,8 +1,8 @@
 <?php
-namespace MSBank\Service;
+namespace CMBC\Service;
 
-require_once ("MSBank/Lib/php_java.php");
-require_once ("MSBank/Utils/basic.class.php");
+require_once ("CMBC/Lib/php_java.php");
+require_once ("CMBC/Utils/basic.class.php");
 
 use Think\Log;
 
