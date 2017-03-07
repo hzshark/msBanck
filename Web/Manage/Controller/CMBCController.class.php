@@ -152,7 +152,7 @@ class CMBCController extends BaseDealUserController
     {
         header("Content-Type:text/html; charset=utf-8");
         if (IS_GET) {
-            $store = new StoreInfo();
+            $store = new AlipaymaStores();
             $id = isset($_GET['id']) ? $_GET['id'] : '';
             $storeInfo = $store->queryStoreinfoById($id);
             $this->assign("store", $storeInfo);
