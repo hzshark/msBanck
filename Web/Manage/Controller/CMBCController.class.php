@@ -85,7 +85,7 @@ class CMBCController extends BaseDealUserController
         if ($ret['status'] == 0) {
             $this->success("商户入驻成功,返回结果:<br />" . json_encode($ret['respone']));
         } else {
-            $this->error("商户入驻失败,失败原因:" . $ret['msg'],'Index', 10);
+            $this->show("商户入驻失败,失败原因:" . $ret['msg'], 10);
         }
     }
 
@@ -95,13 +95,14 @@ class CMBCController extends BaseDealUserController
 
         if (IS_POST) {
             $outMchntId = generate_guid(); // 外部商户号, 商户自己生成，确保唯一
+//             $outMchntId = 'o29002017030000013925'; // 外部商户号, 商户自己生成，确保唯一
             $mchntName = isset($_POST['mchntName']) ? $_POST['mchntName'] : ''; // 商户简称
             $mchntFullName = isset($_POST['mchntFullName']) ? $_POST['mchntFullName'] : ''; // 商户全称,请填写营业执照上的全称
             $parentMchntId = isset($_POST['parentMchntId']) ? $_POST['parentMchntId'] : '';
             $area = new Areas();
-            $province = isset($_POST['province']) ? $_POST['province'] : '';
-            $city = isset($_POST['city']) ? $_POST['city'] : '';
-            $acdCode = isset($_POST['area']) ? $_POST['area'] : '';
+            $province = isset($_POST['province_code']) ? $_POST['province_code'] : '';
+            $city = isset($_POST['city_code']) ? $_POST['city_code'] : '';
+            $acdCode = isset($_POST['district_code']) ? $_POST['district_code'] : '';
             $addr = isset($_POST['addr']) ? $_POST['addr'] : '';
             $province_name = $area->queryNameByAreaCode($province);
             $city_name = $area->queryNameByAreaCode($city);
@@ -144,7 +145,62 @@ class CMBCController extends BaseDealUserController
             );
             $stores = new AlipaymaStores();
             $stores->createStoreAndReturnId($postdata);
-            $this->success("商家入驻成功", "Index", 1);
+            $this->show("商家入驻成功");
+        }
+    }
+
+    public function VerifyModStore()
+    {
+        header("Content-Type:text/html; charset=utf-8");
+        $txnSeq = generateOrderno(); // 流水号, 调用方生成，确保唯一
+        $platformId = C('platformId'); // 平台号, 民生银行生成
+        $operId = C('operId'); // 拓展人员编号
+        $dataSrc = C('dataSrc'); // 进件渠道, 填固定值2
+        $devType = 1; // 拓展模式,类型代码对应： 1-第三方 2-民生银行
+        $postdata = array(
+            'txnSeq' => $txnSeq,
+            'platformId' => $platformId,
+            'operId' => $operId,
+            'dataSrc' => $dataSrc,
+            'devType' => '' . $devType
+        );
+
+        $id = isset($_GET['id']) ? $_GET['id'] : '';
+        if ($id == '') {
+            $this->error("缺少参数,商家id");
+        }
+        $stores = new AlipaymaStores();
+        $storeInfo = $stores->queryStoreinfoById($id);
+        $cmbcInfo = $stores->queryCMBCIDByStoreId($id);
+        $postdata['outMchntId'] = $storeInfo['outmchntid'];
+        $postdata['mchntName'] = $storeInfo['mchntname'];
+        $postdata['cmbcMchntId'] = $cmbcInfo['cmbcmchntid'];
+        $postdata['mchntFullName'] = $storeInfo['mchntfullname'];
+        $postdata['parentMchntId'] = $storeInfo['parentmchntId'];
+        $postdata['acdCode'] = $storeInfo['acdcode'];
+        $postdata['province'] = $storeInfo['province'];
+        $postdata['city'] = $storeInfo['city'];
+        $postdata['address'] = $storeInfo['address'];
+        $postdata['isCert'] = $storeInfo['iscert'];
+        $postdata['licId'] = $storeInfo['licid'];
+        $postdata['licValidity'] = $storeInfo['licvalidity'];
+        $postdata['corpName'] = $storeInfo['corpname'];
+        $postdata['idtCard'] = $storeInfo['idtcard'];
+        $postdata['contactName'] = $storeInfo['contactname'];
+        $postdata['telephone'] = $storeInfo['telephone'];
+        $postdata['servTel'] = $storeInfo['servtel'];
+        $postdata['identification'] = $storeInfo['identification'];
+        $postdata['autoSettle'] = $storeInfo['autosettle'];
+        $postdata['remark'] = $storeInfo['remark'];
+        $postdata['message'] = $storeInfo['message'];
+        $sourceData = json_encode($postdata);
+        $cmbc = new MSBank();
+        $ret = $cmbc->modStoreInfo($sourceData);
+        $stores->registerOder($id, $postdata, $ret);
+        if ($ret['status'] == 0) {
+            $this->show("商户信息修改成功,返回结果:<br />" . json_encode($ret['respone']));
+        } else {
+            $this->show("商户信息修改失败,失败原因:" . $ret['msg'], 10);
         }
     }
 
@@ -158,36 +214,38 @@ class CMBCController extends BaseDealUserController
             $this->assign("store", $storeInfo);
             $this->display('modstore', 'utf-8');
         } else {
-            $txnSeq = generateOrderno(); // 流水号, 调用方生成，确保唯一
-            $platformId = C('platformId'); // 平台号, 民生银行生成
-            $operId = C('operId'); // 拓展人员编号
+            $mchntName = isset($_POST['mchntName']) ? $_POST['mchntName'] : ''; // 商户简称
+            $mchntFullName = isset($_POST['mchntFullName']) ? $_POST['mchntFullName'] : ''; // 商户全称,请填写营业执照上的全称
+            $parentMchntId = isset($_POST['parentMchntId']) ? $_POST['parentMchntId'] : '';
+            $area = new Areas();
+            $province = isset($_POST['province_code']) ? $_POST['province_code'] : '';
+            $city = isset($_POST['city_code']) ? $_POST['city_code'] : '';
+            $acdCode = isset($_POST['district_code']) ? $_POST['district_code'] : '';
+            $addr = isset($_POST['addr']) ? $_POST['addr'] : '';
+            $province_name = $area->queryNameByAreaCode($province);
+            $city_name = $area->queryNameByAreaCode($city);
+            $area_name = $area->queryNameByAreaCode($acdCode);
+            $address = $area_name['name'] . $addr; // 地址
+            $isCert = isset($_POST['isCert']) ? $_POST['isCert'] : '0';
+            $licId = isset($_POST['licId']) ? $_POST['licId'] : '-'; // 营业执照号, 若没有，可填默认值-
+            $licValidity = isset($_POST['licValidity']) ? $_POST['licValidity'] : '-'; // 营业执照有效期,若没有，可填默认值-
+            $corpName = isset($_POST['corpName']) ? $_POST['corpName'] : ''; // 法人/联系人
+            $idtCard = isset($_POST['idtCard ']) ? $_POST['idtCard '] : '-'; // 法人/联系人证件号,若没有，可填默认值-
+            $contactName = isset($_POST['contactName']) ? $_POST['contactName'] : ''; // 负责人,
+            $telephone = isset($_POST['telephone']) ? $_POST['telephone'] : ''; // 负责人手机号
+            $servTel = isset($_POST['servTel']) ? $_POST['servTel'] : ''; // 客服电话
+            $identification = isset($_POST['identification']) ? $_POST['identification'] : ''; // 客户识别码
+            $autoSettle = isset($_POST['autoSettle']) ? $_POST['autoSettle'] : ''; // 结算方式, 类型代码对应：1-自动结算,2-手工提现
+            $remark = isset($_POST['remark']) ? $_POST['remark'] : ''; // 备注
+            $message = isset($_POST['message']) ? $_POST['message'] : ''; // 备用字段
 
-            $outMchntId = 'B0E6109E6CC3C2CB1622C3F881D60663'; // 外部商户号, 商户自己生成，确保唯一
-            $cmbcMchntId = 'M29002017020000012885';
-
-            $mchntName = 'Demo修改测试商户'; // 商户简称|
-            $mchntFullName = '中国移动'; // 商户全称, 请填写营业执照上的全称
-            $address = '河北省石家庄市新华区华西路53号'; // 地址
-            $isCert = '0'; // 是否持证,0-非持证商户,1-持证商户
-            $licId = '35020320160831'; // 营业执照号, 若没有，可填默认值-
-            $licValidity = '20201231'; // 营业执照有效期,若没有，可填默认值-
-            $corpName = '唐门'; // 法人/联系人
-            $idtCard = '130105187808235612'; // 法人/联系人证件号,若没有，可填默认值-
-            $contactName = '唐三角'; // 负责人,
-            $telephone = '13880880808'; // 负责人手机号
-            $servTel = '13839795841'; // 客服电话
-            $identification = ''; // 客户识别码
-            $autoSettle = '1'; // 结算方式, 类型代码对应：1-自动结算,2-手工提现
-            $remark = '备注'; // 备注
-            $message = ''; // 备用字段
             $postdata = array(
-                'txnSeq' => $txnSeq,
-                'platformId' => $platformId,
-                'operId' => $operId,
-                'outMchntId' => $outMchntId,
-                'cmbcMchntId' => $cmbcMchntId,
                 'mchntName' => $mchntName,
                 'mchntFullName' => $mchntFullName,
+                'parentMchntId' => $parentMchntId,
+                'acdCode' => $acdCode,
+                'province' => $province_name['name'],
+                'city' => $city_name['name'],
                 'address' => $address,
                 'isCert' => $isCert,
                 'licId' => $licId,
@@ -202,13 +260,11 @@ class CMBCController extends BaseDealUserController
                 'remark' => $remark,
                 'message' => $message
             );
-            $SourceData = json_encode($postdata);
-            $msbank = new MSBank();
-            $ret = $msbank->modStoreInfo($SourceData);
-            if ($ret['status'] == 0) {
-                $msbank->ModStoreOder($postdata, $ret);
-            }
-            $this->show(json_encode($ret));
+
+            $stores = new AlipaymaStores();
+
+            $stores->modStore($id, $postdata);
+            $this->show("商家入驻成功");
         }
     }
 
@@ -228,12 +284,12 @@ class CMBCController extends BaseDealUserController
             $platformId = C('platformId'); // 平台号, 民生银行生成
             $operId = '10086A0001'; // 拓展人员编号
 
-            $outMchntId = 'B0E6109E6CC3C2CB1622C3F881D60663'; // 外部商户号, 商户自己生成，确保唯一
-            $cmbcMchntId = 'M29002017020000012885';
+            $outMchntId = 'o29002017030000013925'; // 外部商户号, 商户自己生成，确保唯一
+            $cmbcMchntId = 'M01002017030000013951';
 
             $apiCode = '0005'; // 支付通道, 类型代码对应： 0005-微信 0007-支付宝 0008-QQ钱包
             $industryId = '102';
-            $operateType = '2'; // 接入类型,类型代码对应： 1-间联 2-直联
+            $operateType = '1'; // 接入类型,类型代码对应： 1-间联 2-直联
             $dayLimit = '10'; // 日限额, 精确到分
             $monthLimit = '30'; // 月限额,精确到分
             $fixFeeRate = '0.38'; // 固定比例费率 , 5%：0.50，小数点后精确到2位。两种费率二选一
@@ -260,7 +316,10 @@ class CMBCController extends BaseDealUserController
                 'pbcBankId' => $pbcBankId,
                 'acctName' => $acctName,
                 'acctType ' => $acctType,
-                'message' => $message
+                'message' => $message,
+                'idCode' => '',
+                "acctTelephone" =>'',
+                'idType'=>'99'
             );
             $SourceData = json_encode($postdata);
             $msbank = new MSBank();

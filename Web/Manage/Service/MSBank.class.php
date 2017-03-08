@@ -90,7 +90,6 @@ class MSBank
         $SourceData = addslashes($SourceData);
         $SourceData = '{"sign":"' . $sign . '","body":"' . $SourceData . '"}'; // 拼凑后的原文
         $base64SourceData = base64_encode($SourceData); // 拼凑后的原文Base64
-
         $encryptedData = $this->encryptedSendData($base64SourceData);
         $sendMsg = $this->generateSendMessage($encryptedData);
         $httpreps = http_post_data($URL, $sendMsg);

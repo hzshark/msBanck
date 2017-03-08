@@ -13,6 +13,13 @@ class AlipaymaStores
         $where['id'] = $id;
         return $store->where($where)->find();
     }
+
+    public function queryCMBCIDByStoreId($id){
+        $store = D("Cmbcstore");
+        $where['storeid'] = $id;
+        return $store->where($where)->find();
+    }
+
     private function addPayInfo($storeId, $senddata=array() , $reponseData=array()){
         $paydata['storeid'] = $storeId;
         $paydata['txnSeq'] = $senddata['txnSeq'];
@@ -48,6 +55,7 @@ class AlipaymaStores
         $cmbcMchntId = $res['cmbcMchntId'];
         if (isset($cmbcMchntId)){
             $this->createCmbcStore($storeId, $cmbcMchntId);
+            $this->createCmbcStore($storeId, $cmbcMchntId);
         }
         $this->setOderLog($storeId, $senddata, $respone);
     }
@@ -78,6 +86,33 @@ class AlipaymaStores
         $data['remark'] = $postdata['remark'];
         $data['message'] = $postdata['message'];
         $model->add($data);
+    }
+
+    public function modStore($id, $postdata)
+    {
+        $model = D("store");
+        $where['id'] = $id;
+        $data['status'] = 0;
+        $data['mchntName'] = $postdata['mchntName'];
+        $data['mchntFullName'] = $postdata['mchntFullName'];
+        $data['parentMchntId'] = $postdata['parentMchntId'];
+        $data['acdCode'] = $postdata['acdCode'];
+        $data['province'] = $postdata['province'];
+        $data['city'] = $postdata['city'];
+        $data['address'] = $postdata['address'];
+        $data['isCert'] = $postdata['isCert'];
+        $data['licId'] = $postdata['licId'];
+        $data['licValidity'] = $postdata['licValidity'];
+        $data['corpName'] = $postdata['corpName'];
+        $data['idtCard'] = $postdata['idtCard'];
+        $data['contactName'] = $postdata['contactName'];
+        $data['telephone'] = $postdata['telephone'];
+        $data['servTel'] = $postdata['servTel'];
+        $data['identification'] = $postdata['identification'];
+        $data['autoSettle'] = $postdata['autoSettle'];
+        $data['remark'] = $postdata['remark'];
+        $data['message'] = $postdata['message'];
+        $model->where($where)->save($data);
     }
 }
 
