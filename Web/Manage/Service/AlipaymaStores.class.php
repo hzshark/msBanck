@@ -114,6 +114,34 @@ class AlipaymaStores
         $data['message'] = $postdata['message'];
         $model->where($where)->save($data);
     }
+
+    public function queryPaymentByStoreIdAndApiCode($storeId, $apiCode){
+        $model = D("Payment");
+        $where['storeid'] = $storeId;
+        $where['apiCode'] = $apiCode;
+        $model->where($where)->find();
+    }
+    public function setPayment($storeId, $postdata){
+        $model = D("Payment");
+        $data['storeid'] = $storeId;
+        $data['apiCode'] = $postdata['apiCode'];
+        $data['industryId'] = $postdata['industryId'];
+        $data['operateType'] = $postdata['operateType'];
+        $data['dayLimit'] = $postdata['dayLimit'];
+        $data['monthLimit'] = $postdata['monthLimit'];
+        $data['fixFeeRate'] = $postdata['fixFeeRate'];
+        $data['specFeeRate'] = $postdata['specFeeRate'];
+        $data['account'] = $postdata['account'];
+        $data['pbcBankId'] = $postdata['pbcBankId'];
+        $data['acctName'] = $postdata['acctName'];
+        $data['acctType'] = $postdata['acctType'];
+        $data['message'] = $postdata['message'];
+        $data['idType'] = $postdata['idType'];
+        $data['idCode'] = $postdata['idCode'];
+        $data['acctTelephone'] = $postdata['acctTelephone'];
+        $data['indate'] = date('Y-m-d H:i:s', time());
+        $model->add($data);
+    }
 }
 
 ?>

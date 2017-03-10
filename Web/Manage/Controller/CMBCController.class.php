@@ -276,8 +276,6 @@ class CMBCController extends BaseDealUserController
             $stores = new AlipaymaStores();
             $id = isset($_GET['id']) ? $_GET['id'] : '';
             $storeInfo = $stores->queryStoreinfoById($id);
-            $txnSeq = generateOrderno(); // 流水号, 调用方生成，确保唯一
-            $this->assign("txnSeq", $txnSeq);
             $this->assign("store", $storeInfo);
             $this->display('bindPayment', 'utf-8');
         } else {
@@ -290,29 +288,34 @@ class CMBCController extends BaseDealUserController
             $fixFeeRate = I('post.fixFeeRate',0); // 固定比例费率 , 5%：0.50，小数点后精确到2位。两种费率二选一
             $specFeeRate = I('post.specFeeRate',0); // 特殊费率
             $account = I('post.account',''); // 结算账号
-            
-            $pbcBankId = I('pbcBankId',''); // 开户行号,人民银行大小额支付行号
-            $acctName = '测试1247850073'; // 开户人
-            $acctType = '2'; // 账户类型,类型代码对应： 1-对私 2-对公
-            $message = ''; // 通道其他信息|message: JSON格式字符串
-            
+            $pbcBankId = I('post.pbcBankId',''); // 开户行号,人民银行大小额支付行号
+            $acctName = I('post.acctName',''); // 开户人
+            $acctType = I('post.acctType',''); // 账户类型,类型代码对应： 1-对私 2-对公
+            $message = I('post.message',''); // 通道其他信息|message: JSON格式字符串
+            $idCode = I('post.idCode','');
+            $acctTelephone = I('post.acctTelephone','');
+            $idType = I('post.idType', '99');
+
             $account = '6226223380006109';
             $pbcBankId = '305526061005';
             $acctName = '测试1247850073';
             $storeInfo = $stores->queryStoreinfoById($id);
-            
-            
+
+
             $txnSeq = generateOrderno(); // 流水号, 调用方生成，确保唯一
             $platformId = C('platformId'); // 平台号, 民生银行生成
             $operId = C('operId'); // 拓展人员编号
-            $outMchntId = 'o29002017030000013925'; // 外部商户号, 商户自己生成，确保唯一
-            $cmbcMchntId = 'M01002017030000013951';
-            
+
+
             $id = I('post.id',0);
             $storeInfo = $stores->queryStoreinfoById($id);
-            
-            
-            
+            if (count($storeInfo)){
+                $this->show("门店信息部存在，或者门店ID错误");
+                exit(0);
+            }
+            $cmbcInfo = $stores->queryCMBCIDByStoreId($id);
+            $outMchntId = $storeInfo['outmchntid'];
+            $cmbcMchntId = $cmbcInfo['cmbcmchntid'];
             $postdata = array(
                 'txnSeq' => $txnSeq,
                 'platformId' => $platformId,
@@ -331,9 +334,9 @@ class CMBCController extends BaseDealUserController
                 'acctName' => $acctName,
                 'acctType ' => $acctType,
                 'message' => $message,
-                'idCode' => '',
-                "acctTelephone" =>'',
-                'idType'=>'99'
+                'idCode' => $idCode,
+                "acctTelephone" =>$acctTelephone,
+                'idType'=>$idType
             );
             $SourceData = json_encode($postdata);
             $msbank = new MSBank();

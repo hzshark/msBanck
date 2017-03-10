@@ -153,15 +153,6 @@ class MSBank
         $paymodel->add($paydata);
     }
 
-    public function ModStoreOder($postdata, $reponseData)
-    {
-        $outMchntId = $postdata['outMchntId'];
-        $store = $this->queryStoreIdByOutMchntId($outMchntId);
-        $storeId = $store['id'];
-        $this->setOderLog($storeId, $postdata, $reponseData);
-        $this->addPayInfo($storeId, $postdata, $reponseData);
-    }
-
     public function modStoreInfo($SourceData)
     {
         $URL = C('MOD_STORE_URL');

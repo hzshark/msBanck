@@ -1,112 +1,291 @@
-<!DOCTYPE html>
-<html lang="en" class="app">
-<head>
-<meta charset="utf-8" />
-<title>Notebook | Web Application</title>
-<meta name="description" content="app, web app, responsive, admin dashboard, admin, flat, flat ui, ui kit, off screen nav" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-<link rel="stylesheet" href="__PUBLIC__/CMBC/css/app.v2.css" type="text/css" />
-<script src="__PUBLIC__/CMBC/js/jquery.js" type="text/javascript"></script>
-<script src="__PUBLIC__/CMBC/js/area.js" type="text/javascript"></script>
-<!--[if lt IE 9]> <script src="js/ie/html5shiv.js" cache="false"></script> <script src="js/ie/respond.min.js" cache="false"></script> <script src="js/ie/excanvas.js" cache="false"></script> <![endif]-->
-</head>
-<body>
-<section class="vbox">
-  <section>
-    <section class="hbox stretch">
-      <section id="content">
-        <section class="vbox">
-          <section class="scrollable padder">
-            <div class="row">
-              <div class="col-sm-6">
-                <form data-validate="parsley" method="post" name="BindPayment" action="BindPayment">
-                  <input type="hidden" name="id" value="{$store.id}">
-                  <section class="panel panel-default">
-                    <header class="panel-heading"> <span class="h4">商户注册</span> </header>
-                    <div class="panel-body">
-                      <p class="text-muted">Please fill the information to continue</p>
-                      <div class="form-group">
-                        <label>商户全称</label>
-                        <input type="text" class="form-control"  data-required="true" value="{$store.mchntfullname}"  readonly="true">
+﻿<extend name="Public/base_logged" />
+<block name="body">
+  <section class="vbox">
+  	<section>
+      <section class="hbox stretch">
+        <section id="content">
+          <section class="vbox">
+            <section class="scrollable padder">
+              <header class="header bg-white b-b clearfix">
+                <div class="row m-t-sm">
+                  <div class="col-sm-9 m-b-xs">
+                    <ul class="breadcrumb no-border no-radius b-light pull-in">
+                      <li><a href="{:U('Admin/index')}"><i class="fa fa-home"></i> 首页</a></li>
+                      <?php if(UID===$current_user_id){ ?>
+                      <li>民生门店</li>
+                      <?php }else{ ?>
+                      <li><a href="{:U('DealUser/index')}">商户列表</a></li>
+                      <?php } ?>
+                      <li class="active">绑定民生支付通道</li>
+                    </ul>
+                  </div>
+              </header>
+              <section class="scrollable wrapper w-f">
+              	<div class="manageCont">
+                      <div class="boundForm">
+              		<form data-validate="parsley"  name="BindPayment" action="BindPayment" id="form_store_edit" enctype="application/x-www-form-urlencoded" method="POST" class="form-horizontal">
+              		<input type="hidden" name="id" value="{$store.id}" />
+                       <label class="form_tit">绑定支付通道</label>
+                       <input type="hidden" name="id" value="{$store.id} readonly="true"">
+                      <div class="form_item clearfix">
+                        <label class="item-label">商户全称：    	<i>*</i>    	</label>
+                           <div class="controls">
+                        <input type="text" id="" name="mchntFullName"  value="{$store.mchntfullname}" class="textBox" placeholder="" data-required="true" readonly="true"/>
+                           </div>
                       </div>
-						<div class="form-group">
-                        <label>支付通道</label>
-                        <select data-required="true" class="form-control m-t" name="apiCode">
+                      <div class="form_item clearfix">
+                        <label class="item-label">支付通道：    	<i>*</i>    	</label>
+                         <div class="controls">
+                        <select data-required="true" name="apiCode">
                             <option value="">--请选择--</option>
                             <option value="0005" >微信</option>
                             <option value="0007" >支付宝</option>
                             <option value="0008" >QQ钱包</option>
-                          </select>
+                        </select>
+                        </div>
                       </div>
-                      <div class="form-group">
-                        <label>接入类型</label>
-                        <select data-required="true" class="form-control m-t" name="operateType">
+                        <span>一次只能绑定一个通道，不同通道可分多次绑定</span>
+                        <div class="form_item clearfix">
+                        <label class="item-label">商户类别：    	<i>*</i>    	</label>
+                           <div class="controls">
+                        <input type="text" id="" name="industryId"  value="" class="textBox" placeholder="" data-required="true" />
+                           </div>
+                      </div>
+                      <div class="form_item clearfix">
+                        <label class="item-label">接入类型：    	<i>*</i>    	</label>
+                          <div class="controls">
+                        <select data-required="true" name="operateType">
                             <option value="">--请选择--</option>
                             <option value="1" >间联</option>
                             <option value="2" >直联</option>
                           </select>
+                          </div>
                       </div>
-                      <div class="form-group">
-                        <label>商户类别</label>
-                        <input type="text" class="form-control" name="industryId" data-required="true" value="">
+
+                      <div class="form_item clearfix">
+                        <label class="item-label">日限额：    	<i>*</i>    	</label>
+                           <div class="controls">
+                        <input type="text" id="" name="dayLimit"  value="" class="textBox" placeholder="" data-required="true" />
+                           </div>
                       </div>
-                      <div class="form-group pull-in clearfix">
-                      <div class="col-sm-6">
-                        <label>日限额</label>
-                        <input type="text" name="dayLimit" class="form-control" value="" data-required="true">
-                        </div>
-                        <div class="col-sm-6">
-                        <label>月限额</label>
-                        <input type="text" name="monthLimit" class="form-control"  value="" data-required="true">
-                        </div>
+                      <span>单位为分，例：5万元则填5000000</span>
+
+                      <div class="form_item clearfix">
+                        <label class="item-label">月限额：    	<i>*</i>    	</label>
+                           <div class="controls">
+                        <input type="text" id="" name="monthLimit"  value="" class="textBox" placeholder="" data-required="true" />
+                           </div>
                       </div>
-                      <div class="form-group">
-                        <label>固定比例费率</label>
-                        <input type="text" name="fixFeeRate" class="form-control" value="" data-required="true">
+                      <span>单位为分，例：5万元则填5000000</span>
+
+                      <div class="form_item clearfix">
+                        <label class="item-label">固定比例费率：    	<i>*</i>    	</label>
+                           <div class="controls">
+                        <input type="text" id="" name="fixFeeRate"  value="" class="textBox" placeholder="" data-required="true" />
+                           </div>
                       </div>
-                      <div class="form-group">
-                        <label>特殊费率</label>
-                        <input type="text" name="specFeeRate" class="form-control" value="" data-required="true">
+                        <span>填除去%之后的值，例如：0.55%，则填0.55</span>
+
+                      <div class="form_item clearfix">
+                        <label class="item-label">特殊费率：    	<i>*</i>    	</label>
+                           <div class="controls">
+                        <input type="text" id="" name="specFeeRate"  value="" class="textBox" placeholder="" data-required="true" />
+                           </div>
                       </div>
-                      <div class="form-group">
-                        <label>结算账号</label>
-                        <input type="text" name="account" class="form-control" value="" data-required="true">
+                       <span>每笔固定金额+比例+比例起算金额，例如：1000以下3元，超过1000，3+(超过部分*0.2%)，则填写规则为[3]+[0.2]+[1000]</span>
+
+                      <div class="form_item clearfix">
+                        <label class="item-label">结算账号：    	<i>*</i>    	</label>
+                           <div class="controls">
+                        <input type="text" id="" name="account"  value="" class="textBox" placeholder="" data-required="true" />
+                           </div>
                       </div>
-                      <div class="form-group">
-                        <label>开户行号</label>
-                        <input type="text" name="pbcBankId" class="form-control" value="" data-required="true">
+                      <div class="form_item clearfix">
+                        <label class="item-label">开户行号：    	<i>*</i>    	</label>
+                           <div class="controls">
+                        <input type="text" id="" name="pbcBankId"  data-type="number"  value="" class="textBox" placeholder="" data-required="true" />
+                           </div>
                       </div>
-                      <div class="form-group">
-                        <label>账户类型</label>
-                        <select name="acctType" data-required="true" class="form-control m-t">
+                      <div class="form_item clearfix">
+                        <label class="item-label">开户人：    	<i>*</i>    	</label>
+                           <div class="controls">
+                        <input type="text" id="" name="acctName"  data-type="number"  value="" class="textBox" placeholder="" data-required="true" />
+                           </div>
+                      </div>
+                      <div class="form_item clearfix">
+                        <label class="item-label">账户类型：    	<i>*</i>    	</label>
+                          <div class="controls">
+                        <select data-required="true" name="acctType">
                             <option value="">--请选择--</option>
                             <option value="1">对私</option>
                             <option value="2" >对公</option>
-                          </select>
+                        </select>
+                          </div>
                       </div>
-                      <div class="form-group">
-                        <label>message</label>
-                        <input type="text" name="message" class="form-control" value="" data-required="true">
+                      <div class="form_item clearfix">
+                        <label class="item-label">Message：</label>
+                           <div class="controls">
+                        <input type="text" id="" name="message" data-type="phone"  value="" class="textBox" placeholder="JSON格式字符串" data-required="true" />
+                           </div>
+                      </div>
+                      <div class="form_item clearfix">
+                        <label class="item-label">开户人证件类型：    	<i>*</i>    	</label>
+                         <div class="controls">
+                        <select data-required="true" name="idType">
+                            <option value="">--请选择--</option>
+                            <option value="0001" >身份证</option>
+                            <option value="0002" >军官证</option>
+                            <option value="0003" >护照</option>
+                            <option value="0004" >回乡证</option>
+                            <option value="0005" >台胞证</option>
+                            <option value="0006" >警官证</option>
+                            <option value="0007" >士兵证</option>
+                            <option value="0099" >其它证件</option>
+                        </select>
+                        </div>
+                      </div>
+                      <div class="form_item clearfix">
+                        <label class="item-label">证件号码：</label>
+                           <div class="controls">
+                        	<input type="text" id="" name="idCode"  value="" class="textBox" placeholder=""  />
+                           </div>
+                      </div>
+                      <div class="form_item clearfix">
+                        <label class="item-label">开户人预留手机号：    	<i>*</i>    	</label>
+                           <div class="controls">
+                        <input type="text" id="" name="acctTelephone"  data-type="phone"  value="" class="textBox" />
+                           </div>
                       </div>
                     </div>
-                    <footer class="panel-footer text-right bg-light lter">
-                      <button type="submit" class="btn btn-success btn-s-xs">Submit</button>
+                    <footer class="panel-footer text-center bg-light lter">
+                      <button type="submit" class="btn btn-success btn-s-xs">提交</button>
+                      <button class="btn btn-success btn-s-xs" onclick="javascript:history.back(-1);return false;">返 回</button>
                     </footer>
+                      </form>
+                    </div>
+                  </div>
                   </section>
-                </form>
-              </div>
-            </div>
+
+            </section>
           </section>
         </section>
       </section>
-      <aside class="bg-light lter b-l aside-md hide" id="notes">
-        <div class="wrapper">Notification</div>
-      </aside>
     </section>
   </section>
-</section>
-<script src="__PUBLIC__/CMBC/js/app.v2.js"></script> <!-- Bootstrap --> <!-- App --> <!-- parsley -->
-<script src="__PUBLIC__/CMBC/js/parsley/parsley.min.js" cache="false"></script>
-<script src="__PUBLIC__/CMBC/js/parsley/parsley.extend.js" cache="false"></script>
-</body>
-</html>
+</block>
+
+<block name="script">
+<js href="__STATIC__/jquery.noty.packaged.min.js"/>
+<js href="__JS__/list.js"/>
+
+<script type="text/javascript" charset="utf-8">
+  $(document).ready(function(){
+	$('.popup-qrcode-view').magnificPopup();
+    $('.popup-store-submit').magnificPopup({
+      disableOn: 700,
+      type: 'iframe',
+      mainClass: 'mfp-fade',
+      removalDelay: 160,
+      preloader: false,
+      closeOnBgClick: false,
+      enableEscapeKey:false,
+      fixedContentPos: false,
+      callbacks: {
+        beforeOpen: function(){
+          $(this.content).find(".mfp-close").hide();
+        },
+        open: function(){
+          var content = this.content;
+          $(content).find(".mfp-close").hide();
+          $(content).find("iframe").load(function(event) {
+            //console.log('load2',this,arguments);
+            $(content).find(".mfp-close").show();
+          });
+        },
+        close: function(){
+          //console.log('ssss3',arguments);
+          document.location.reload();
+        }
+      }
+    });
+		$('.view_audit_status').magnificPopup({
+			type: 'iframe',type: 'iframe',
+		});
+		$('#download-store').magnificPopup({
+			disableOn: 700,
+			type: 'iframe',
+			mainClass: 'mfp-fade',
+			removalDelay: 160,
+			preloader: false,
+			closeOnBgClick: true,
+			enableEscapeKey:false,
+			fixedContentPos: false,
+			callbacks: {
+				beforeOpen: function(){
+					$(this.content).find(".mfp-close").hide();
+				},
+				open: function(){
+					var content = this.content;
+					$(content).find(".mfp-close").hide();
+					$(content).find("iframe").load(function(event) {
+						//console.log('load2',this,arguments);
+						$(content).find(".mfp-close").show();
+					});
+				},
+				close: function(){
+					//console.log('ssss3',arguments);
+					document.location.reload();
+				}
+			}
+		});
+    $('.popup-store-view').magnificPopup({
+      disableOn: 700,
+      type: 'iframe',
+      mainClass: 'mfp-fade',
+      removalDelay: 160,
+      preloader: false
+    });
+
+    $(".btn_store_edit").click(function(event){
+      var s = $(this).attr("data-audit-status");
+      if(s == "AUDITING"){
+        alert("正在审核，不能修改！");
+        event.preventDefault();
+              return false;
+      }
+      if(s == "AUDIT_SUCCESS"){
+        if(!confirm('门店已经通过审核，确认修改？')){
+          event.preventDefault();
+                  return false;
+              }
+      }
+    });
+
+    $("td>span.store_id").dblclick(toggle_detail);
+    $("a.btn_store_more").click(toggle_detail);
+    function toggle_detail(event){
+      var tr = $(this).closest('tr');
+      tr.next().toggle();
+    }
+
+    //搜索js
+    $(".search_box .slt_field_name").change(function(event){
+      var slt = $(this).attr("data-target");
+      var val = $(this).find("option:selected").attr("value");
+      if(slt && val){
+        $(this).parent().find(slt).attr("name",val);
+      }
+    });
+    $(".search_box .slt_field_name").change();
+    var vals = $(".search_box .slt_field_name option").attr("value");
+    //alert(vals);
+    $(".search_box form").submit(function(event) {
+      /*var data = $(this).serialize();
+      alert(data);
+      return false;*/
+    });
+  });
+
+</script>
+
+</block>

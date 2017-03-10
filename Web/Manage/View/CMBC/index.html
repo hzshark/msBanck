@@ -25,7 +25,7 @@
                   </div>
                   <div class="col-sm-9 m-b-xs">
                     <div class="search_box">
-                      <form action="{:U('DealStore/index?uid='.$current_user_id)}" class="form_search" method="get">
+                      <form action="{:U('CMBC/index?uid='.$current_user_id)}" class="form_search" method="get">
                         <select class="slt_field_name" data-target=".ipt_search_id" id="selectinfo">
                           <option value="store_id"<notempty name="cond['store_id']"> selected="selected"</notempty>>门店ID</option>
                           <eq name="manage_is_admin" value="true">
@@ -64,7 +64,7 @@
                           <th width="10%">门店id</th>
                           <th width="25%">名店名称</th>
                           <th width="5%">类别</th>
-                          <th width="5%">状态</th>
+                          <th width="10%">审核状态</th>
                           <th width="55%">操作</th>
                           </tr>
                         </thead>

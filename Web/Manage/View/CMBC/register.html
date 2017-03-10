@@ -12,57 +12,23 @@
                     <ul class="breadcrumb no-border no-radius b-light pull-in">
                       <li><a href="{:U('Admin/index')}"><i class="fa fa-home"></i> 首页</a></li>
                       <?php if(UID===$current_user_id){ ?>
-                      <li>商家中心</li>
+                      <li>民生门店</li>
                       <?php }else{ ?>
                       <li><a href="{:U('DealUser/index')}">商户列表</a></li>
                       <?php } ?>
-                      <li class="active">民生门店  /  新增门店</li>
+                      <li class="active">新增民生门店</li>
                     </ul>
                   </div>
-
-                  <div class="col-sm-3 m-b-xs">
-                    <a id="add-store" class="btn3" href="{:U('CMBC/Register')}?id={$vo.id}"><strong>新增门店</strong></a>
-                  </div>
-                  <div class="col-sm-9 m-b-xs">
-                    <div class="search_box">
-                      <form action="{:U('DealStore/index?uid='.$current_user_id)}" class="form_search" method="get">
-                        <select class="slt_field_name" data-target=".ipt_search_id" id="selectinfo">
-                          <option value="store_id"<notempty name="cond['store_id']"> selected="selected"</notempty>>门店ID</option>
-                          <eq name="manage_is_admin" value="true">
-                          <option value="user_id"<notempty name="cond['user_id']"> selected="selected"</notempty>>用户ID</option>
-                          </eq>
-                          <option value="main_shop_name"<notempty name="cond['main_shop_name']"> selected="selected"</notempty>>门店名称</option>
-
-                        </select>
-                        <input type="text" class="ipt_search_id" name="store_id" maxlength="28" value="{$cond['_seach_text']}" id="search_box"/>
-                        城市：{:W('Manage/City/three',array(array('province_code','city_code','district_code'),array(I('province_code'),I('city_code'),I('district_code'))));}
-                        <button class="btn_search">搜索</button>
-                      </form>
-                    </div>
-                  </div>
-                  <div class="col-sm-3 m-b-xs">
-                    <form action="{:U('CmbcStore/index?uid='.$current_user_id)}" method="get">
-                      <div class="input-group">
-                        <input type="text" class="input-sm form-control" placeholder="请输入总店名或分店名或品牌名" name="content"  value="{$content}">
-                        <span class="input-group-btn">
-                          <button class="btn btn-sm btn-default" type="submit">Go!</button>
-                        </span>
-                      </div>
-                    </form>
-                  </div>
               </header>
-
-
-
+ 
               <section class="scrollable wrapper w-f">
               	<div class="manageCont">
 
                       <div class="boundForm">
               		  <form data-validate="parsley"  name="RegisterStore" action="RegisterStore" id="form_store_edit" enctype="application/x-www-form-urlencoded" method="POST" class="form-horizontal">
-                       <div class="form_item clearfix">
+                      
                         <label class="form_tit">商户注册</label>
-                       </div>
-
+                                        
                       <div class="form_item clearfix">
                         <label class="item-label">商户简称：    	<i>*</i>    	</label>
                            <div class="controls">
@@ -76,8 +42,8 @@
                         <input type="text" id="" name="mchntFullName"  value="" class="textBox" placeholder="" data-required="true" />
                            </div>
                       </div>
-                      <div class="form_item clearfix">
-    	                <label class="item-label">城市：    	<i>*</i>    	</label>
+                      <div class="form_item clearfix">	    
+    	                <label class="item-label">城市：    	<i>*</i>    	</label>   	
                         <div class="controls">
 {:W('Manage/City/three',array(array('province_code','city_code','district_code'),array(I('province_code'),I('city_code'),I('district_code'))));}
                         </div>
@@ -110,7 +76,7 @@
                       <div class="form_item clearfix">
                         <label class="item-label">证件号：    	<i>*</i>    	</label>
                            <div class="controls">
-                        <input type="text" id="idtCard" name="idtCard"  value="" class="textBox" placeholder="" data-required="true" />
+                        <input type="text" id="" name="idtCard"  value="" class="textBox" placeholder="" data-required="true" />
                            </div>
                       </div>
                       <div class="form_item clearfix">
@@ -140,24 +106,24 @@
 
                       <div class="form_item clearfix">
                         <label class="item-label">结算方式：    	<i>*</i>    	</label>
+                           <div class="controls">
                         <select data-required="true" name="autoSettle"  class="citySelect">
                             <option value="">--请选择--</option>
                             <option value="1">自动结算</option>
                             <option value="2">手工提现</option>
                           </select>
+                         </div>
                       </div>
                     </div>
                     <footer class="panel-footer text-center bg-light lter">
-                      <button type="submit" class="return_btn">提交</button>
-                      <button class="return_btn" onclick="javascript:history.back(-1);return false;">返 回</button>
+                      <button type="submit" class="btn btn-success btn-s-xs">提交</button>
+                      <button class="btn btn-success btn-s-xs" onclick="javascript:history.back(-1);return false;">返 回</button>
                     </footer>
                       </form>
                     </div>
                   </section>
+              
 
-<footer class="footer bg-white b-t">
-                {$_page}
-              </footer>
             </section>
           </section>
         </section>
@@ -249,7 +215,7 @@
         if(!confirm('门店已经通过审核，确认修改？')){
           event.preventDefault();
                   return false;
-              }
+              }       
       }
     });
 

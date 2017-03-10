@@ -1,0 +1,69 @@
+﻿<extend name="Public/base_logged" />
+<block name="body">
+<section class="vbox">
+  <section>
+    <section class="hbox stretch">
+      <section id="content">
+        <section class="vbox">
+          <section class="scrollable padder">
+            <ul class="breadcrumb no-border no-radius b-b b-light pull-in">
+              <li><a href="index.html"><i class="fa fa-home"></i> 首页</a></li>
+              <li class="active">民生门户</li>
+            </ul>
+            <div class="m-b-md">
+              <h3 class="m-b-none">民生门户</h3>
+            </div>
+            <section class="panel panel-default">
+              <header class="panel-heading"> 民生门户</header>
+              <header class="panel-heading">  <a href="{:U('CMBC/Register')}" class="btn btn-s-md btn-primary btn-rounded">新增门店</a></header>
+              <div class="table-responsive">
+                <table class="table table-striped m-b-none" >
+                  <thead>
+                    <tr>
+                      <th width="10%">门店id</th>
+                      <th width="25%">名店名称</th>
+                      <th width="5%">类别</th>
+                      <th width="5%">状态</th>
+                      <th width="55%">操作</th>
+                    </tr>
+                    <foreach name="stores" item="vo" >
+	                    <tr>
+	                    <td>{$vo.id}</td>
+	                    <td>{$vo.mchntname}</td>
+	                    <td></td>
+	                    <td></td>
+                    <td>
+                    <div class="button-group">
+                    	<a href="{:U('CMBC/VerifyStore')}?id={$vo.id}" class="btn btn-s-md btn-primary btn-rounded">审核入驻</a>
+						 <!-- <a href="{:U('CMBC/BindPayment')}?id={$vo.id}" class="btn btn-s-md btn-primary btn-rounded">绑定支付</a>
+						 <a href="{:U('CMBC/Register')}?id={$vo.id}" class="btn btn-s-md btn-primary btn-rounded">修改支付</a>
+						 <a href="{:U('CMBC/ModStore')}?id={$vo.id}" class="btn btn-s-md btn-primary btn-rounded">修改门店</a>
+						  -->
+					</div>
+					</td>
+                    </tr>
+                    </foreach>
+                  </thead>
+                  <tbody>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          </section>
+        </section>
+
+      <aside class="bg-light lter b-l aside-md hide" id="notes">
+        <div class="wrapper">Notification</div>
+      </aside>
+    </section>
+  </section>
+</section>
+</block>
+
+<block name="script">
+  <script type="text/javascript">
+  jQuery(document).ready(function($) {
+      $('.popup-qrcode-view').magnificPopup();
+  })
+  </script>
+</block>
