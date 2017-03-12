@@ -75,18 +75,42 @@
 	                  <td>{$vo.id}</td>
 	                  <td>{$vo.mchntname}</td>
 	                  <td></td>
-	                  <td></td>
+	                  <td><if condition="$vo.status == 1">审核通过<else/>审核未通过</if></td>
                           <td>
                            <div class="button-group">
                     	  <a href="{:U('CMBC/VerifyStore')}?id={$vo.id}" class="popup-store-submit btn btn-primary">审核入驻</a>
-                          <a href="{:U('CMBC/ModStore')}?id={$vo.id}" class="btn btn-warning btn_store_edit">资料修改</a>
-                          <a href="{:U('CMBC/VerifyModStore')}?id={$vo.id}" class="btn btn-warning btn_store_edit">审核资料</a>
+                          <a href="{:U('CMBC/ModStore')}?id={$vo.id}" data-toggle="tooltip" title="资料修改" class="btn btn-warning btn_store_edit">资料修改</a>
                           <a href="{:U('CMBC/BindPayment')}?id={$vo.id}" class="btn btn-success">绑定支付</a>
                           <a href="{:U('CMBC/BindPayment')}?id={$vo.id}" class="btn btn-info">修改支付</a>
+                          <a href="javascript:void(0);" class="btn_store_more btn btn-info">更多</a>
 
 			   </div>
 			  </td>
                           </tr>
+                          <tr class="data-table-line-detail-tr" style="display:none;">
+                                <td colspan="8">
+                                  <table class="table m-b-none">
+                                    <tr>
+                                      <td>门店ID：{$vo.outmchntid}</td>
+                                      <td colspan="3">城市：{$vo.province}-{$vo.city}</td>
+
+                                    </tr>
+                                    <tr>
+                                      <td>地址：{$vo.address} </td>
+                                      <td>显示电话：{$vo['telephone']|default='无'}</td>
+                                      <td>联系电话：{$vo['servTel']|default='无'}</td>
+                                      <td>
+                                       	 操作：
+                                        <a href="{:U('CMBC/viewStore')}?id={$vo.id}" title="查看当前线上信息" class="popup-store-view">查看</a>&nbsp;&nbsp;&nbsp;
+                                        <a href="#" title="信息同步" class="ajax-get">同步</a>&nbsp;&nbsp;&nbsp;
+                                        <if condition="$vo.status != 1">
+                                        	<a href="{:U('CMBC/delStore')}?id={$vo.id}" title="" class="btn btn-info">删除</a>&nbsp;&nbsp;&nbsp;
+                                        </if>
+                                      </td>
+                                    </tr>
+                                  </table>
+                                </td>
+                              </tr>
                           </foreach>
 
                         </tbody>

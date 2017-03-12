@@ -24,7 +24,8 @@
               	<div class="manageCont">
 
                       <div class="boundForm">
-              		  <form data-validate="parsley"  name="RegisterStore" action="RegisterStore" id="form_store_edit" enctype="application/x-www-form-urlencoded" method="POST" class="form-horizontal">
+              		  <form data-validate="parsley"  name="ModStore" action="ModStore" id="form_store_edit" enctype="application/x-www-form-urlencoded" method="POST" class="form-horizontal">
+                       <input type="hidden" name="id"  value="{$store.id}" />
                        <div class="form_item clearfix">
                         <label class="form_tit">商户资料修改</label>
                        </div>
@@ -41,8 +42,8 @@
                         <input type="text" id="" name="mchntFullName"  value="{$store.mchntfullname}" class="textBox" placeholder="" data-required="true" />
                            </div>
                       </div>
-                      <div class="form_item clearfix">	    
-    	                <label class="item-label">城市：    	<i>*</i>    	</label>   	
+                      <div class="form_item clearfix">
+    	                <label class="item-label">城市：    	<i>*</i>    	</label>
                         <div class="controls">
 {:W('Manage/City/three',array(array('province_code','city_code','district_code'),array(I('province_code'),I('city_code'),I('district_code'))));}
                         </div>
@@ -216,7 +217,7 @@
         if(!confirm('门店已经通过审核，确认修改？')){
           event.preventDefault();
                   return false;
-              }       
+              }
       }
     });
 

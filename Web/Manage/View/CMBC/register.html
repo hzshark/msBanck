@@ -20,20 +20,20 @@
                     </ul>
                   </div>
               </header>
- 
+
               <section class="scrollable wrapper w-f">
               	<div class="manageCont">
 
                       <div class="boundForm">
               		  <form data-validate="parsley"  name="RegisterStore" action="RegisterStore" id="form_store_edit" enctype="application/x-www-form-urlencoded" method="POST" class="form-horizontal">
-                      
+
                         <label class="form_tit">商户注册</label>
-                                        
+
                       <div class="form_item clearfix">
                         <label class="item-label">商户简称：    	<i>*</i>    	</label>
                            <div class="controls">
                         <input type="text" id="" name="mchntName" value="" class="textBox" placeholder="" data-required="true" />
-                           </div>
+                           </div>
                       </div>
 
                       <div class="form_item clearfix">
@@ -42,8 +42,8 @@
                         <input type="text" id="" name="mchntFullName"  value="" class="textBox" placeholder="" data-required="true" />
                            </div>
                       </div>
-                      <div class="form_item clearfix">	    
-    	                <label class="item-label">城市：    	<i>*</i>    	</label>   	
+                      <div class="form_item clearfix">
+    	                <label class="item-label">城市：    	<i>*</i>    	</label>
                         <div class="controls">
 {:W('Manage/City/three',array(array('province_code','city_code','district_code'),array(I('province_code'),I('city_code'),I('district_code'))));}
                         </div>
@@ -98,9 +98,9 @@
                            </div>
                       </div>
                       <div class="form_item clearfix">
-                        <label class="item-label">负责人：    	<i>*</i>    	</label>
+                        <label class="item-label">客户识别码：</label>
                            <div class="controls">
-                        <input type="text" id="" name="contactName"  value="" class="textBox" placeholder="" data-required="true" />
+                        <input type="text" id="" name="identification"  value="" class="textBox" placeholder=""  />
                            </div>
                       </div>
 
@@ -114,6 +114,18 @@
                           </select>
                          </div>
                       </div>
+                      <div class="form_item clearfix">
+                        <label class="item-label">备注 ： </label>
+                           <div class="controls">
+                        <input type="text" id="" name="remark"  value="" class="textBox" placeholder=""  />
+                           </div>
+                      </div>
+                      <div class="form_item clearfix">
+                        <label class="item-label">备用字段：  </label>
+                           <div class="controls">
+                        <input type="text" id="" name="message"  value="" class="textBox" placeholder=""  />
+                           </div>
+                      </div>
                     </div>
                     <footer class="panel-footer text-center bg-light lter">
                       <button type="submit" class="btn btn-success btn-s-xs">提交</button>
@@ -122,7 +134,7 @@
                       </form>
                     </div>
                   </section>
-              
+
 
             </section>
           </section>
@@ -215,7 +227,7 @@
         if(!confirm('门店已经通过审核，确认修改？')){
           event.preventDefault();
                   return false;
-              }       
+              }
       }
     });
 

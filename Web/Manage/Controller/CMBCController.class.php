@@ -21,8 +21,29 @@ class CMBCController extends BaseDealUserController
     {
         header("Content-Type:text/html; charset=utf-8");
         $stores = new AlipaymaStores();
+        $storesInfo = null;
+        $name = I('get.content', 0);
+        $store_id = I('get.store_id', 0);
+        $store_name = I('get.main_shop_name', 0);
+        $acdCode =  I('get.district_code', 0);
+
+        if ($name !== 0){
+            $storesInfo = $stores->queryStoresByLikeName($name);
+        }elseif ($acdCode !==0 ){
+            if ($store_id !== 0 && $store_id!=''){
+                $storesInfo = $stores->queryStoresByStoreId($store_id);
+            }elseif ($store_name === 0){
+                $storesInfo = $stores->queryStoresByAcdCodeAndName($acdCode);
+            }else {
+                $storesInfo = $stores->queryStoresByAcdCode($acdCode);
+            }
+        }else {
         $storesInfo = $stores->queryAllStores();
+        }
         // var_dump($storesInfo);
+
+
+
         $this->assign("stores", $storesInfo);
 
         $this->display('index', 'utf-8');
@@ -33,6 +54,28 @@ class CMBCController extends BaseDealUserController
         header("Content-Type:text/html; charset=utf-8");
         $this->display('register', 'utf-8');
     }
+
+  public function viewStore(){
+      header("Content-Type:text/html; charset=utf-8");
+      $id = isset($_GET['id']) ? $_GET['id'] : '';
+      if ($id == '') {
+          $this->error("缺少参数,商家id");
+      }
+      $stores = new AlipaymaStores();
+      $ret = $stores->queryStoreinfoById($id);
+      var_dump($ret);
+  }
+
+  public function delStore(){
+      header("Content-Type:text/html; charset=utf-8");
+      $id = isset($_GET['id']) ? $_GET['id'] : '';
+      if ($id == '') {
+          $this->error("缺少参数,商家id");
+      }
+      $stores = new AlipaymaStores();
+      $ret = $stores->delStoreinfoById($id);
+      $this->success("删除门店成功！");
+  }
 
     public function VerifyStore()
     {
@@ -56,7 +99,6 @@ class CMBCController extends BaseDealUserController
             $this->error("缺少参数,商家id");
         }
         $stores = new AlipaymaStores();
-
         $ret = $stores->queryStoreinfoById($id);
         $postdata['outMchntId'] = $ret['outmchntid'];
         $postdata['mchntName'] = $ret['mchntname'];
@@ -80,12 +122,20 @@ class CMBCController extends BaseDealUserController
         $postdata['message'] = $ret['message'];
         $sourceData = json_encode($postdata);
         $cmbc = new MSBank();
-        $ret = $cmbc->registerStore($sourceData);
+        $cmbcInfo = $stores->queryCMBCIDByStoreId($id);
+        $ret = Null;
+        if (isset($cmbcInfo) && $cmbcInfo['cmbcmchntid'] != ''){
+            $postdata['cmbcMchntId'] = $cmbcInfo['cmbcmchntid'];
+            $ret = $cmbc->modStoreInfo($sourceData);
+        }else{
+            $ret = $cmbc->registerStore($sourceData);
+        }
         $stores->registerOder($id, $postdata, $ret);
         if ($ret['status'] == 0) {
-            $this->success("商户入驻成功,返回结果:<br />" . json_encode($ret['respone']));
+            $stores->setStoreStatus($id, $stores->AUDIT_PASS);
+            $this->show("商户审核入驻成功,返回结果:<br />" . json_encode($ret['respone']));
         } else {
-            $this->show("商户入驻失败,失败原因:" . $ret['msg'], 10);
+            $this->show("商户审核入驻失败,失败原因:" . $ret['msg'], 10);
         }
     }
 
@@ -149,61 +199,6 @@ class CMBCController extends BaseDealUserController
         }
     }
 
-    public function VerifyModStore()
-    {
-        header("Content-Type:text/html; charset=utf-8");
-        $txnSeq = generateOrderno(); // 流水号, 调用方生成，确保唯一
-        $platformId = C('platformId'); // 平台号, 民生银行生成
-        $operId = C('operId'); // 拓展人员编号
-        $dataSrc = C('dataSrc'); // 进件渠道, 填固定值2
-        $devType = 1; // 拓展模式,类型代码对应： 1-第三方 2-民生银行
-        $postdata = array(
-            'txnSeq' => $txnSeq,
-            'platformId' => $platformId,
-            'operId' => $operId,
-            'dataSrc' => $dataSrc,
-            'devType' => '' . $devType
-        );
-
-        $id = isset($_GET['id']) ? $_GET['id'] : '';
-        if ($id == '') {
-            $this->error("缺少参数,商家id");
-        }
-        $stores = new AlipaymaStores();
-        $storeInfo = $stores->queryStoreinfoById($id);
-        $cmbcInfo = $stores->queryCMBCIDByStoreId($id);
-        $postdata['outMchntId'] = $storeInfo['outmchntid'];
-        $postdata['mchntName'] = $storeInfo['mchntname'];
-        $postdata['cmbcMchntId'] = $cmbcInfo['cmbcmchntid'];
-        $postdata['mchntFullName'] = $storeInfo['mchntfullname'];
-        $postdata['parentMchntId'] = $storeInfo['parentmchntId'];
-        $postdata['acdCode'] = $storeInfo['acdcode'];
-        $postdata['province'] = $storeInfo['province'];
-        $postdata['city'] = $storeInfo['city'];
-        $postdata['address'] = $storeInfo['address'];
-        $postdata['isCert'] = $storeInfo['iscert'];
-        $postdata['licId'] = $storeInfo['licid'];
-        $postdata['licValidity'] = $storeInfo['licvalidity'];
-        $postdata['corpName'] = $storeInfo['corpname'];
-        $postdata['idtCard'] = $storeInfo['idtcard'];
-        $postdata['contactName'] = $storeInfo['contactname'];
-        $postdata['telephone'] = $storeInfo['telephone'];
-        $postdata['servTel'] = $storeInfo['servtel'];
-        $postdata['identification'] = $storeInfo['identification'];
-        $postdata['autoSettle'] = $storeInfo['autosettle'];
-        $postdata['remark'] = $storeInfo['remark'];
-        $postdata['message'] = $storeInfo['message'];
-        $sourceData = json_encode($postdata);
-        $cmbc = new MSBank();
-        $ret = $cmbc->modStoreInfo($sourceData);
-        $stores->registerOder($id, $postdata, $ret);
-        if ($ret['status'] == 0) {
-            $this->show("商户信息修改成功,返回结果:<br />" . json_encode($ret['respone']));
-        } else {
-            $this->show("商户信息修改失败,失败原因:" . $ret['msg'], 10);
-        }
-    }
-
     public function ModStore()
     {
         header("Content-Type:text/html; charset=utf-8");
@@ -238,7 +233,7 @@ class CMBCController extends BaseDealUserController
             $autoSettle = isset($_POST['autoSettle']) ? $_POST['autoSettle'] : ''; // 结算方式, 类型代码对应：1-自动结算,2-手工提现
             $remark = isset($_POST['remark']) ? $_POST['remark'] : ''; // 备注
             $message = isset($_POST['message']) ? $_POST['message'] : ''; // 备用字段
-
+            $id = isset($_POST['id']) ? $_POST['id'] : '';
             $postdata = array(
                 'mchntName' => $mchntName,
                 'mchntFullName' => $mchntFullName,
@@ -262,9 +257,8 @@ class CMBCController extends BaseDealUserController
             );
 
             $stores = new AlipaymaStores();
-
             $stores->modStore($id, $postdata);
-            $this->show("商家入驻成功");
+            $this->SUCCESS("商家资料修改成功", 'index');
         }
     }
 
@@ -276,6 +270,8 @@ class CMBCController extends BaseDealUserController
             $stores = new AlipaymaStores();
             $id = isset($_GET['id']) ? $_GET['id'] : '';
             $storeInfo = $stores->queryStoreinfoById($id);
+
+            //$paymentInfo = $stores->queryPaymentByStoreIdAndApiCode($storeId, $apiCode)
             $this->assign("store", $storeInfo);
             $this->display('bindPayment', 'utf-8');
         } else {
@@ -301,16 +297,12 @@ class CMBCController extends BaseDealUserController
             $acctName = '测试1247850073';
             $storeInfo = $stores->queryStoreinfoById($id);
 
-
             $txnSeq = generateOrderno(); // 流水号, 调用方生成，确保唯一
             $platformId = C('platformId'); // 平台号, 民生银行生成
             $operId = C('operId'); // 拓展人员编号
-
-
-            $id = I('post.id',0);
             $storeInfo = $stores->queryStoreinfoById($id);
-            if (count($storeInfo)){
-                $this->show("门店信息部存在，或者门店ID错误");
+            if (count($storeInfo)==0){
+                $this->show("门店信息不存在，或者门店ID错误");
                 exit(0);
             }
             $cmbcInfo = $stores->queryCMBCIDByStoreId($id);
@@ -342,7 +334,7 @@ class CMBCController extends BaseDealUserController
             $msbank = new MSBank();
             $ret = $msbank->bindPayment($SourceData);
             if ($ret['status'] == 0) {
-                $msbank->ModStoreOder($postdata, $ret);
+                //$msbank->ModStoreOder($postdata, $ret);
             }
             $this->show(json_encode($ret));
         }
@@ -398,24 +390,27 @@ class CMBCController extends BaseDealUserController
         $this->show(json_encode($ret));
     }
 
-    public function pay()
+    public function CMBCwechat()
     {
         header("Content-Type:text/html; charset=utf-8");
+        $txnSeq = generateOrderno(); // 流水号, 调用方生成，确保唯一
         $platformId = C('platformId'); // 平台号, 民生银行生成
-        $operId = '10086A0001'; // 拓展人员编号
-        $merchantNo = "M29002017020000012847"; // 该订单对应的民生统一商户号
-        $selectTradeType = 'API_WXQRCODE'; // 支付类型的标识信息
-                                           // 类型代码对应：
-                                           // 微信 微信正扫：API_WXQRCODE 微信反扫：API_WXSCAN 微信公众号：H5_WXJSAPI
-                                           // 支付宝 支付宝正扫：API_ZFBQRCODE 支付宝反扫：API_ZFBSCAN 支付宝服务窗：H5_ZFBJSAPI
-                                           // QQ钱包 QQ钱包正扫：API_QQQRCODE QQ钱包反扫：API_QQSCAN QQ钱包公众号：H5_QQJSAPI
+        $operId = C('operId'); // 拓展人员编号
+        $stores = new AlipaymaStores();
+        $id = isset($_POST['id']) ? $_POST['id'] : $_GET['id']; // 商户简称
+        $cmbcInfo = $stores->queryCMBCIDByStoreId($id);
+        $cmbcMchntId = $cmbcInfo['cmbcmchntid'];
+
+        $selectTradeType = 'API_WXSCAN'; // 支付类型的标识信息
         $payment_code = "12312414";
         $amount = '1'; // 交易金额，以分为单位
         $orderInfo = '统一下单API测试-' . $selectTradeType;
+
         $merchantSeq = $platformId . generateOrderno(); // 流水号, 调用方生成，确保唯一
         $transDate = date('Ymd', time()); // 格式：yyyyMMdd
         $transTime = date('YmdHis', time()) . "000"; // 格式：yyyyMMddHHmmssSSS
         $notifyUrl = C('NOTIFY_URL'); // 户实现的接收异步通知的url地址
+
         $remark = base64_encode($payment_code); // 备注
         $postdata = array(
             'platformId' => $platformId,
@@ -432,9 +427,150 @@ class CMBCController extends BaseDealUserController
         $SourceData = json_encode($postdata);
         $msbank = new MSBank();
         $ret = $msbank->pay($SourceData);
-        if ($ret['status'] == 0) {
-            $msbank->ModStoreOder($postdata, $ret);
-        }
+        $stores->addWXPayInfo($postdata, $ret['status'], $payment_code);
+        $this->show(json_encode($ret));
+    }
+
+    public function CMBCalipay()
+    {
+        header("Content-Type:text/html; charset=utf-8");
+        $txnSeq = generateOrderno(); // 流水号, 调用方生成，确保唯一
+        $platformId = C('platformId'); // 平台号, 民生银行生成
+        $operId = C('operId'); // 拓展人员编号
+        $stores = new AlipaymaStores();
+        $id = isset($_POST['id']) ? $_POST['id'] : $_GET['id']; // 商户简称
+        $cmbcInfo = $stores->queryCMBCIDByStoreId($id);
+        $cmbcMchntId = $cmbcInfo['cmbcmchntid'];
+
+        $selectTradeType = 'API_ZFBSCAN';
+        $payment_code = "12312414";
+        $amount = '1'; // 交易金额，以分为单位
+        $orderInfo = '统一下单API测试-' . $selectTradeType;
+
+        $merchantSeq = $platformId . generateOrderno(); // 流水号, 调用方生成，确保唯一
+        $transDate = date('Ymd', time()); // 格式：yyyyMMdd
+        $transTime = date('YmdHis', time()) . "000"; // 格式：yyyyMMddHHmmssSSS
+        $notifyUrl = C('NOTIFY_URL'); // 户实现的接收异步通知的url地址
+
+        $remark = base64_encode($payment_code); // 备注
+        $postdata = array(
+            'platformId' => $platformId,
+            'operId' => $operId,
+            'selectTradeType' => $selectTradeType,
+            'amount' => $amount,
+            'orderInfo' => $orderInfo,
+            'merchantSeq' => $merchantSeq,
+            'transDate' => $transDate,
+            'transTime' => $transTime,
+            'notifyUrl' => $notifyUrl,
+            'remark ' => $remark
+        );
+        $SourceData = json_encode($postdata);
+        $msbank = new MSBank();
+        $ret = $msbank->pay($SourceData);
+        $stores->addAliPayInfo($postdata, $ret['status'], $payment_code);
+        $this->show(json_encode($ret));
+    }
+
+    public function CMBCqqpay()
+    {
+        header("Content-Type:text/html; charset=utf-8");
+        $txnSeq = generateOrderno(); // 流水号, 调用方生成，确保唯一
+        $platformId = C('platformId'); // 平台号, 民生银行生成
+        $operId = C('operId'); // 拓展人员编号
+        $stores = new AlipaymaStores();
+        $id = isset($_POST['id']) ? $_POST['id'] : $_GET['id']; // 商户简称
+        $cmbcInfo = $stores->queryCMBCIDByStoreId($id);
+        $cmbcMchntId = $cmbcInfo['cmbcmchntid'];
+
+        $selectTradeType = 'API_QQSCAN'; // 支付类型的标识信息
+
+        $payment_code = "12312414";
+        $amount = '1'; // 交易金额，以分为单位
+        $orderInfo = '统一下单API测试-' . $selectTradeType;
+
+        $merchantSeq = $platformId . generateOrderno(); // 流水号, 调用方生成，确保唯一
+        $transDate = date('Ymd', time()); // 格式：yyyyMMdd
+        $transTime = date('YmdHis', time()) . "000"; // 格式：yyyyMMddHHmmssSSS
+        $notifyUrl = C('NOTIFY_URL'); // 户实现的接收异步通知的url地址
+
+        $remark = base64_encode($payment_code); // 备注
+        $postdata = array(
+            'platformId' => $platformId,
+            'operId' => $operId,
+            'selectTradeType' => $selectTradeType,
+            'amount' => $amount,
+            'orderInfo' => $orderInfo,
+            'merchantSeq' => $merchantSeq,
+            'transDate' => $transDate,
+            'transTime' => $transTime,
+            'notifyUrl' => $notifyUrl,
+            'remark ' => $remark
+        );
+        $SourceData = json_encode($postdata);
+        $msbank = new MSBank();
+        $ret = $msbank->pay($SourceData);
+        $stores->addQQPayInfo($postdata, $ret['status'], $payment_code);
+        $this->show(json_encode($ret));
+    }
+
+    public function queryPayment()
+    {
+        header("Content-Type:text/html; charset=utf-8");
+        $stores = new AlipaymaStores();
+        $id = I('post.id',0);
+        $merchantSeq = generateOrderno(); // 流水号, 调用方生成，确保唯一
+        $platformId = C('platformId'); // 平台号, 民生银行生成
+        $cmbcInfo = $stores->queryCMBCIDByStoreId($id);
+        $merchantNo = $cmbcInfo['cmbcmchntid'];
+        $tradeType = '1';
+        $orgvoucherNo = I('post.orgvoucherNo','');
+        $reserve = I('post.reserve','');
+        $merchantNo = 'M01002017030000013951';
+        $merchantSeq = 'A00002016120000000294T225401863';
+        $orgvoucherNo = '10862016070514230500';
+
+        $postdata = array(
+            'platformId' => $platformId,
+            'merchantNo' => $merchantNo,
+            'merchantSeq' => $merchantSeq,
+            'tradeType' => $tradeType,
+            'orgvoucherNo' => $orgvoucherNo,
+            'reserve' => $reserve,
+        );
+        $SourceData = json_encode($postdata);
+        $msbank = new MSBank();
+        $ret = $msbank->queryTransaction($SourceData);
+        $this->show(json_encode($ret));
+    }
+
+    public function queryRefund()
+    {
+        header("Content-Type:text/html; charset=utf-8");
+        $stores = new AlipaymaStores();
+        $id = I('post.id',0);
+        $merchantSeq = generateOrderno(); // 流水号, 调用方生成，确保唯一
+        $platformId = C('platformId'); // 平台号, 民生银行生成
+        $cmbcInfo = $stores->queryCMBCIDByStoreId($id);
+        $merchantNo = $cmbcInfo['cmbcmchntid'];
+        $tradeType = '2';
+        $orgvoucherNo = I('post.orgvoucherNo','');
+        $reserve = I('post.reserve','');
+        $merchantNo = 'M01002017030000013951';
+        $merchantSeq = 'A00002016120000000294T225401863';
+        $orgvoucherNo = '10862016070514230500';
+
+        $postdata = array(
+            'platformId' => $platformId,
+            'merchantNo' => $merchantNo,
+            'merchantSeq' => $merchantSeq,
+            'tradeType' => $tradeType,
+            'orgvoucherNo' => $orgvoucherNo,
+            'reserve' => $reserve,
+        );
+        $SourceData = json_encode($postdata);
+        $msbank = new MSBank();
+        $ret = $msbank->queryTransaction($SourceData);
         $this->show(json_encode($ret));
     }
 

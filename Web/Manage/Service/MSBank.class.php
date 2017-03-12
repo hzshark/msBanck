@@ -95,12 +95,14 @@ class MSBank
         $httpreps = http_post_data($URL, $sendMsg);
         if ($httpreps[0] == 200) {
             $repdata = json_decode($httpreps[1], true);
+//             var_dump($repdata);
             $reps_encryptedData = $repdata['businessContext'];
             $decryptRes = $this->decryptRespone($reps_encryptedData);
             $backstr = base64_decode($decryptRes);
             $backarray = json_decode($backstr, true);
             $result_body = $backarray['body'];
             $result_bodyarray = json_decode($result_body, true);
+//             var_dump($result_bodyarray);
             if ($result_bodyarray['respCode'] != '0000') {
                 $result['status'] = 5;
                 $result['msg'] = 'CMBC Action Failed. Result:' . $result_bodyarray['errorMsg'];
@@ -180,6 +182,11 @@ class MSBank
     public function pay($SourceData)
     {
         $URL = C('PAY_URL');
+        return $this->cmbcAction($SourceData, $URL);
+    }
+
+    public function queryTransaction($SourceData){
+        $URL = C('QUERY_TRANSACTION_URL');
         return $this->cmbcAction($SourceData, $URL);
     }
 

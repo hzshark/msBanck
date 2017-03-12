@@ -1,0 +1,319 @@
+﻿<extend name="Public/base_logged" />
+<block name="style">
+	<style>
+
+	</style>
+</block>
+<block name="body">
+  <section class="vbox">
+  	<section>
+      <section class="hbox stretch">
+        <section id="content">
+          <section class="vbox">
+            <section class="scrollable padder">
+              <header class="header bg-white b-b clearfix">
+                <div class="row m-t-sm">
+                  <div class="col-sm-5 m-b-xs">
+                    <ul class="breadcrumb no-border no-radius b-light pull-in">
+                      <li><a href="{:U('Admin/index')}"><i class="fa fa-home"></i> 首页</a></li>
+                      <li><a class="active">口碑门店</a></li>
+                    </ul>
+                  </div>
+                  <div class="col-sm-4 m-b-xs">
+	                	<span class="green">今日新增门店：<?php echo $new_store;?></span>
+                  </div>
+                  
+                  <div class="col-sm-9 m-b-xs">
+                    <div class="search_box">
+                      <form action="{:U('DealStore/showStore')}" class="form_search" method="get">
+                        <select class="slt_field_name" data-target=".ipt_search_id" id="selectinfo">
+                          <option value="store_id"<notempty name="cond['store_id']"> selected="selected"</notempty>>门店ID</option>
+                          <eq name="manage_is_admin" value="true">
+                          <option value="user_id"<notempty name="cond['user_id']"> selected="selected"</notempty>>用户ID</option>
+                          </eq>
+                          <option value="brand_name"<notempty name="cond['brand_name']"> selected="selected"</notempty>>品牌</option>
+                          <option value="main_shop_name"<notempty name="cond['main_shop_name']"> selected="selected"</notempty>>门店名称</option>
+                          <option value="branch_shop_name"<notempty name="cond['branch_shop_name']"> selected="selected"</notempty>>分店名称</option>
+                          <option value="address"<notempty name="cond['address']"> selected="selected"</notempty>>地址</option>
+                          <option value="contact_number"<notempty name="cond['contact_number']"> selected="selected"</notempty>>显示电话</option>
+                          <option value="notify_mobile"<notempty name="cond['notify_mobile']"> selected="selected"</notempty>>联系电话</option>
+                          <option value="audit_status" <notempty name="cond['audit_status']"> selected="selected"</notempty>>审核状态</option>
+                        </select>
+                        <input type="text" class="ipt_search_id" name="store_id" maxlength="28" value="{$cond['_seach_text']}" id="search_box"/>
+                        城市：{:W('Manage/City/three',array(array('province_code','city_code','district_code'),array(I('province_code'),I('city_code'),I('district_code'))));}
+                        <input type="hidden" value="{$field}" name="field_type"><!-- 保证搜索在指定行业 -->	
+                        <button class="btn_search">搜索</button>
+                      </form>  
+                    </div>               
+                  </div>
+                  <div class="col-sm-3 m-b-xs">
+                    <form action="{:U('DealStore/showStore')}" method="get">
+                      <div class="input-group">
+                        <input type="text" class="input-sm form-control" placeholder="请输入总店名或分店名或品牌名" name="content"  value="{$content}">
+                        <span class="input-group-btn">
+                          <button class="btn btn-sm btn-default" type="submit">Go!</button>
+                        </span> 
+                        <input type="hidden" value="{$field}" name="field_type"><!-- 保证搜索在指定行业 -->
+                      </div>
+                    </form>
+                  </div>
+              </header>
+
+              <section class="scrollable wrapper w-f">  
+                <!--门店数据遍历-->
+                <div class="manageCont">               	
+                    <div class="table-responsive">
+                      <table class="table table-striped m-b-none">
+                        <caption>切换至：
+                        	<if condition="$field eq 1">
+                        		<a href="{:U('DealStore/showStore',array('field_type'=>2))}"><button type="button" class="btn btn-primary rounded">全行业</button></a>
+                        		（当前泛行业）
+                        	<else />
+                        		<a href="{:U('DealStore/showStore',array('field_type'=>1))}"><button type="button" class="btn btn-info rounded">泛行业</button></a>
+                        		（当前全行业）
+                        	</if>
+                        </caption>
+                        <!--表头-->
+                        <thead>
+                          <tr>                        
+                            <th>门店id</th>
+                            <th>用户名</th>
+                            <th>门店名称</th>
+                            <th>类目</th>
+                            <th>支付宝显示</th>
+                            <th>支付宝上架</th>
+                            <th>审核状态</th>
+                            <th>操作</th>
+                          </tr>
+                        </thead>
+                        <!--表体-->
+                        <tbody>
+                          <notempty name="_list">
+                          	<volist name="_list" id="vo">
+                              <tr data-id="{$vo['id']}">                       
+                                <td><?php echo $vo['id']; ?></td>
+                                <td>{$vo['username']}</td>
+                                <td>{$vo['main_shop_name']}<notempty name="vo['branch_shop_name']">({$vo.branch_shop_name})</notempty></td>
+                                <td>{$vo['category_name']}</td>
+                                <td>{$vo['is_show_text']}</td>
+                                <td>{$vo['is_online_text']}</td>
+                                <td>
+                                  <span <eq name="vo['audit_status']" value="AUDIT_FAILED"> data-toggle="tooltip" title="原因：{$vo['audit_desc']}"</eq>>
+                                    {$vo['audit_status_text']}
+                                  </span>
+                                </td>
+                                <td>
+                                  <!--提交审核在新增时已经提交-->
+					                        <if condition="C('DEAL_AUTH_ENABLE') eq true AND empty($vo['shop_id']) AND $vo['audit_status'] neq 'AUDITING'">
+                                    <a href="{:U('DealStore/submit',array('id'=>$vo['id'],'uid'=>$vo['user_id']))}" class="popup-store-submit btn btn-primary">提交审核</a>
+                                  </if>
+					                        <if condition="C('DEAL_AUTH_ENABLE') eq true AND $vo['audit_status'] eq 'AUTO_FAIL' AND $vo['version'] neq '2.0'">
+                                    <a href="{:U(CONTROLLER_NAME.'/submit?id='.$vo['id'])}" class="popup-store-submit btn btn-default">重新提交审核</a>
+                                  </if>
+                                  <a href="{:U(CONTROLLER_NAME.'/modify?id='.$vo['id'].'&uid='.$vo['user_id'])}" data-audit-status="{$vo['audit_status']}" class="btn btn-warning btn_store_edit">资料修改</a>
+                                  <empty name="vo['cashier_loginname']">
+                                    <if condition="empty($vo['shop_id'])">
+                                      <a href="javascript:void(0);" data-toggle="tooltip" title="当前门店还未审核，无法设置门店收款帐号。" class="btn btn-success">生成蓝河马收款账号</a>
+                                    <else/>
+                                      <a href="{:U('DealCashier/index',array('store_id'=>$vo['id'],'uid'=>$vo['user_id']))}" data-toggle="tooltip" title="设置门店收银软件登录账号，用于登录蓝河马收银软件。" class="btn btn-success">蓝河马收款账号管理</a>
+                                    </if>
+                                  </empty>
+                                  <a href="{:U('storeSetting',array('store_id'=>$vo['id']))}"  class="btn btn-info" title="设置门店手机号码等">门店设置</a>
+                                  <a href="javascript:void(0);" class="btn_store_more btn btn-info">更多</a>
+                        					<if condition="$vo['apply_id'] neq ''">
+                        					<a href="{:U('batchQuery',array('apply_id'=>$vo['apply_id'],'user_id'=>$vo['user_id']))}" class="view_audit_status btn btn-default">查看审核状态</a>
+                        					</if>
+                                </td>
+                              </tr>
+
+                              <tr class="data-table-line-detail-tr" style="display:none;">
+                                <td colspan="8">
+                                  <table class="table m-b-none">
+                                    <tr>
+                                      <td>支付宝门店ID：{$vo['shop_id']|default='无'}</td>
+                                      <td>城市：{$vo['province_code_name']}-{$vo['city_code_name']}-{$vo['district_code_name']}</td>
+                                      <td>营业时间：{$vo['business_time']|default='无'}</td>
+                                      
+                                    </tr>
+                                    <tr> 
+                                      <td>地址：{$vo['address']}  <a href="javascript:void(0);" data-lon="{$vo['longitude']}" data-lat="{$vo['latitude']}" target="_blank">坐标</a> </td>
+                                      <td>显示电话：{$vo['contact_number']|default='无'}</td>
+                                      <td>联系电话：{$vo['notify_mobile']|default='无'}</td>
+                                      <td>
+                                       	 操作：
+                                        <if condition="C('DEAL_AUTH_ENABLE') eq true AND !empty($vo['shop_id'])">
+                                        <a href="{:U(CONTROLLER_NAME.'/view?id='.$vo['id'])}" title="查看当前线上信息" class="popup-store-view">查看</a>&nbsp;&nbsp;&nbsp;
+                                        <a href="{:U(CONTROLLER_NAME.'/syncStore?id='.$vo['id'])}" title="和支付宝信息同步" class="ajax-get">同步</a>&nbsp;&nbsp;&nbsp;
+                                        <if condition="$manage_is_admin eq true or $is_qudao eq true">
+                                        <a href="{:U(CONTROLLER_NAME.'/qrcode?id='.$vo['id'])}"  class="popup-qrcode-view mfp-image">门店二维码</a>&nbsp;&nbsp;&nbsp;
+                                       
+                                        <a target="_blank" href="{:U(CONTROLLER_NAME.'/payQrcode?shop_id='.$vo['shop_id'])}"  class="popup-qrcode-view mfp-image">收款二维码</a>&nbsp;&nbsp;&nbsp;
+
+                                        </if>
+                                        </if>
+                                        <!-- <eq name="vo['is_show']" value="T">
+                                        <a href="{:U(CONTROLLER_NAME.'/showStatus?method=F&id='.$vo['id'])}" class="ajax-get" style="color:#009DDA">隐藏</a>&nbsp;&nbsp;&nbsp;
+                                        <else/>
+                                        <a href="{:U(CONTROLLER_NAME.'/showStatus?method=T&id='.$vo['id'])}" class="ajax-get" style="color:#009DDA">显示</a>&nbsp;&nbsp;&nbsp;
+                                        </eq> -->
+                                        <if condition="$vo['audit_status'] eq 'AUDIT_SUCCESS' OR $vo['audit_status'] eq 'AUTO_PASS'">
+                                        <!-- <eq name="vo['is_online']" value="T">
+                                        <a href="{:U(CONTROLLER_NAME.'/onlineStatus?method=F&id='.$vo['id'])}" class="ajax-get">下架</a>
+                                        <else/>
+                                        <a href="{:U(CONTROLLER_NAME.'/onlineStatus?method=T&id='.$vo['id'])}" class="ajax-get">上架</a>
+                                        </eq> -->
+                                        </if>
+                                        <if condition="($vo.shop_id eq '') or ($vo.is_online eq 'F' and $vo.is_show eq 'F')">
+                                        	<a href="{:U(CONTROLLER_NAME.'/delete?id='.$vo['id'])}" class="confirm ajax-get">删除</a>
+                                        </if>
+                                       
+          								<if condition="$manage_is_admin eq true and $vo.local_lock eq 1">
+          									<a href="{:U('deleteLock',array('id'=>$vo['id'],'method'=>0))}" class="confirm ajax-get">解锁</a>
+          								</if>
+                                      </td>
+                                    </tr>
+                                  </table>
+                                </td>
+                              </tr>
+                          	</volist>
+                            <!--遍历结束-->
+                            <else/>
+                              <td colspan="9" class="text-center"> 还没有内容! <a href="{:U('add?uid='.$current_user_id)}">新增门店</a></td>
+                          </notempty>
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div id="top-alert" class="layerBox">
+                      <a href="#" class="layerCloseBtn close">关闭</a>
+                      <div class="layerInfo alert-content">未知信息！</div>
+                      <div class="mt10"><a href="#" class="layerBtn layerBtn1 mr10">确定</a><a href="#" class="layerBtn layerBtn2">返回</a></div>
+                    </div>
+                </div>
+              </section>
+              <footer class="footer bg-white b-t">
+                {$_page}
+              </footer>
+            </section>
+          </section>
+        </section>
+      </section>
+    </section>
+  </section>
+</block>
+
+<block name="script">
+<js href="__STATIC__/jquery.noty.packaged.min.js"/>
+<js href="__JS__/list.js"/>
+
+<script type="text/javascript" charset="utf-8">
+  $(document).ready(function(){
+	$('.popup-qrcode-view').magnificPopup();
+    $('.popup-store-submit').magnificPopup({
+      disableOn: 700,
+      type: 'iframe',
+      mainClass: 'mfp-fade',
+      removalDelay: 160,
+      preloader: false,
+      closeOnBgClick: false,
+      enableEscapeKey:false,
+      fixedContentPos: false,
+      callbacks: {
+        beforeOpen: function(){
+          $(this.content).find(".mfp-close").hide();
+        },
+        open: function(){
+          var content = this.content;
+          $(content).find(".mfp-close").hide();
+          $(content).find("iframe").load(function(event) {
+            //console.log('load2',this,arguments);
+            $(content).find(".mfp-close").show();
+          });
+        },
+        close: function(){
+          //console.log('ssss3',arguments);
+          document.location.reload();
+        }
+      }
+    });
+		$('.view_audit_status').magnificPopup({
+			type: 'iframe',type: 'iframe',
+		});
+		$('#download-store').magnificPopup({
+			disableOn: 700,
+			type: 'iframe',
+			mainClass: 'mfp-fade',
+			removalDelay: 160,
+			preloader: false,
+			closeOnBgClick: true,
+			enableEscapeKey:false,
+			fixedContentPos: false,
+			callbacks: {
+				beforeOpen: function(){
+					$(this.content).find(".mfp-close").hide();
+				},
+				open: function(){
+					var content = this.content;
+					$(content).find(".mfp-close").hide();
+					$(content).find("iframe").load(function(event) {
+						//console.log('load2',this,arguments);
+						$(content).find(".mfp-close").show();
+					});
+				},
+				close: function(){
+					//console.log('ssss3',arguments);
+					document.location.reload();
+				}
+			}
+		});
+    $('.popup-store-view').magnificPopup({
+      disableOn: 700,
+      type: 'iframe',
+      mainClass: 'mfp-fade',
+      removalDelay: 160,
+      preloader: false
+    });
+
+    $(".btn_store_edit").click(function(event){
+      var s = $(this).attr("data-audit-status");
+      if(s == "AUDITING"){
+        alert("正在审核，不能修改！");
+        event.preventDefault();
+              return false;
+      }
+      if(s == "AUDIT_SUCCESS"){
+        if(!confirm('门店已经通过审核，确认修改？')){
+          event.preventDefault();
+                  return false;
+              }       
+      }
+    });
+
+    $("td>span.store_id").dblclick(toggle_detail);
+    $("a.btn_store_more").click(toggle_detail);
+    function toggle_detail(event){
+      var tr = $(this).closest('tr');
+      tr.next().toggle();
+    }
+
+    //搜索js
+    $(".search_box .slt_field_name").change(function(event){
+      var slt = $(this).attr("data-target");
+      var val = $(this).find("option:selected").attr("value");
+      if(slt && val){
+        $(this).parent().find(slt).attr("name",val);
+      }
+    });
+    $(".search_box .slt_field_name").change();
+    var vals = $(".search_box .slt_field_name option").attr("value");
+    //alert(vals);
+    $(".search_box form").submit(function(event) {
+      /*var data = $(this).serialize();
+      alert(data);
+      return false;*/
+    });
+  });
+
+</script>
+
+</block>

@@ -21,4 +21,5 @@ return array(
 
     'PAY_URL' => "http://wxpay.cmbc.com.cn/mobilePlatform/appserver/lcbpPay.do",
     'NOTIFY_URL' => "http://wxpay.cmbc.com.cn/cmbcpaydemo/NoticeServlet?name=notice",
+    'QUERY_TRANSACTION_URL' => 'http://wxpay.cmbc.com.cn/mobilePlatform/appserver/paymentResultSelect.do',
 );

@@ -1,0 +1,420 @@
+<extend name="Public/base_logged" />
+<block name="body">
+  <section class="vbox">
+    <section>  
+      <section class="hbox stretch">
+        <section id="content">
+          <section class="vbox">
+            <section class="scrollable padder">
+              <taglib name="Manage\TagLibrary\Form,Html"/>
+              <!--头部-->
+              <header class="header bg-white b-b clearfix">
+                <div class="row m-t-sm">
+                 <div class="col-sm-8 m-b-xs">
+                  <ul class="breadcrumb no-border no-radius b-light pull-in">
+                    <li><a href="{:U('Admin/index')}"><i class="fa fa-home"></i> 首页</a></li>
+                    <?php if($current_user_id==UID){?>
+                    <li>商家中心</li>
+                    <?php }else{ ?>
+                    <li><a href="{:U('DealUser/index')}">商户列表</a></li>
+                    <?php } ?>
+                    <li><a href="{:U('DealStore/index?uid='.$current_user_id)}">门店管理</a></li>
+                    <li class="active"><?php if($item['id']) echo '资料修改'; else{echo '新增门店';}?></li>
+                  </ul>
+                </div>
+              </header>
+
+              <section class="scrollable wrapper w-f">
+              	<div class="manageCont">
+                  	<div class="boundForm">
+              		  <form action="{:U(ACTION_NAME,array('uid'=>$current_user_id))}" id="form_store_edit" enctype="application/x-www-form-urlencoded" method="POST" class="form-horizontal">
+                      <div class="form_tit"><em>1</em>主要信息</div>
+                      <input type="hidden" name="user_id" value="<?php echo $current_user_id ?>">
+                      <form:item label="类目：" required="1">
+                     	{:W('Manage/Category/choose',array($item['category_id']));}
+   		              </form:item>
+   		             
+                      <form:input name="brand_name" label="品牌：" value="{$item['brand_name']}" />
+                      <span>不填写则默认为“其它品牌”。</span>
+                  
+
+                      <form:item label="Logo：" required="1">
+                          {:W('Manage/Upload/image',array('brand_logo',$item['brand_logo']));}
+                      </form:item>
+                      <span>不填写则默认为门店首图。</span>
+      				
+                      <form:input name="main_shop_name" label="门店名称：" required="1" value="{$item['main_shop_name']}" />
+      				
+                      <form:input name="branch_shop_name" label="分店名称：" value="{$item['branch_shop_name']}" />
+   		              <form:item label="城市：" required="1">
+   		                    {:W('Manage/City/three',array(array('province_code','city_code','district_code'),array($item['province_code'],$item['city_code'],$item['district_code'])));}
+   		              </form:item>
+                      <form:item label="门店地址：" required="1">
+                        <input type="hidden" id="ipt_longitude" name="longitude" value="{$item['longitude']}">
+                        <input type="hidden" id="ipt_latitude" name="latitude" value="{$item['latitude']}" >
+              					<div class="">
+              						<input type="text" name="address" id="ipt_address" value="{$item['address']}" class="textBox" placeholder="可以先填写地址，再点击“地图定位”"/>
+              						<a href="javascript:void(0);" id="btn_select_map" title="" class="locationBtn fl_l">地图定位</a>          
+                        </div>
+                      </form:item>
+                      <form:item label="门店首图：" required="1">
+                          {:W('Manage/Upload/image',array('main_image',$item['main_image']));}
+                      </form:item>
+                      <span>门店首图，非常重要，推荐尺寸2000*1500</span>
+              				<form:input name="contact_number" label="显示电话：" required="1" value="{$item['contact_number']}" placeholder="必填，支持手机和座机" />
+                      <span>门店电话号码，支持座机和手机，显示在支付宝客户端。多个号码使用英文逗号隔开。</span>
+              				<form:input name="notify_mobile" label="联系电话：" value="{$item['notify_mobile']}" placeholder="选填，仅支持手机" />
+                      <span>用于接收门店状态变更通知、收款成功通知等通知消息，不会显示在支付宝客户端。</span>
+              				<form:input name="business_time" label="营业时间：" value="{$item['business_time']}" placeholder="支持分段营业，如：09:00-11:00,13:00-15:00" />
+              				<form:input name="avg_price" label="人均价格：" value="{$item['avg_price']}" placeholder="如：58.00" />
+				             <!--  <form:item label="付款方式：">
+                        <div class="checkBox"><input type="radio" name="pay_type" id="" value="code_scanned_pay" <eq name="item.pay_type" value="code_scanned_pay">checked="checked"</eq>><label for="">付款码</label></div>
+                        <div class="checkBox"><input type="radio" name="pay_type" id="" value="online_pay" <eq name="item.pay_type" value="online_pay">checked="checked"</eq>><label for="">在线买单</label></div>
+                      </form:item>
+                      <span>付款方式默认为付款码付款。</span> -->
+              				<!-- <form:textarea name="slogan" label="一句话简介：" value="{$item['slogan']}" /> -->
+              				<div class="form_item clearfix">
+            					  <label class="item-label">服务项目：</label>
+                        <div class="controls">
+              						<div class="clearfix">
+							              <div class="checkBox"><label for="chk_wifi"><input type="checkbox" name="wifi" id="chk_wifi" value="T" {$item['wifi']=='T'?'checked':''}/>WIFI </label></div>
+                            <div class="checkBox"><label for="chk_parking"><input type="checkbox" name="parking" id="chk_parking" value="T" {$item['parking']=='T'?'checked':''}>停车</label></div>
+                            <div class="checkBox"><label for="chk_no_smoking"><input type="checkbox" name="no_smoking" id="chk_no_smoking" value="T" {$item['no_smoking']=='T'?'checked':''}>有无烟区</label></div>
+                            <div class="checkBox"><label for="chk_box"><input type="checkbox" name="box" id="chk_box" value="T" {$item['box']=='T'?'checked':''}>有包厢</label></div>
+                          </div>
+            						  <input type="text" name="value_added" class="textBox" placeholder="此处输入其他服务项目" value="{$item['value_added']}" />
+                        </div>
+                      </div>
+                      <div class="form_tit"><em>2</em>认证资料</div>
+                        <!-- 资料种类开始 -->         
+                        <form:item label="资料种类：">
+                            <div class="checkBox"><input type="radio" name="is_operating_online" id="chk_audit_type_1" value="F" {$item['is_operating_online']!='T'?'checked':''}><label for="chk_audit_type_1">营业执照</label></div>
+                            <div class="checkBox"><input type="radio" name="is_operating_online" id="chk_audit_type_2" value="T" {$item['is_operating_online']=='T'?'checked':''}><label for="chk_audit_type_2">竞品截图开店</label></div>
+                        </form:item>
+                        <!-- 资料种类结束 --> 
+                        <form:item label="门店审核图片：" required="1">
+                            {:W('Manage/Upload/multiimage',array('audit_images',$item['audit_images']));}
+                        </form:item>
+                        <span>门店审核时需要的图片，至少包含一张门头照片，两张内景照片，必须反映真实的门店情况</span>
+                        <div id="audit_type_licence">
+                            <!-- 营业执照开始 -->
+                            <form:input name="licence_code" label="营业执照编号：" required="1" value="{$item['licence_code']}" />
+                            <form:input name="licence_name" label="营业执照名称：" required="1" value="{$item['licence_name']}" />
+                            <form:item label="营业执照上传：" required="1">
+                                {:W('Manage/Upload/image',array('licence',$item['licence']));}
+                            </form:item>
+                            <!-- 营业执照结束 -->                    
+                        </div>
+                        <div id="audit_type_other">
+                            <!-- 其他平台开始 -->
+                            <if condition="$item['version'] neq '2.0' and $item['audit_status'] eq 'AUDIT_FAILED' and !$audit_success_log">
+                            <form:item label="其他平台图片：" required="1">
+                                {:W('Manage/Upload/multiimage',array('online_image',$item['online_image']));}
+                            </form:item>
+                            <else />
+                            <form:input name="online_url" label="其他平台链接："  required='1' value="{$item['online_url']}" placeholder="" />
+                            <span>如果有多个链接，请用英文逗号 ","隔开。切记必须是英文逗号。</span>
+                            </if>
+                            <!-- 其他平台结束 -->               
+                        </div>
+                        <!-- 经营许可证开始 -->
+                        <div id="business_certificate">
+                        	<form:item label="许可证上传：" required="">
+                                {:W('Manage/Upload/image',array('business_certificate',$item['business_certificate']));}
+                            </form:item>
+                            <span>包括经营许可证、卫生许可证等相关证件</span>
+                        	<form:input name="business_certificate_expires" label="经营许可证有效期：" required="" value="{$item['business_certificate_expires']}" />
+                        	<span>格式：2020-03-20</span>
+                        </div>
+                        <!-- 经营许可证结束 -->
+                        <form:item label="授权函：">
+                            {:W('Manage/Upload/image',array('auth_letter',$item['auth_letter']));}
+                        </form:item>
+                        <span>授权函模板：<a href="__PUBLIC__/file/授权函.doc" target="_blank" title="">授权函.doc（点击下载）</a> <a href="__PUBLIC__/file/授权函.pdf" target="_blank" title="查看PDF版本">PDF版</a></span>
+                        <!-- 其他资质 --> 
+                        <form:item label="其他资质证明：" required="">
+                            {:W('Manage/Upload/multiimage',array('other_authorization',$item['other_authorization']));}
+                        </form:item>
+                        <span>用于上传营业证照、许可证照外的其他资质，除已上传许可证外的其他许可证也可以在该字段上传。</span>
+                        <notempty name="item['shop_id']">
+                          <div>
+                              <span>注意：修改门店名、首图、门店图片、营业执照相关字段、是否在其他平台开店相关字段，会重新审核。如果您本次修改了较多图片，请耐心等待。</span>
+                          </div>
+                        </notempty>
+              				  <div class="p-h">
+                          <input type="hidden" name="id" class="no-validate" value="{$item.id}" />
+                          <input type="hidden" name="_returnUrl" class="no-validate" value="{$Think.server.http_referer}" />
+              					<button type="submit" class="reg_btn mr10 ajax-post" target-form="form-horizontal">
+                          <empty name="item['shop_id']">
+                          确 定
+                          <else/>
+                          保存并提交
+                          </empty>
+                        </button>
+              					<button class="return_btn" onclick="javascript:history.back(-1);return false;">返 回</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </section>
+            </section> 
+          </section>
+        </section> 
+      </section> 
+    </section>    
+  </section>
+</block>
+
+<block name="script">
+<js href="http://webapi.amap.com/maps?v=1.3&key={:C('AMAP.KEY')}" noversion="true"/>
+<js href="__JS__/map_selecter.js"/>
+<js href="__STATIC__/jquery.validate.js"/>
+<js href="__STATIC__/jquery.validate.methods.js"/>
+<js href="__STATIC__/jquery.validate.messages_zh.js"/>
+<script type="text/javascript" charset="utf-8">
+$(function(){
+    function MapBox(parent){
+        var self = this;
+        var mapId = 'map_select_location';
+        var selector;
+        var mapBox = null;
+        this.magnificPopupInstance = null;
+        this.selected_object = null;
+        $('<div id="'+mapId+'" class="amap_popup_container"><div id="'+mapId+'_box" class="amap_container_map"></div><div class="amap_container_bar div_current_address">当前选择：<span class="spn_current_address"></span><label><input type="checkbox" class="cbx_use_this_address"/>使用该地址作为门店地址</label></div><div class="amap_container_bar"><a href="javascript:void(0);" class="btn_success">选好了</a><a href="javascript:void(0);" class="btn_cancel">取消</a></div></div>').appendTo($(parent || 'body').first());
+        $("#map_select_location").css('position','absolute');
+        $("#map_select_location").css('z-index','5');
+        $("#map_select_location").css('margin','-200px 200px');
+        mapBox = $('#'+mapId);
+        selector = new BMPayAMapSelector("#"+mapId+"_box");
+
+        selector.createMarkerHandler = function(marker){
+            self.showBtnSuccess();
+            self.refreshAddress(selector.getSelectPoint());
+        };
+        selector.changeMarkerHandler = function(marker){
+            self.refreshAddress(selector.getSelectPoint());
+        };
+
+        mapBox.find('.btn_cancel').click(function(event){
+            self.magnificPopupInstance.close();
+        });
+        mapBox.find('.amap-container-btn').addClass('disable');
+        this.popup = function(){
+            $.magnificPopup.open({
+                items: {src: '#'+mapId},
+                type: 'inline',
+                preloader: false
+            });
+            self.magnificPopupInstance = $.magnificPopup.instance;
+        };
+        this.refresh = function(){
+            var lon = $('#ipt_longitude').val();
+            var lat = $('#ipt_latitude').val();
+            var add = $("#ipt_address").val();
+            if(lon && lat){
+                selector.setSelectPoint([lon, lat]);
+                this.setPointByAddress(add);
+            }else if(add){
+                selector.setSelectPoint(null);
+                this.setPointByAddress(add);
+            }else{
+                selector.setSelectPoint(null);
+            }
+        };
+        this.refreshAddress = function(point){
+            mapBox.find('input.cbx_use_this_address').attr("checked",($("#ipt_address").val()=="")?"checked":null);
+            mapBox.find('.div_current_address').show();
+            BMPayAMapSelector.getAddressByPoint(point,function(data){
+                var text = data.regeocode.formattedAddress;
+                mapBox.find('span.spn_current_address').html(text);
+                var cc = data.regeocode.addressComponent;
+                self.selected_object = {
+                    province: cc.province,
+                    city: cc.city,
+                    district: cc.district,
+                    township: cc.township,
+                    street: cc.street,
+                    streetNumber: cc.streetNumber,
+                    neighborhood: cc.neighborhood,
+                    neighborhoodType: cc.neighborhoodType
+                };
+            });
+        };
+        this.setPointByAddress = function(add){
+            BMPayAMapSelector.getPointByAddress(add,function(data){debugger;
+                var los = data.geocodes;
+                if(los.length){
+                    var lo = los[0].location;
+                    var point = [lo.lng, lo.lat];
+                    selector.setSelectPoint(point);
+                    selector.getMap().setCenter(point);
+                }
+            });
+        };
+        this.showBtnSuccess = function(){
+            mapBox.find(".btn_success").removeClass("disable").click(function(event){
+                self.clickBtnSuccess();
+                //$('#ipt_longitude').val("");
+                //$('#ipt_latitude').val("");
+            });
+        };
+        this.clickBtnSuccess = function(){
+            var tmp_point = selector.getSelectPoint()
+            if(tmp_point && tmp_point.length > 1){
+                $('#ipt_longitude').val(tmp_point[0]);
+                $('#ipt_latitude').val(tmp_point[1]);
+                if(mapBox.find('input.cbx_use_this_address').is(":checked")){
+                    var address = mapBox.find('span.spn_current_address').html();
+                    $("#ipt_address").val(address);
+                }
+                this.magnificPopupInstance.close();
+            }
+        };
+
+        mapBox.find(".btn_success").addClass("disable");
+        mapBox.find(".div_current_address").hide();
+    }
+
+
+    //地图选点
+    var amapController = null;
+    $('#btn_select_map').click(function(event) {
+        if(!amapController){
+            amapController = new MapBox();
+        }
+        amapController.popup();
+        amapController.refresh();
+    });
+
+
+    var form_store_validate = $("#form_store_edit").validate({
+        ignore: ".no-validate",
+        rules : {
+            category_id : "required",
+            brand_name : "required",
+            brand_logo : "required",
+            main_shop_name : "required",
+            province_code : "required",
+            city_code : "required",
+            district_code : "required",
+            longitude : "required",
+            latitude : "required",
+            address : "required",
+            licence_code:"required",
+            online_image:"required",
+            /* online_url:"required", */
+            contact_number : "required",
+            main_image : "required",
+            audit_images : {
+                required : true,
+                minIdLength : 3
+            },
+            notify_mobile : {
+                mobileCN :true
+            },
+            business_time : {
+                multiple : 'rangeTime'
+            },
+            avg_price : {
+                min : 0,
+                max : 9999
+            }
+        },
+        messages : {
+            audit_images : {
+                minIdLength : jQuery.validator.format("至少包含 {0} 张图片！")
+            }
+        },
+        groups: {
+            city: "province_code city_code district_code",
+            addr: "longitude latitude address"
+        },
+        errorPlacement: function(error, element) {
+            var n = element.attr("name");
+            var g_c = "province_code city_code district_code".split(" ");
+            var g_a = "longitude latitude address".split(" ");
+            if(g_c.indexOf(n) > -1){
+                error.insertAfter("#form_store_edit select[name=district_code]");
+            }else if(g_a.indexOf(n) > -1){
+                error.insertAfter("#btn_select_map");
+            }else{
+                error.insertAfter(element);
+            }
+        },
+        errorClass: "box_error"
+    });
+    //console.log(form_store_validate);
+
+    //资料种类
+    +function(){
+      var is_operating_online = $('input[name="is_operating_online"]:checked').val();
+      $('input[name="is_operating_online"]').on('click',function(){
+        is_operating_online = $(this).val();
+        refresh(is_operating_online);
+      })
+      refresh(is_operating_online);
+      function refresh(is_operating_online){
+        var is_online_image = $('input[name="online_image"]').val();
+        var is_online_url = $('input[name="online_url"]').val();
+        //console.log(is_online_image);
+        if(is_operating_online == 'F'){
+          if(is_online_url != undefined){
+            $("#form_store_edit input[name=online_url]").rules("remove");
+          }
+          if(is_online_image != undefined){
+            $("#form_store_edit input[name=online_image]").rules("remove");
+          }
+          $("#form_store_edit input[name=licence_name]").rules("add",{required:true});
+          $("#form_store_edit input[name=licence]").rules("add",{required:true});
+            
+          $('#audit_type_other').hide();
+        }else{
+          if(is_online_url != undefined){
+            //$("#form_store_edit input[name=online_url]").rules("add",{required:true});
+          }
+          if(is_online_image != undefined){
+            //$("#form_store_edit input[name=online_image]").rules("add",{required:true});
+          }
+          $("#form_store_edit input[name=licence_name]").rules("remove");
+          $("#form_store_edit input[name=licence]").rules("remove");
+            
+          $('#audit_type_other').show();
+        }
+      }
+    }();
+
+
+
+    var category_id = "{$item.category_id}";
+   /*  var need_business_certificate = {$need_business_certificate};
+    
+    show_business_certificate(category_id); */
+    $('#category_id').on('change',function(){
+      category_id = $(this).val();
+      show_business_certificate(category_id);
+    })
+    function show_business_certificate(category_id){
+      if(need_business_certificate.indexOf(category_id) != -1){
+        $('#business_certificate').show();
+        /* $("#form_store_edit input[name=business_certificate]").rules("add",{required:true}); */
+      }else{
+        $('#business_certificate').hide();
+        /* $("#form_store_edit input[name=business_certificate]").rules("remove"); */
+      }
+    }
+
+
+    //image box popup
+    $(".upload-pre-item a.view").magnificPopup({type: "image"});
+
+    
+
+
+
+    
+});
+//导航高亮
+//highlight_subnav('{:U('AuthManager/index')}');
+</script>
+</block>
+

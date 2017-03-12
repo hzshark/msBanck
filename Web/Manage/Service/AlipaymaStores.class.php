@@ -3,15 +3,49 @@ namespace Manage\Service;
 
 class AlipaymaStores
 {
+    public $AUDIT_PASS = 1;
+    public $AUDIT_FAILED = 2;
+    public $UNAUDIT = 0;
     public function queryAllStores(){
         $store = D("Store");
         return $store->select();
+    }
+
+    public function queryStoresByStoreId($id){
+        $store = D("Store");
+        $where['id'] = $id;
+        return $store->where($where)->select();
+    }
+
+    public function queryStoresByAcdCode($acdCode){
+        $store = D("Store");
+        $where['acdCode'] = $acdCode;
+        return $store->where($where)->select();
+    }
+
+    public function queryStoresByAcdCodeAndName($acdCode, $name){
+        $store = D("Store");
+        $where['acdCode'] = $acdCode;
+        $where['_string'] = ' (mchntName like "%'.$name.'%")  OR ( mchntFullName like "%'.$name.'%") ';
+        return $store->where($where)->select();
+    }
+
+    public function queryStoresByLikeName($name){
+        $store = D("Store");
+        $where['_string'] = ' (mchntName like "%'.$name.'%")  OR ( mchntFullName like "%'.$name.'%") ';
+        return $store->where($where)->select();
     }
 
     public function queryStoreinfoById($id){
         $store = D("Store");
         $where['id'] = $id;
         return $store->where($where)->find();
+    }
+
+    public function delStoreinfoById($id){
+        $store = D("Store");
+        $where['id'] = $id;
+        return $store->where($where)->delete();
     }
 
     public function queryCMBCIDByStoreId($id){
@@ -34,9 +68,11 @@ class AlipaymaStores
         $paymodel = D('Payinfo');
         $paymodel->add($paydata);
     }
-    private function createCmbcStore($storeid, $cmbcMchntId){
+    private function createCmbcStore($storeid, $cmbcMchntId, $outMchntId){
         $cmbc = D('Cmbcstore');
         $data['storeid'] = $storeid;
+        $data['outMchntId'] =
+        $data['indate'] = $indate = date('Y-m-d H:i:s', time());
         $data['cmbcMchntId'] = $cmbcMchntId;
         $cmbc->add($data);
     }
@@ -47,6 +83,13 @@ class AlipaymaStores
         $data['respone'] = json_encode($reponseData);
         $model->add($data);
     }
+
+    public function setStoreStatus($id, $status){
+        $store = D("Store");
+        $where['id'] = $id;
+        $data['status'] = $status;
+        return $store->where($where)->save($data);
+    }
     public function registerOder($storeId, $senddata, $respone){
         $this->addPayInfo($storeId, $senddata, $respone);
         $res = $respone['respone'];
@@ -54,8 +97,10 @@ class AlipaymaStores
         $res = json_decode($res_body, true);
         $cmbcMchntId = $res['cmbcMchntId'];
         if (isset($cmbcMchntId)){
-            $this->createCmbcStore($storeId, $cmbcMchntId);
-            $this->createCmbcStore($storeId, $cmbcMchntId);
+            $this->createCmbcStore($storeId, $cmbcMchntId, $senddata['outMchntId']);
+            $this->setStoreStatus(storeId, $this->AUDIT_PASS);
+        }else {
+            $this->setStoreStatus(storeId, $this->AUDIT_FAILED);
         }
         $this->setOderLog($storeId, $senddata, $respone);
     }
@@ -92,7 +137,7 @@ class AlipaymaStores
     {
         $model = D("store");
         $where['id'] = $id;
-        $data['status'] = 0;
+        $data['status'] = $this->UNAUDIT;
         $data['mchntName'] = $postdata['mchntName'];
         $data['mchntFullName'] = $postdata['mchntFullName'];
         $data['parentMchntId'] = $postdata['parentMchntId'];
@@ -142,6 +187,50 @@ class AlipaymaStores
         $data['indate'] = date('Y-m-d H:i:s', time());
         $model->add($data);
     }
+
+    public function addWXPayInfo($postdata, $status, $payCode){
+        $wx = D('Wxpay');
+        $data['status'] = $status;
+        $data['payCode'] = $payCode;
+        $data['amount'] = $postdata['amount'];
+        $data['orderInfo'] = $postdata['orderInfo'];
+        $data['merchantSeq'] = $postdata['merchantSeq'];
+        $data['transDate'] = $postdata['transDate'];
+        $data['transTime'] = $postdata['transTime'];
+        $data['notifyUrl'] = $postdata['notifyUrl'];
+        $data['remark'] = $postdata['remark'];
+        $wx->add($data);
+    }
+
+    public function addAliPayInfo($postdata, $status, $payCode){
+        $alipay = D('Alipay');
+        $data['status'] = $status;
+        $data['payCode'] = $payCode;
+        $data['amount'] = $postdata['amount'];
+        $data['orderInfo'] = $postdata['orderInfo'];
+        $data['merchantSeq'] = $postdata['merchantSeq'];
+        $data['transDate'] = $postdata['transDate'];
+        $data['transTime'] = $postdata['transTime'];
+        $data['notifyUrl'] = $postdata['notifyUrl'];
+        $data['remark'] = $postdata['remark'];
+        $alipay->add($data);
+    }
+
+    public function addQQPayInfo($postdata, $status, $payCode){
+        $QQ = D('Qqpay');
+        $data['status'] = $status;
+        $data['payCode'] = $payCode;
+        $data['amount'] = $postdata['amount'];
+        $data['orderInfo'] = $postdata['orderInfo'];
+        $data['merchantSeq'] = $postdata['merchantSeq'];
+        $data['transDate'] = $postdata['transDate'];
+        $data['transTime'] = $postdata['transTime'];
+        $data['notifyUrl'] = $postdata['notifyUrl'];
+        $data['remark'] = $postdata['remark'];
+        $QQ->add($data);
+    }
+
+
 }
 
 ?>
