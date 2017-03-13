@@ -32,7 +32,7 @@ input{behavior:url(#default#savehistory)};
               <section class="scrollable wrapper w-f">
               	<div class="manageCont">
                       <div class="boundForm">
-              		<form data-validate="parsley"  name="BindPayment" action="BindPayment" id="form_store_edit" enctype="application/x-www-form-urlencoded" method="POST" class="form-horizontal">
+              		<form data-validate="parsley"  name="ModPayment" action="ModPayment" id="form_store_edit" enctype="application/x-www-form-urlencoded" method="POST" class="form-horizontal">
               		<input type="hidden" name="id" value="{$store.id}" />
               		<input type="hidden" name="signid" id="signid" value="" />
                        <label class="form_tit">绑定支付通道</label>
@@ -88,7 +88,7 @@ input{behavior:url(#default#savehistory)};
                       <div class="form_item clearfix">
                         <label class="item-label">固定比例费率：    	<i>*</i>    	</label>
                            <div class="controls">
-                        <input type="text" id="" name="fixFeeRate"  value="" class="textBox" placeholder="" data-required="true" />
+                        <input type="text" id="" name="fixFeeRate"  value="" class="textBox" placeholder="[举例:0.50%填0.50]，小数点后精确到2位。" data-required="true" />
                            </div>
                       </div>
                         <span>填除去%之后的值，例如：0.55%，则填0.55</span>

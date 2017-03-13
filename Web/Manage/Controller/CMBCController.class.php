@@ -40,10 +40,6 @@ class CMBCController extends BaseDealUserController
         }else {
         $storesInfo = $stores->queryAllStores();
         }
-        // var_dump($storesInfo);
-
-
-
         $this->assign("stores", $storesInfo);
 
         $this->display('index', 'utf-8');
@@ -133,9 +129,10 @@ class CMBCController extends BaseDealUserController
         $stores->registerOder($id, $postdata, $ret);
         if ($ret['status'] == 0) {
             $stores->setStoreStatus($id, $stores->AUDIT_PASS);
-            $this->show("商户审核入驻成功,返回结果:<br />" . json_encode($ret['respone']));
+            $this->success("商户审核入驻成功,返回结果:<br />" . json_encode($ret['respone']));
         } else {
-            $this->show("商户审核入驻失败,失败原因:" . $ret['msg'], 10);
+            $stores->setStoreStatus($id, $stores->AUDIT_FAILED);
+            $this->error("商户审核入驻失败,失败原因:" . $ret['msg'], 10);
         }
     }
 
@@ -277,7 +274,7 @@ class CMBCController extends BaseDealUserController
         } else {
             $id = I('post.id',0);
             $apiCode = I('post.apiCode',0); // 支付通道, 类型代码对应： 0005-微信 0007-支付宝 0008-QQ钱包
-            $industryId = I('post.apiCode',0);
+            $industryId = I('post.industryId',0);
             $operateType = I('post.operateType',0); // 接入类型,类型代码对应： 1-间联 2-直联
             $dayLimit = I('post.dayLimit',0); // 日限额, 精确到分
             $monthLimit = I('post.monthLimit',0); // 月限额,精确到分
@@ -292,9 +289,9 @@ class CMBCController extends BaseDealUserController
             $acctTelephone = I('post.acctTelephone','');
             $idType = I('post.idType', '99');
 
-            $account = '6226223380006109';
-            $pbcBankId = '305526061005';
-            $acctName = '测试1247850073';
+//             $account = '6226223380006109';
+//             $pbcBankId = '305526061005';
+//             $acctName = '测试1247850073';
             $storeInfo = $stores->queryStoreinfoById($id);
 
             $txnSeq = generateOrderno(); // 流水号, 调用方生成，确保唯一
@@ -324,17 +321,19 @@ class CMBCController extends BaseDealUserController
                 'account' => $account,
                 'pbcBankId' => $pbcBankId,
                 'acctName' => $acctName,
-                'acctType ' => $acctType,
+                'acctType' => $acctType,
                 'message' => $message,
                 'idCode' => $idCode,
                 "acctTelephone" =>$acctTelephone,
-                'idType'=>$idType
+                'idType'=>$idType,
             );
             $SourceData = json_encode($postdata);
             $msbank = new MSBank();
             $ret = $msbank->bindPayment($SourceData);
             if ($ret['status'] == 0) {
-                //$msbank->ModStoreOder($postdata, $ret);
+                $respone = $ret['respone'];
+                $stores->setPaymentSignIdByStoreId($id, $respone['cmbcSignId'], $apiCode);
+                $stores->setPayment($id, $postdata);
             }
             $this->show(json_encode($ret));
         }
@@ -342,52 +341,80 @@ class CMBCController extends BaseDealUserController
 
     public function ModPayment()
     {
-        header("Content-Type:text/html; charset=utf-8");
-        $txnSeq = generateOrderno(); // 流水号, 调用方生成，确保唯一
-        $platformId = C('platformId'); // 平台号, 民生银行生成
-        $operId = '10086A0001'; // 拓展人员编号
-
-        $outMchntId = 'B0E6109E6CC3C2CB1622C3F881D60663'; // 外部商户号, 商户自己生成，确保唯一
-        $cmbcMchntId = 'M29002017020000012885';
-        $cmbcSignId = 'S29002017020000312739';
-        $apiCode = '0007'; // 支付通道, 类型代码对应： 0005-微信 0007-支付宝 0008-QQ钱包
-
-        $operateType = '2'; // 接入类型,类型代码对应： 1-间联 2-直联
-        $dayLimit = '10'; // 日限额, 精确到分
-        $monthLimit = '30'; // 月限额,精确到分
-        $fixFeeRate = '0.38'; // 固定比例费率 , 5%：0.50，小数点后精确到2位。两种费率二选一
-        $specFeeRate = ''; // 特殊费率
-        $account = '6226223380006109'; // 结算账号
-        $pbcBankId = '305526061005'; // 开户行号,人民银行大小额支付行号
-        $acctName = '测试1247850073'; // 开户人
-        $acctType = '2'; // 账户类型,类型代码对应： 1-对私 2-对公
-        $message = ''; // 通道其他信息|message: JSON格式字符串
-        $postdata = array(
-            'txnSeq' => $txnSeq,
-            'platformId' => $platformId,
-            'operId' => $operId,
-            'outMchntId' => $outMchntId,
-            'cmbcMchntId' => $cmbcMchntId,
-            'apiCode' => $apiCode,
-            'cmbcSignId' => $cmbcSignId,
-            'operateType' => $operateType,
-            'dayLimit' => $dayLimit,
-            'monthLimit' => $monthLimit,
-            'fixFeeRate' => $fixFeeRate,
-            'specFeeRate' => $specFeeRate,
-            'account' => $account,
-            'pbcBankId' => $pbcBankId,
-            'acctName' => $acctName,
-            'acctType ' => $acctType,
-            'message' => $message
-        );
-        $SourceData = json_encode($postdata);
-        $msbank = new MSBank();
-        $ret = $msbank->modPaumentInfo($SourceData);
-        if ($ret['status'] == 0) {
-            $msbank->ModStoreOder($postdata, $ret);
+    header("Content-Type:text/html; charset=utf-8");
+        $stores = new AlipaymaStores();
+        if (IS_GET) {
+            $stores = new AlipaymaStores();
+            $id = isset($_GET['id']) ? $_GET['id'] : '';
+            $storeInfo = $stores->queryStoreinfoById($id);
+            $paymentInfo = $stores->queryPaymentByStoreId($id);
+//             var_dump($paymentInfo);
+            $this->assign("store", $storeInfo);
+            $this->assign("payment", $paymentInfo);
+            $this->display('modPayment', 'utf-8');
+        } else {
+            $id = I('post.id',0);
+            $signId = I('post.signid','');
+            $apiCode = I('post.apiCode',0); // 支付通道, 类型代码对应： 0005-微信 0007-支付宝 0008-QQ钱包
+            $industryId = I('post.industryId',0);
+            $operateType = I('post.operateType',0); // 接入类型,类型代码对应： 1-间联 2-直联
+            $dayLimit = I('post.dayLimit',0); // 日限额, 精确到分
+            $monthLimit = I('post.monthLimit',0); // 月限额,精确到分
+            $fixFeeRate = I('post.fixFeeRate',0); // 固定比例费率 , 5%：0.50，小数点后精确到2位。两种费率二选一
+            $specFeeRate = I('post.specFeeRate',0); // 特殊费率
+            $account = I('post.account',''); // 结算账号
+            $pbcBankId = I('post.pbcBankId',''); // 开户行号,人民银行大小额支付行号
+            $acctName = I('post.acctName',''); // 开户人
+            $acctType = I('post.acctType',''); // 账户类型,类型代码对应： 1-对私 2-对公
+            $message = I('post.message',''); // 通道其他信息|message: JSON格式字符串
+            $idCode = I('post.idCode','');
+            $acctTelephone = I('post.acctTelephone','');
+            $idType = I('post.idType', '99');
+            $storeInfo = $stores->queryStoreinfoById($id);
+            $signId = 'S07002017030000314135';
+            $txnSeq = generateOrderno(); // 流水号, 调用方生成，确保唯一
+            $platformId = C('platformId'); // 平台号, 民生银行生成
+            $operId = C('operId'); // 拓展人员编号
+            $storeInfo = $stores->queryStoreinfoById($id);
+            if (count($storeInfo)==0){
+                $this->show("门店信息不存在，或者门店ID错误");
+                exit(0);
+            }
+            $cmbcInfo = $stores->queryCMBCIDByStoreId($id);
+            $outMchntId = $storeInfo['outmchntid'];
+            $cmbcMchntId = $cmbcInfo['cmbcmchntid'];
+            $postdata = array(
+                'txnSeq' => $txnSeq,
+                'platformId' => $platformId,
+                'operId' => $operId,
+                'outMchntId' => $outMchntId,
+                'cmbcMchntId' => $cmbcMchntId,
+                'apiCode' => $apiCode,
+                'industryId' => $industryId,
+                'operateType' => $operateType,
+                'dayLimit' => $dayLimit,
+                'monthLimit' => $monthLimit,
+                'fixFeeRate' => $fixFeeRate,
+                'specFeeRate' => $specFeeRate,
+                'account' => $account,
+                'pbcBankId' => $pbcBankId,
+                'acctName' => $acctName,
+                'acctType' => $acctType,
+                'message' => $message,
+                'idCode' => $idCode,
+                "acctTelephone" =>$acctTelephone,
+                'idType'=>$idType,
+                'cmbcSignId' => $signId,
+            );
+            $SourceData = json_encode($postdata);
+            $msbank = new MSBank();
+            $ret = $msbank->modPaumentInfo($SourceData);
+            if ($ret['status'] == 0) {
+                $stores->setPayment($id, $postdata);
+                
+            }
+            $this->show(json_encode($ret));
         }
-        $this->show(json_encode($ret));
     }
 
     public function CMBCwechat()

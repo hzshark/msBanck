@@ -76,6 +76,13 @@ class AlipaymaStores
         $data['cmbcMchntId'] = $cmbcMchntId;
         $cmbc->add($data);
     }
+    
+    private function queryCmbcStoreByStoreid($storeid){
+        $cmbc = D('Cmbcstore');
+        $where['storeid'] = $storeid;
+        $cmbc->where($where)->find();
+    }
+    
     private function setOderLog($storeid, $sendData, $reponseData){
         $model = D('Orderlog');
         $data['storeid'] = $storeid;
@@ -97,10 +104,10 @@ class AlipaymaStores
         $res = json_decode($res_body, true);
         $cmbcMchntId = $res['cmbcMchntId'];
         if (isset($cmbcMchntId)){
-            $this->createCmbcStore($storeId, $cmbcMchntId, $senddata['outMchntId']);
-            $this->setStoreStatus(storeId, $this->AUDIT_PASS);
-        }else {
-            $this->setStoreStatus(storeId, $this->AUDIT_FAILED);
+            $cmbcStore = $this->queryCmbcStoreByStoreid($storeId);
+            if (count($cmbcStore) == 0){
+                $this->createCmbcStore($storeId, $cmbcMchntId, $senddata['outMchntId']);
+            }
         }
         $this->setOderLog($storeId, $senddata, $respone);
     }
@@ -166,9 +173,28 @@ class AlipaymaStores
         $where['apiCode'] = $apiCode;
         $model->where($where)->find();
     }
+    
+    public function queryPaymentByStoreId($storeId){
+        $model = D("Payment");
+        $where['storeid'] = $storeId;
+        $model->where($where)->find();
+    }
+    
+    public function setPaymentSignIdByStoreId($storeId, $signId, $apiCode){
+        $model = D("Payment");
+        $where['storeid'] = $storeId;
+        if ($apiCode == '005'){
+            $data['wxSignid'] = $signId;
+        }elseif ($apiCode == '007'){
+            $data['alipaySignid'] = $signId;
+        }elseif ($apiCode == '008'){
+            $data['qqSignid'] = $signId;
+        }
+        $model->where($where)->save($data);
+    }
+    
     public function setPayment($storeId, $postdata){
         $model = D("Payment");
-        $data['storeid'] = $storeId;
         $data['apiCode'] = $postdata['apiCode'];
         $data['industryId'] = $postdata['industryId'];
         $data['operateType'] = $postdata['operateType'];
@@ -184,8 +210,18 @@ class AlipaymaStores
         $data['idType'] = $postdata['idType'];
         $data['idCode'] = $postdata['idCode'];
         $data['acctTelephone'] = $postdata['acctTelephone'];
-        $data['indate'] = date('Y-m-d H:i:s', time());
-        $model->add($data);
+        
+        $payment = $this->queryPaymentByStoreId($storeId);
+        if (count($payment)>0){
+            $where['storeid'] = $storeId;
+            $model->where($where)->save($data);
+        }else{
+            $data['storeid'] = $storeId;
+            $data['indate'] = date('Y-m-d H:i:s', time());
+            $model->add($data);
+        }
+        
+        
     }
 
     public function addWXPayInfo($postdata, $status, $payCode){

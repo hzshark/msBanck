@@ -79,7 +79,6 @@ class MSBank
             'msg' => '',
             'respone' => array()
         );
-        Log::write('CMBC Action:' . $SourceData, 'DEBUG');
         $base64SourceData = base64_encode($SourceData); // 原文BASE64
         $sign = $this->getSign($base64SourceData);
         if ($sign == null) {
@@ -88,14 +87,20 @@ class MSBank
             return $result;
         }
         $SourceData = addslashes($SourceData);
+        //$SourceData = mb_convert_encoding($SourceData, 'gbk', 'utf-8');
+        //$SourceData = iconv('UTF-8', 'GB2312', $SourceData); //将字符串的编码从UTF-8转到GB2312
         $SourceData = '{"sign":"' . $sign . '","body":"' . $SourceData . '"}'; // 拼凑后的原文
+        //$SourceData = '{"sign":"MEUCIAWXPTiFDICBaG4eAJA95d5b8J2RWy2MZcKnzGFlQWGSAiEAkVDxdwWNFJZAnAuyOXIcebxnkSCHSdR97Yt59uc6jSI=","body":"{\"txnSeq\":\"100860001111111000\",\"platformId\":\"A00002016120000000294\",\"operId\":\"10086A0001\",\"outMchntId\":\"O010020160700000006jjh\",\"cmbcMchntId\":\"M29002017030000014137\",\"industryId\":\"102\",\"dayLimit\":\"2\",\"monthLimit\":\"10\",\"fixFeeRate\":\"0.38\",\"specFeeRate\":\"\",\"account\":\"6226223380006109\",\"pbcBankId\":\"305526061005\",\"acctName\":\"测试1247850073\",\"message\":\"\",\"idCode\":\"330422197709272758\",\"acctTelephone\":\"13900001111\",\"apiCode\":\"0005\",\"operateType\":\"1\",\"acctType\":\"1\",\"idType\":\"01\"}"}';
+        Log::write('CMBC Action SEND DATA:' . $SourceData, 'DEBUG');
+        //var_dump($SourceData);
+        
         $base64SourceData = base64_encode($SourceData); // 拼凑后的原文Base64
         $encryptedData = $this->encryptedSendData($base64SourceData);
         $sendMsg = $this->generateSendMessage($encryptedData);
         $httpreps = http_post_data($URL, $sendMsg);
         if ($httpreps[0] == 200) {
             $repdata = json_decode($httpreps[1], true);
-//             var_dump($repdata);
+            Log::write('CMBC Action RESPONES DATA:' . json_encode($repdata), 'DEBUG');
             $reps_encryptedData = $repdata['businessContext'];
             $decryptRes = $this->decryptRespone($reps_encryptedData);
             $backstr = base64_decode($decryptRes);
@@ -103,12 +108,12 @@ class MSBank
             $result_body = $backarray['body'];
             $result_bodyarray = json_decode($result_body, true);
 //             var_dump($result_bodyarray);
+            Log::write('CMBC Action RESPONES encrypte DATA:' . $result_body, 'DEBUG');
             if ($result_bodyarray['respCode'] != '0000') {
                 $result['status'] = 5;
                 $result['msg'] = 'CMBC Action Failed. Result:' . $result_bodyarray['errorMsg'];
             } else {
                 $check_ret = $this->check_sign($backarray);
-
                 $ret = json_decode($check_ret, true);
                 if ($ret['Code'] == '90000000') {
                     $result['status'] = 0;
