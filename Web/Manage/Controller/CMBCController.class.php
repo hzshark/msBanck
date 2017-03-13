@@ -5,8 +5,10 @@ require_once (APP_PATH."Manage/Utils/basic.class.php");
 use Manage\Service\MSBank;
 use Manage\Service\AlipaymaStores;
 use Manage\Service\Areas;
+use Think\Controller;
 
-class CMBCController extends BaseDealUserController
+// class CMBCController extends BaseDealUserController
+class CMBCController extends Controller
 {
     public function __construct(){
 
@@ -119,6 +121,7 @@ class CMBCController extends BaseDealUserController
         $sourceData = json_encode($postdata);
         $cmbc = new MSBank();
         $cmbcInfo = $stores->queryCMBCIDByStoreId($id);
+        var_dump($ret);
         $ret = Null;
         if (isset($cmbcInfo) && $cmbcInfo['cmbcmchntid'] != ''){
             $postdata['cmbcMchntId'] = $cmbcInfo['cmbcmchntid'];
@@ -411,10 +414,15 @@ class CMBCController extends BaseDealUserController
             $ret = $msbank->modPaumentInfo($SourceData);
             if ($ret['status'] == 0) {
                 $stores->setPayment($id, $postdata);
-                
+
             }
             $this->show(json_encode($ret));
         }
+    }
+
+    public function CreateCMBCwechat()
+    {
+        header("Content-Type:text/html; charset=utf-8");
     }
 
     public function CMBCwechat()
@@ -429,11 +437,14 @@ class CMBCController extends BaseDealUserController
         $cmbcMchntId = $cmbcInfo['cmbcmchntid'];
 
         $selectTradeType = 'API_WXSCAN'; // 支付类型的标识信息
-        $payment_code = "12312414";
+
         $amount = '1'; // 交易金额，以分为单位
         $orderInfo = '统一下单API测试-' . $selectTradeType;
 
-        $merchantSeq = $platformId . generateOrderno(); // 流水号, 调用方生成，确保唯一
+        //$merchantSeq = $platformId . generateOrderno(); // 流水号, 调用方生成，确保唯一
+
+        $merchantSeq = I('post.no','');
+        $payment_code =  I('post.code');
         $transDate = date('Ymd', time()); // 格式：yyyyMMdd
         $transTime = date('YmdHis', time()) . "000"; // 格式：yyyyMMddHHmmssSSS
         $notifyUrl = C('NOTIFY_URL'); // 户实现的接收异步通知的url地址
@@ -441,7 +452,7 @@ class CMBCController extends BaseDealUserController
         $remark = base64_encode($payment_code); // 备注
         $postdata = array(
             'platformId' => $platformId,
-            'operId' => $operId,
+            'merchantNo' => $cmbcMchntId,
             'selectTradeType' => $selectTradeType,
             'amount' => $amount,
             'orderInfo' => $orderInfo,
@@ -449,7 +460,7 @@ class CMBCController extends BaseDealUserController
             'transDate' => $transDate,
             'transTime' => $transTime,
             'notifyUrl' => $notifyUrl,
-            'remark ' => $remark
+            'remark' => $remark,
         );
         $SourceData = json_encode($postdata);
         $msbank = new MSBank();
@@ -470,11 +481,14 @@ class CMBCController extends BaseDealUserController
         $cmbcMchntId = $cmbcInfo['cmbcmchntid'];
 
         $selectTradeType = 'API_ZFBSCAN';
-        $payment_code = "12312414";
+
         $amount = '1'; // 交易金额，以分为单位
         $orderInfo = '统一下单API测试-' . $selectTradeType;
 
-        $merchantSeq = $platformId . generateOrderno(); // 流水号, 调用方生成，确保唯一
+        //$merchantSeq = $platformId . generateOrderno(); // 流水号, 调用方生成，确保唯一
+
+        $merchantSeq = I('post.no','');
+        $payment_code =  I('post.code');
         $transDate = date('Ymd', time()); // 格式：yyyyMMdd
         $transTime = date('YmdHis', time()) . "000"; // 格式：yyyyMMddHHmmssSSS
         $notifyUrl = C('NOTIFY_URL'); // 户实现的接收异步通知的url地址
@@ -482,7 +496,7 @@ class CMBCController extends BaseDealUserController
         $remark = base64_encode($payment_code); // 备注
         $postdata = array(
             'platformId' => $platformId,
-            'operId' => $operId,
+            'merchantNo' => $cmbcMchntId,
             'selectTradeType' => $selectTradeType,
             'amount' => $amount,
             'orderInfo' => $orderInfo,
@@ -490,11 +504,12 @@ class CMBCController extends BaseDealUserController
             'transDate' => $transDate,
             'transTime' => $transTime,
             'notifyUrl' => $notifyUrl,
-            'remark ' => $remark
+            'remark' => $remark,
         );
         $SourceData = json_encode($postdata);
         $msbank = new MSBank();
         $ret = $msbank->pay($SourceData);
+
         $stores->addAliPayInfo($postdata, $ret['status'], $payment_code);
         $this->show(json_encode($ret));
     }
@@ -509,14 +524,15 @@ class CMBCController extends BaseDealUserController
         $id = isset($_POST['id']) ? $_POST['id'] : $_GET['id']; // 商户简称
         $cmbcInfo = $stores->queryCMBCIDByStoreId($id);
         $cmbcMchntId = $cmbcInfo['cmbcmchntid'];
-
         $selectTradeType = 'API_QQSCAN'; // 支付类型的标识信息
 
-        $payment_code = "12312414";
         $amount = '1'; // 交易金额，以分为单位
         $orderInfo = '统一下单API测试-' . $selectTradeType;
 
-        $merchantSeq = $platformId . generateOrderno(); // 流水号, 调用方生成，确保唯一
+        //$merchantSeq = $platformId . generateOrderno(); // 流水号, 调用方生成，确保唯一
+
+        $merchantSeq = I('post.no','');
+        $payment_code =  I('post.code');
         $transDate = date('Ymd', time()); // 格式：yyyyMMdd
         $transTime = date('YmdHis', time()) . "000"; // 格式：yyyyMMddHHmmssSSS
         $notifyUrl = C('NOTIFY_URL'); // 户实现的接收异步通知的url地址
@@ -524,7 +540,7 @@ class CMBCController extends BaseDealUserController
         $remark = base64_encode($payment_code); // 备注
         $postdata = array(
             'platformId' => $platformId,
-            'operId' => $operId,
+            'merchantNo' => $cmbcMchntId,
             'selectTradeType' => $selectTradeType,
             'amount' => $amount,
             'orderInfo' => $orderInfo,
@@ -532,11 +548,12 @@ class CMBCController extends BaseDealUserController
             'transDate' => $transDate,
             'transTime' => $transTime,
             'notifyUrl' => $notifyUrl,
-            'remark ' => $remark
+            'remark' => $remark,
         );
         $SourceData = json_encode($postdata);
         $msbank = new MSBank();
         $ret = $msbank->pay($SourceData);
+
         $stores->addQQPayInfo($postdata, $ret['status'], $payment_code);
         $this->show(json_encode($ret));
     }
