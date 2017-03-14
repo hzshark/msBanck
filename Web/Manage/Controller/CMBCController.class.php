@@ -5,10 +5,10 @@ require_once (APP_PATH."Manage/Utils/basic.class.php");
 use Manage\Service\MSBank;
 use Manage\Service\AlipaymaStores;
 use Manage\Service\Areas;
-use Think\Controller;
+// use Think\Controller;
 
-// class CMBCController extends BaseDealUserController
-class CMBCController extends Controller
+class CMBCController extends BaseDealUserController
+// class CMBCController extends Controller
 {
     public function __construct(){
 
@@ -118,15 +118,17 @@ class CMBCController extends Controller
         $postdata['autoSettle'] = $ret['autosettle'];
         $postdata['remark'] = $ret['remark'];
         $postdata['message'] = $ret['message'];
-        $sourceData = json_encode($postdata);
+
         $cmbc = new MSBank();
         $cmbcInfo = $stores->queryCMBCIDByStoreId($id);
-        var_dump($ret);
+
         $ret = Null;
         if (isset($cmbcInfo) && $cmbcInfo['cmbcmchntid'] != ''){
             $postdata['cmbcMchntId'] = $cmbcInfo['cmbcmchntid'];
+            $sourceData = json_encode($postdata);
             $ret = $cmbc->modStoreInfo($sourceData);
         }else{
+            $sourceData = json_encode($postdata);
             $ret = $cmbc->registerStore($sourceData);
         }
         $stores->registerOder($id, $postdata, $ret);
@@ -220,7 +222,7 @@ class CMBCController extends Controller
             $province_name = $area->queryNameByAreaCode($province);
             $city_name = $area->queryNameByAreaCode($city);
             $area_name = $area->queryNameByAreaCode($acdCode);
-            $address = $area_name['name'] . $addr; // 地址
+            $address = $addr; // 地址
             $isCert = isset($_POST['isCert']) ? $_POST['isCert'] : '0';
             $licId = isset($_POST['licId']) ? $_POST['licId'] : '-'; // 营业执照号, 若没有，可填默认值-
             $licValidity = isset($_POST['licValidity']) ? $_POST['licValidity'] : '-'; // 营业执照有效期,若没有，可填默认值-
@@ -570,9 +572,9 @@ class CMBCController extends Controller
         $tradeType = '1';
         $orgvoucherNo = I('post.orgvoucherNo','');
         $reserve = I('post.reserve','');
-        $merchantNo = 'M01002017030000013951';
-        $merchantSeq = 'A00002016120000000294T225401863';
-        $orgvoucherNo = '10862016070514230500';
+        $merchantNo = 'M29002017030000013925';
+        $merchantSeq = '1535062629148677185';
+        $orgvoucherNo = '';
 
         $postdata = array(
             'platformId' => $platformId,
@@ -618,9 +620,93 @@ class CMBCController extends Controller
         $this->show(json_encode($ret));
     }
 
+    public function Refund()
+    {
+        header("Content-Type:text/html; charset=utf-8");
+        $stores = new AlipaymaStores();
+        $id = I('post.id',0);
+        $merchantSeq = generateOrderno(); // 流水号, 调用方生成，确保唯一
+        $platformId = C('platformId'); // 平台号, 民生银行生成
+        $cmbcInfo = $stores->queryCMBCIDByStoreId($id);
+        $merchantNo = $cmbcInfo['cmbcmchntid'];
+        $orderAmount = I('post.orderAmount','1');
+        $reserve = I('post.reserve','下错单了');
+        $orderNote = I('post.orderNote','退款');
+
+        $merchantSeq = '1535062629148677189';
+
+        $postdata = array(
+            'platformId' => $platformId,
+            'merchantNo' => $merchantNo,
+            'merchantSeq' => $merchantSeq,
+            'orderAmount' => $orderAmount,
+            'orderNote' => $orderNote,
+            'reserve' => $reserve,
+        );
+        $SourceData = json_encode($postdata);
+        $msbank = new MSBank();
+        $ret = $msbank->Refund($SourceData);
+        $this->show(json_encode($ret));
+    }
+
+    public function QueryTrade()
+    {
+        header("Content-Type:text/html; charset=utf-8");
+        $stores = new AlipaymaStores();
+        $id = I('post.id',0);
+        $merchantSeq = generateOrderno(); // 流水号, 调用方生成，确保唯一
+        $platformId = C('platformId'); // 平台号, 民生银行生成
+        $cmbcInfo = $stores->queryCMBCIDByStoreId($id);
+        $merchantNo = $cmbcInfo['cmbcmchntid'];
+        $tradeNote = I('post.tradeNote','测试查询');
+        $postdata = array(
+            'platformId' => $platformId,
+            'merchantNo' => $merchantNo,
+            'tradeNote' => $tradeNote,
+        );
+        $SourceData = json_encode($postdata);
+        $msbank = new MSBank();
+        $ret = $msbank->QueryTrade($SourceData);
+        $this->show(json_encode($ret));
+    }
+
+    public function Trade()
+    {
+        header("Content-Type:text/html; charset=utf-8");
+        $stores = new AlipaymaStores();
+        $id = I('post.id',0);
+        $merchantSeq = generateOrderno(); // 流水号, 调用方生成，确保唯一
+        $platformId = C('platformId'); // 平台号, 民生银行生成
+        $cmbcInfo = $stores->queryCMBCIDByStoreId($id);
+        $merchantNo = $cmbcInfo['cmbcmchntid'];
+        $orderAmount = I('post.orderAmount','1');
+        $reserve = I('post.reserve','下错单了');
+        $orderNote = I('post.orderNote','退款');
+
+        $merchantSeq = '1535062629148677189';
+
+        $postdata = array(
+            'platformId' => $platformId,
+            'merchantNo' => $merchantNo,
+            'merchantSeq' => $merchantSeq,
+            'orderAmount' => $orderAmount,
+            'orderNote' => $orderNote,
+            'reserve' => $reserve,
+        );
+        $SourceData = json_encode($postdata);
+        $msbank = new MSBank();
+        $ret = $msbank->Refund($SourceData);
+        $this->show(json_encode($ret));
+    }
+
     public function area()
     {
         header("Content-Type:text/html; charset=utf-8");
         $this->display('area', 'utf-8');
+    }
+    public function NoticeServlet()
+    {
+        header("Content-Type:text/html; charset=utf-8");
+        $this->show('SUCCESS');
     }
 }

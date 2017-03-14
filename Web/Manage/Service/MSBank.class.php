@@ -93,7 +93,7 @@ class MSBank
         //$SourceData = '{"sign":"MEUCIAWXPTiFDICBaG4eAJA95d5b8J2RWy2MZcKnzGFlQWGSAiEAkVDxdwWNFJZAnAuyOXIcebxnkSCHSdR97Yt59uc6jSI=","body":"{\"txnSeq\":\"100860001111111000\",\"platformId\":\"A00002016120000000294\",\"operId\":\"10086A0001\",\"outMchntId\":\"O010020160700000006jjh\",\"cmbcMchntId\":\"M29002017030000014137\",\"industryId\":\"102\",\"dayLimit\":\"2\",\"monthLimit\":\"10\",\"fixFeeRate\":\"0.38\",\"specFeeRate\":\"\",\"account\":\"6226223380006109\",\"pbcBankId\":\"305526061005\",\"acctName\":\"测试1247850073\",\"message\":\"\",\"idCode\":\"330422197709272758\",\"acctTelephone\":\"13900001111\",\"apiCode\":\"0005\",\"operateType\":\"1\",\"acctType\":\"1\",\"idType\":\"01\"}"}';
         Log::write('CMBC Action SEND DATA:' . $SourceData, 'DEBUG');
         //var_dump($SourceData);
-        
+
         $base64SourceData = base64_encode($SourceData); // 拼凑后的原文Base64
         $encryptedData = $this->encryptedSendData($base64SourceData);
         $sendMsg = $this->generateSendMessage($encryptedData);
@@ -193,6 +193,26 @@ class MSBank
     public function queryTransaction($SourceData){
         $URL = C('QUERY_TRANSACTION_URL');
         return $this->cmbcAction($SourceData, $URL);
+    }
+
+    public function Refund($SourceData){
+        $URL = C('REFUND_URL');
+        return $this->cmbcAction($SourceData, $URL);
+    }
+
+    public function QueryTrade($SourceData){
+        $URL = C('QUERY_TRADE_URL');
+        return $this->cmbcAction($SourceData, $URL);
+    }
+
+    public function Trade($SourceData){
+        $URL = C('TRADE_URL');
+        return $this->cmbcAction($SourceData, $URL);
+    }
+
+    public function Notification($SourceData){
+//         $URL = C('REFUND_URL');
+//         return $this->cmbcAction($SourceData, $URL);
     }
 
     public function uploadElectronicData()
