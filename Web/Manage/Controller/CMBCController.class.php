@@ -361,11 +361,30 @@ class CMBCController extends BaseDealUserController
     header("Content-Type:text/html; charset=utf-8");
         $stores = new AlipaymaStores();
         if (IS_GET) {
-            $stores = new AlipaymaStores();
             $id = isset($_GET['id']) ? $_GET['id'] : '';
+            $paymentid = I('get.paymentid', -1);
+            $stores = new AlipaymaStores();
+
+            if ($paymentid === -1){
+                $paymentInfo = $stores->queryPaymentByStoreId($id);
+                if (count($paymentInfo) == 0){
+                    $this->error("没有绑定支付通道，请先绑定一个支付通过");
+                }else{
+                    $this->assign("id", $id);
+                    $this->assign("payment", $paymentInfo);
+                    $this->display('selectModPayment', 'utf-8');
+                }
+            }
+            $signinfo = $stores->queryCMBCIDByStoreId($id);
             $storeInfo = $stores->queryStoreinfoById($id);
-            $paymentInfo = $stores->queryPaymentByStoreId($id);
-//             var_dump($paymentInfo);
+            $paymentInfo = $stores->queryPaymentByid($paymentid);
+            if ('0005' == $paymentInfo['apicode']){
+                $this->assign("signid", $signinfo['wxsignid']);
+            }elseif ('0007' == $paymentInfo['apicode']){
+                $this->assign("signid", $signinfo['alipaysignid']);
+            }else{
+                $this->assign("signid", $signinfo['qqsignid']);
+            }
             $this->assign("store", $storeInfo);
             $this->assign("payment", $paymentInfo);
             $this->display('modPayment', 'utf-8');
@@ -377,8 +396,6 @@ class CMBCController extends BaseDealUserController
             $operateType = I('post.operateType',0); // 接入类型,类型代码对应： 1-间联 2-直联
             $dayLimit = I('post.dayLimit',0); // 日限额, 精确到分
             $monthLimit = I('post.monthLimit',0); // 月限额,精确到分
-            $fixFeeRate = I('post.fixFeeRate',0); // 固定比例费率 , 5%：0.50，小数点后精确到2位。两种费率二选一
-            $specFeeRate = I('post.specFeeRate',0); // 特殊费率
             $account = I('post.account',''); // 结算账号
             $pbcBankId = I('post.pbcBankId',''); // 开户行号,人民银行大小额支付行号
             $acctName = I('post.acctName',''); // 开户人
@@ -388,10 +405,18 @@ class CMBCController extends BaseDealUserController
             $acctTelephone = I('post.acctTelephone','');
             $idType = I('post.idType', '99');
             $storeInfo = $stores->queryStoreinfoById($id);
-            $signId = 'S07002017030000314135';
             $txnSeq = generateOrderno(); // 流水号, 调用方生成，确保唯一
             $platformId = C('platformId'); // 平台号, 民生银行生成
             $operId = C('operId'); // 拓展人员编号
+            $radio = I('post.radio', 'fixFeeRate');
+            if ('fixFeeRate' == $radio){
+                $fixFeeRate = I('FeeRate');
+                $specFeeRate = '';
+            }else{
+                $fixFeeRate = '';
+                $specFeeRate = I('FeeRate');
+            }
+
             $storeInfo = $stores->queryStoreinfoById($id);
             if (count($storeInfo)==0){
                 $this->show("门店信息不存在，或者门店ID错误");

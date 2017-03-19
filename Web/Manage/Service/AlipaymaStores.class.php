@@ -175,13 +175,18 @@ class AlipaymaStores
         $model = D("Payment");
         $where['storeid'] = $storeId;
         $where['apiCode'] = $apiCode;
-        $model->where($where)->find();
+        return $model->where($where)->find();
+    }
+    public function queryPaymentByid($id){
+        $model = D("Payment");
+        $where['id'] = $id;
+        return $model->where($where)->find();
     }
 
     public function queryPaymentByStoreId($storeId){
         $model = D("Payment");
         $where['storeid'] = $storeId;
-        $model->where($where)->find();
+        return $model->where($where)->select();
     }
 
     public function setPaymentSignIdByStoreId($storeId, $signId, $apiCode){

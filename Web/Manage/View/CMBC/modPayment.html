@@ -34,9 +34,9 @@ input{behavior:url(#default#savehistory)};
                       <div class="boundForm">
               		<form data-validate="parsley"  name="ModPayment" action="ModPayment" id="form_store_edit" enctype="application/x-www-form-urlencoded" method="POST" class="form-horizontal">
               		<input type="hidden" name="id" value="{$store.id}" />
-              		<input type="hidden" name="signid" id="signid" value="" />
+              		<input type="hidden" name="signid" id="signid" value="{$signid}" />
                        <label class="form_tit">绑定支付通道</label>
-                       <input type="hidden" name="id" value="{$store.id} readonly="true"">
+                       <input type="hidden" name="apiCode" value="{$payment.apicode}">
                       <div class="form_item clearfix">
                         <label class="item-label">商户全称：    	<i>*</i>    	</label>
                            <div class="controls">
@@ -46,7 +46,7 @@ input{behavior:url(#default#savehistory)};
                       <div class="form_item clearfix">
                         <label class="item-label">支付通道：    	<i>*</i>    	</label>
                          <div class="controls">
-                        <select data-required="true" name="apiCode">
+                        <select data-required="true" name="apiCode" disabled="disabled" autocomplete="off">
                             <option value="">--请选择--</option>
                             <option value="0005" <if condition="$payment.apicode == '0005'">selected = "selected"</if>>微信</option>
                             <option value="0007" <if condition="$payment.apicode == '0007'">selected = "selected"</if>>支付宝</option>
@@ -65,10 +65,10 @@ input{behavior:url(#default#savehistory)};
                         <label class="item-label">接入类型：    	<i>*</i>    	</label>
                           <div class="controls">
 
-                        <select data-required="true" name="operateType" >
+                        <select data-required="true" name="operateType" autocomplete="off" >
                             <option value="">--请选择--</option>
-                            <option value="1" >间联</option>
-                            <option value="2" >直联</option>
+                            <option value="1" <if condition="$payment.operatetype == '1'">selected = "selected"</if>>间联</option>
+                            <option value="2" <if condition="$payment.operatetype == '2'">selected = "selected"</if>>直联</option>
                           </select>
                           </div>
                       </div>
@@ -76,91 +76,97 @@ input{behavior:url(#default#savehistory)};
                       <div class="form_item clearfix">
                         <label class="item-label">日限额：    	<i>*</i>    	</label>
                            <div class="controls">
-                        <input type="text" id="" name="dayLimit"  value="" class="textBox" placeholder="单位为分，例：5万元则填5000000" data-required="true" />
+                        <input type="text" id="" name="dayLimit"  value="{$payment.daylimit}" class="textBox" placeholder="单位为分，例：5万元则填5000000" data-required="true" />
                            </div>
                       </div>
                       <div class="form_item clearfix">
                         <label class="item-label">月限额：    	<i>*</i>    	</label>
                            <div class="controls">
-                        <input type="text" id="" name="monthLimit"  value="" class="textBox" placeholder="单位为分，例：5万元则填5000000" data-required="true" />
+                        <input type="text" id="" name="monthLimit"  value="{$payment.monthlimit}" class="textBox" placeholder="单位为分，例：5万元则填5000000" data-required="true" />
                            </div>
                       </div>
                       <div class="form_item clearfix">
-                        <label class="item-label">固定比例费率：    	<i>*</i>    	</label>
+                        <label class="item-label">费率选择：&nbsp&nbsp&nbsp&nbsp&nbsp</label>
                            <div class="controls">
-                        <input type="text" id="" name="fixFeeRate"  value="" class="textBox" placeholder="[举例:0.50%填0.50]，小数点后精确到2位。" data-required="true" />
-                           </div>
+                           <label class="radio-custom">
+                          	<input type="radio" name="radio" id="radio" value="fixFeeRate" <if condition="$payment.fixfeerate gt '0'">checked="checked"</if>>
+                          	<i class="fa fa-circle-o"></i> 固定比例费率</label>
+                          </div>
+                           <span>填除去%之后的值，例如：0.55%，则填0.55</span>
+                           <br />
+                          <div class="controls">
+                            <label class="radio-custom">
+                              <input type="radio" name="radio" value="specFeeRate" <if condition="$payment.specfeerate gt '0'">checked="checked"</if>>
+                              <i class="fa fa-circle-o"></i> 特殊费率 </label>
+                          </div>
+                          <span>每笔固定金额+比例+比例起算金额，例如：1000以下3元，超过1000，3+(超过部分*0.2%)，则填写规则为[3]+[0.2]+[1000]</span>
                       </div>
-                        <span>填除去%之后的值，例如：0.55%，则填0.55</span>
-
                       <div class="form_item clearfix">
-                        <label class="item-label">特殊费率：    	<i>*</i>    	</label>
+                        <label class="item-label">费率：    	<i>*</i>    	</label>
                            <div class="controls">
-                        <input type="text" id="" name="specFeeRate"  value="" class="textBox" placeholder="" data-required="true" />
+                        <input type="text" id="" name="FeeRate"  value='<if condition="$payment.specfeerate gt 0">{$payment.specfeerate}<else />{$payment.fixfeerate}</if>' class="textBox" placeholder="" data-required="true" />
                            </div>
                       </div>
-                       <span>每笔固定金额+比例+比例起算金额，例如：1000以下3元，超过1000，3+(超过部分*0.2%)，则填写规则为[3]+[0.2]+[1000]</span>
-
                       <div class="form_item clearfix">
                         <label class="item-label">结算账号：    	<i>*</i>    	</label>
                            <div class="controls">
-                        <input type="text" id="" name="account"  value="" class="textBox" placeholder="" data-required="true" />
+                        <input type="text" id="" name="account"  value="{$payment.account}" class="textBox" placeholder="" data-required="true" />
                            </div>
                       </div>
                       <div class="form_item clearfix">
                         <label class="item-label">开户行号：    	<i>*</i>    	</label>
                            <div class="controls">
-                        <input type="text" id="" name="pbcBankId"  data-type="number"  value="" class="textBox" placeholder="人民银行大小额支付行号" data-required="true" />
+                        <input type="text" id="" name="pbcBankId"  data-type="number"  value="{$payment.pbcbankid}" class="textBox" placeholder="人民银行大小额支付行号" data-required="true" />
                            </div>
                       </div>
                       <div class="form_item clearfix">
                         <label class="item-label">开户人：    	<i>*</i>    	</label>
                            <div class="controls">
-                        <input type="text" id="" name="acctName"  data-type="number"  value="" class="textBox" placeholder="" data-required="true" />
+                        <input type="text" id="" name="acctName"  data-type="number"  value="{$payment.acctname}" class="textBox" placeholder="" data-required="true" />
                            </div>
                       </div>
                       <div class="form_item clearfix">
                         <label class="item-label">账户类型：    	<i>*</i>    	</label>
                           <div class="controls">
-                        <select data-required="true" name="acctType">
+                        <select data-required="true" name="acctType" autocomplete="off" >
                             <option value="">--请选择--</option>
-                            <option value="1">对私</option>
-                            <option value="2" >对公</option>
+                            <option value="1" <if condition="$payment.accttype eq '1'">selected = "selected"</if>>对私</option>
+                            <option value="2" <if condition="$payment.accttype eq '2'">selected = "selected"</if>>对公</option>
                         </select>
                           </div>
                       </div>
                       <div class="form_item clearfix">
                         <label class="item-label">Message：</label>
                            <div class="controls">
-                        <input type="text" id="" name="message" data-type="phone"  value="" class="textBox" placeholder="JSON格式字符串" data-required="true" />
+                        <input type="text" id="" name="message" data-type="phone"  value="{$payment.message}" class="textBox" placeholder="JSON格式字符串" data-required="true" />
                            </div>
                       </div>
                       <div class="form_item clearfix">
                         <label class="item-label">开户人证件类型：    	<i>*</i>    	</label>
                          <div class="controls">
-                        <select data-required="true" name="idType">
+                        <select data-required="true" name="idType" autocomplete="off" >
                             <option value="">--请选择--</option>
-                            <option value="01" >身份证</option>
-                            <option value="02" >军官证</option>
-                            <option value="03" >护照</option>
-                            <option value="04" >回乡证</option>
-                            <option value="05" >台胞证</option>
-                            <option value="06" >警官证</option>
-                            <option value="07" >士兵证</option>
-                            <option value="99" >其它证件</option>
+                            <option value="01" <if condition="$payment.idtype eq '01'">selected = "selected"</if>>身份证</option>
+                            <option value="02" <if condition="$payment.idtype eq '02'">selected = "selected"</if>>军官证</option>
+                            <option value="03" <if condition="$payment.idtype eq '03'">selected = "selected"</if>>护照</option>
+                            <option value="04" <if condition="$payment.idtype eq '04'">selected = "selected"</if>>回乡证</option>
+                            <option value="05" <if condition="$payment.idtype eq '05'">selected = "selected"</if>>台胞证</option>
+                            <option value="06" <if condition="$payment.idtype eq '06'">selected = "selected"</if>>警官证</option>
+                            <option value="07" <if condition="$payment.idtype eq '07'">selected = "selected"</if>>士兵证</option>
+                            <option value="99" <if condition="$payment.idtype eq '99'">selected = "selected"</if>>其它证件</option>
                         </select>
                         </div>
                       </div>
                       <div class="form_item clearfix">
                         <label class="item-label">证件号码：</label>
                            <div class="controls">
-                        	<input type="text" id="" name="idCode"  value="" class="textBox" placeholder=""  />
+                        	<input type="text" id="" name="idCode"  value="{$payment.idcode}" class="textBox" placeholder=""  />
                            </div>
                       </div>
                       <div class="form_item clearfix">
                         <label class="item-label">开户人预留手机号：    	<i>*</i>    	</label>
                            <div class="controls">
-                        <input type="text" id="" name="acctTelephone"  data-type="phone"  value="" class="textBox" />
+                        <input type="text" id="" name="acctTelephone"  data-type="phone"  value="{$payment.accttelephone}" class="textBox" />
                            </div>
                       </div>
                     </div>

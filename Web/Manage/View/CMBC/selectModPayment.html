@@ -1,0 +1,59 @@
+﻿<extend name="Public/base_logged" />
+<block name="body">
+  <section class="vbox">
+  	<section>
+      <section class="hbox stretch">
+        <section id="content">
+          <section class="vbox">
+            <section class="scrollable padder">
+              <header class="header bg-white b-b clearfix">
+                <div class="row m-t-sm">
+                  <div class="col-sm-9 m-b-xs">
+                    <ul class="breadcrumb no-border no-radius b-light pull-in">
+                      <li><a href="{:U('Admin/index')}"><i class="fa fa-home"></i> 首页</a></li>
+                      <?php if(UID===$current_user_id){ ?>
+                      <li>民生门店</li>
+                      <?php }else{ ?>
+                      <li><a href="{:U('DealUser/index')}">商户列表</a></li>
+                      <?php } ?>
+                      <li class="active">修改民生支付通道</li>
+                    </ul>
+                  </div>
+              </header>
+              <section class="scrollable wrapper w-f">
+              	<div class="manageCont">
+                      <div class="boundForm">
+              		<form data-validate="parsley"  name="ModPayment" action="ModPayment" id="form_store_edit" enctype="application/x-www-form-urlencoded" method="get" class="form-horizontal">
+              			<input type="hidden" name="id" value="{$id}" />
+                       <label class="form_tit">修改支付通道</label>
+                      <div class="form_item clearfix">
+                      <foreach name="payment" item="vo" >
+                           <div class="radio">
+                            <label class="radio-custom">
+                              <input type="radio" name="paymentid" value="{$vo.id}">
+                              <i class="fa fa-circle-o"></i>
+                              <eq name="vo.apicode" value="0005">微信</eq>
+                              <eq name="vo.apicode" value="0007">支付宝 </eq>
+                              <eq name="vo.apicode" value="0008">QQ钱包</eq>
+                              </label>
+                          </div>
+                          </foreach>
+
+                      </div>
+
+                    <footer class="panel-footer text-center bg-light lter">
+                      <button type="submit" class="btn btn-success btn-s-xs">提交</button>
+                      <button class="btn btn-success btn-s-xs" onclick="javascript:history.back(-1);return false;">返 回</button>
+                    </footer>
+                    </form>
+                    </div>
+                    </div>
+                  </section>
+            </section>
+          </section>
+        </section>
+      </section>
+    </section>
+  </section>
+</block>
+
