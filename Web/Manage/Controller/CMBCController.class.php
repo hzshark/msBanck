@@ -172,7 +172,7 @@ class CMBCController extends BaseDealUserController
             $autoSettle = isset($_POST['autoSettle']) ? $_POST['autoSettle'] : ''; // 结算方式, 类型代码对应：1-自动结算,2-手工提现
             $remark = isset($_POST['remark']) ? $_POST['remark'] : ''; // 备注
             $message = isset($_POST['message']) ? $_POST['message'] : ''; // 备用字段
-
+            $user_id = I('post.user_id',0);
             $postdata = array(
                 'outMchntId' => $outMchntId,
                 'mchntName' => $mchntName,

@@ -76,13 +76,13 @@ class AlipaymaStores
         $data['cmbcMchntId'] = $cmbcMchntId;
         $cmbc->add($data);
     }
-    
+
     private function queryCmbcStoreByStoreid($storeid){
         $cmbc = D('Cmbcstore');
         $where['storeid'] = $storeid;
         $cmbc->where($where)->find();
     }
-    
+
     private function setOderLog($storeid, $sendData, $reponseData){
         $model = D('Orderlog');
         $data['storeid'] = $storeid;
@@ -137,7 +137,7 @@ class AlipaymaStores
         $data['autoSettle'] = $postdata['autoSettle'];
         $data['remark'] = $postdata['remark'];
         $data['message'] = $postdata['message'];
-        $model->add($data);
+        return $model->add($data);
     }
 
     public function modStore($id, $postdata)
@@ -173,13 +173,13 @@ class AlipaymaStores
         $where['apiCode'] = $apiCode;
         $model->where($where)->find();
     }
-    
+
     public function queryPaymentByStoreId($storeId){
         $model = D("Payment");
         $where['storeid'] = $storeId;
         $model->where($where)->find();
     }
-    
+
     public function setPaymentSignIdByStoreId($storeId, $signId, $apiCode){
         $model = D("Payment");
         $where['storeid'] = $storeId;
@@ -192,7 +192,7 @@ class AlipaymaStores
         }
         $model->where($where)->save($data);
     }
-    
+
     public function setPayment($storeId, $postdata){
         $model = D("Payment");
         $data['apiCode'] = $postdata['apiCode'];
@@ -210,7 +210,7 @@ class AlipaymaStores
         $data['idType'] = $postdata['idType'];
         $data['idCode'] = $postdata['idCode'];
         $data['acctTelephone'] = $postdata['acctTelephone'];
-        
+
         $payment = $this->queryPaymentByStoreId($storeId);
         if (count($payment)>0){
             $where['storeid'] = $storeId;
@@ -220,8 +220,8 @@ class AlipaymaStores
             $data['indate'] = date('Y-m-d H:i:s', time());
             $model->add($data);
         }
-        
-        
+
+
     }
 
     public function addWXPayInfo($postdata, $status, $payCode){
