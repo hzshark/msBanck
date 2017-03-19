@@ -1,13 +1,4 @@
 ﻿<extend name="Public/base_logged" />
-<meta name="save" content="history">
-<mce:style type="text/css">
-<!--
-input{behavior:url(#default#savehistory)};
--->
-</mce:style>
-<style type="text/css" mce_bogus="1">
-input{behavior:url(#default#savehistory)};
-</style>
 <block name="body">
   <section class="vbox">
   	<section>
@@ -36,7 +27,6 @@ input{behavior:url(#default#savehistory)};
               		<input type="hidden" name="id" value="{$store.id}" />
               		<input type="hidden" name="signid" id="signid" value="" />
                        <label class="form_tit">绑定支付通道</label>
-                       <input type="hidden" name="id" value="{$store.id} readonly="true"">
                       <div class="form_item clearfix">
                         <label class="item-label">商户全称：    	<i>*</i>    	</label>
                            <div class="controls">
@@ -86,20 +76,27 @@ input{behavior:url(#default#savehistory)};
                            </div>
                       </div>
                       <div class="form_item clearfix">
-                        <label class="item-label">固定比例费率：    	<i>*</i>    	</label>
+                        <label class="item-label">费率选择：&nbsp&nbsp&nbsp&nbsp&nbsp</label>
                            <div class="controls">
-                        <input type="text" id="" name="fixFeeRate"  value="" class="textBox" placeholder="" data-required="true" />
-                           </div>
+                           <label class="radio-custom">
+                          	<input type="radio" name="radio" id="radio" value="fixFeeRate" checked="checked">
+                          	<i class="fa fa-circle-o"></i> 固定比例费率</label>
+                          </div>
+                           <span>填除去%之后的值，例如：0.55%，则填0.55</span>
+                           <br />
+                          <div class="controls">
+                            <label class="radio-custom">
+                              <input type="radio" name="radio" value="specFeeRate">
+                              <i class="fa fa-circle-o"></i> 特殊费率 </label>
+                          </div>
+                          <span>每笔固定金额+比例+比例起算金额，例如：1000以下3元，超过1000，3+(超过部分*0.2%)，则填写规则为[3]+[0.2]+[1000]</span>
                       </div>
-                        <span>填除去%之后的值，例如：0.55%，则填0.55</span>
-
                       <div class="form_item clearfix">
-                        <label class="item-label">特殊费率：    	<i>*</i>    	</label>
+                        <label class="item-label">费率：    	<i>*</i>    	</label>
                            <div class="controls">
-                        <input type="text" id="" name="specFeeRate"  value="" class="textBox" placeholder="" data-required="true" />
+                        <input type="text" id="" name="FeeRate"  value="" class="textBox" placeholder="" data-required="true" />
                            </div>
                       </div>
-                       <span>每笔固定金额+比例+比例起算金额，例如：1000以下3元，超过1000，3+(超过部分*0.2%)，则填写规则为[3]+[0.2]+[1000]</span>
 
                       <div class="form_item clearfix">
                         <label class="item-label">结算账号：    	<i>*</i>    	</label>

@@ -68,13 +68,20 @@ class AlipaymaStores
         $paymodel = D('Payinfo');
         $paymodel->add($paydata);
     }
-    private function createCmbcStore($storeid, $cmbcMchntId, $outMchntId){
+    public function createCmbcStore($storeid, $outMchntId, $userid){
         $cmbc = D('Cmbcstore');
         $data['storeid'] = $storeid;
-        $data['outMchntId'] =
+        $data['outMchntId'] =$outMchntId;
+        $data['userid'] =$userid;
         $data['indate'] = $indate = date('Y-m-d H:i:s', time());
+        return $cmbc->add($data);
+    }
+
+    public function setCmbcStore($storeid, $cmbcMchntId){
+        $cmbc = D('Cmbcstore');
+        $where['storeid'] = $storeid;
         $data['cmbcMchntId'] = $cmbcMchntId;
-        $cmbc->add($data);
+        $cmbc->where($where)->save($data);
     }
 
     private function queryCmbcStoreByStoreid($storeid){
@@ -97,17 +104,14 @@ class AlipaymaStores
         $data['status'] = $status;
         return $store->where($where)->save($data);
     }
-    public function registerOder($storeId, $senddata, $respone){
+    public function setRegisterOder($storeId, $senddata, $respone){
         $this->addPayInfo($storeId, $senddata, $respone);
         $res = $respone['respone'];
         $res_body = $res['body'];
         $res = json_decode($res_body, true);
         $cmbcMchntId = $res['cmbcMchntId'];
         if (isset($cmbcMchntId)){
-            $cmbcStore = $this->queryCmbcStoreByStoreid($storeId);
-            if (count($cmbcStore) == 0){
-                $this->createCmbcStore($storeId, $cmbcMchntId, $senddata['outMchntId']);
-            }
+            $this->setCmbcStore($storeId, $cmbcMchntId);
         }
         $this->setOderLog($storeId, $senddata, $respone);
     }
@@ -181,7 +185,7 @@ class AlipaymaStores
     }
 
     public function setPaymentSignIdByStoreId($storeId, $signId, $apiCode){
-        $model = D("Payment");
+        $model = D("Cmbcstore");
         $where['storeid'] = $storeId;
         if ($apiCode == '005'){
             $data['wxSignid'] = $signId;
@@ -220,8 +224,6 @@ class AlipaymaStores
             $data['indate'] = date('Y-m-d H:i:s', time());
             $model->add($data);
         }
-
-
     }
 
     public function addWXPayInfo($postdata, $status, $payCode){

@@ -106,11 +106,11 @@
 
                       <div class="form_item clearfix">
                         <label class="item-label">结算方式：    	<i>*</i>    	</label>
-                         <div class="controls">
-                        <select data-required="true" name="autoSettle">
+                         <div class="col-sm-3">
+                        <select class="form-control m-t" data-required="true" name="autoSettle" autocomplete="off">
                             <option value="">--请选择--</option>
-                            <option value="1">自动结算</option>
-                            <option value="2">手工提现</option>
+                            <option value="1" <eq name="store.autosettle" value="1">selected="selected"</eq>>自动结算</option>
+                            <option value="2" <eq name="store.autosettle" value="2">selected="selected"</eq>>手工提现</option>
                           </select>
                          </div>
                       </div>

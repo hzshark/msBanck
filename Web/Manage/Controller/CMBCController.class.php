@@ -131,13 +131,16 @@ class CMBCController extends BaseDealUserController
             $sourceData = json_encode($postdata);
             $ret = $cmbc->registerStore($sourceData);
         }
-        $stores->registerOder($id, $postdata, $ret);
+        $stores->setRegisterOder($id, $postdata, $ret);
         if ($ret['status'] == 0) {
             $stores->setStoreStatus($id, $stores->AUDIT_PASS);
-            $this->success("商户审核入驻成功,返回结果:<br />" . json_encode($ret['respone']));
+
+            $this->show("商户审核入驻成功,返回结果:<br />");
+            $this->show(json_encode($ret['respone']));
         } else {
             $stores->setStoreStatus($id, $stores->AUDIT_FAILED);
-            $this->error("商户审核入驻失败,失败原因:" . $ret['msg'], 10);
+            $this->show("商户审核入驻失败,失败原因:<br />" );
+            $this->show(json_encode($ret['msg']));
         }
     }
 
@@ -196,8 +199,9 @@ class CMBCController extends BaseDealUserController
                 'message' => $message
             );
             $stores = new AlipaymaStores();
-            $stores->createStoreAndReturnId($postdata);
-            $this->show("商家入驻成功");
+            $storeid = $stores->createStoreAndReturnId($postdata);
+            $stores->createCmbcStore($storeid, $outMchntId, $user_id);
+            $this->success("商家入驻成功");
         }
     }
 
@@ -283,8 +287,7 @@ class CMBCController extends BaseDealUserController
             $operateType = I('post.operateType',0); // 接入类型,类型代码对应： 1-间联 2-直联
             $dayLimit = I('post.dayLimit',0); // 日限额, 精确到分
             $monthLimit = I('post.monthLimit',0); // 月限额,精确到分
-            $fixFeeRate = I('post.fixFeeRate',0); // 固定比例费率 , 5%：0.50，小数点后精确到2位。两种费率二选一
-            $specFeeRate = I('post.specFeeRate',0); // 特殊费率
+
             $account = I('post.account',''); // 结算账号
             $pbcBankId = I('post.pbcBankId',''); // 开户行号,人民银行大小额支付行号
             $acctName = I('post.acctName',''); // 开户人
@@ -293,6 +296,15 @@ class CMBCController extends BaseDealUserController
             $idCode = I('post.idCode','');
             $acctTelephone = I('post.acctTelephone','');
             $idType = I('post.idType', '99');
+            $radio = I('post.radio', 'fixFeeRate');
+            if ('fixFeeRate' == $radio){
+                $fixFeeRate = I('FeeRate');
+                $specFeeRate = '';
+            }else{
+                $fixFeeRate = '';
+                $specFeeRate = I('FeeRate');
+            }
+
 
 //             $account = '6226223380006109';
 //             $pbcBankId = '305526061005';
@@ -625,16 +637,13 @@ class CMBCController extends BaseDealUserController
         header("Content-Type:text/html; charset=utf-8");
         $stores = new AlipaymaStores();
         $id = I('post.id',0);
-        $merchantSeq = generateOrderno(); // 流水号, 调用方生成，确保唯一
         $platformId = C('platformId'); // 平台号, 民生银行生成
         $cmbcInfo = $stores->queryCMBCIDByStoreId($id);
         $merchantNo = $cmbcInfo['cmbcmchntid'];
         $orderAmount = I('post.orderAmount','1');
         $reserve = I('post.reserve','下错单了');
         $orderNote = I('post.orderNote','退款');
-
-        $merchantSeq = '1535062629148677189';
-
+        $merchantSeq = I('post.seq', generateOrderno());// 流水号, 调用方生成，确保唯一
         $postdata = array(
             'platformId' => $platformId,
             'merchantNo' => $merchantNo,
