@@ -298,11 +298,11 @@ class CMBCController extends BaseDealUserController
             $idType = I('post.idType', '99');
             $radio = I('post.radio', 'fixFeeRate');
             if ('fixFeeRate' == $radio){
-                $fixFeeRate = I('FeeRate');
+                $fixFeeRate = I('post.FeeRate');
                 $specFeeRate = '';
             }else{
                 $fixFeeRate = '';
-                $specFeeRate = I('FeeRate');
+                $specFeeRate = I('post.FeeRate');
             }
 
 
@@ -351,8 +351,11 @@ class CMBCController extends BaseDealUserController
                 $respone = $ret['respone'];
                 $stores->setPaymentSignIdByStoreId($id, $respone['cmbcSignId'], $apiCode);
                 $stores->setPayment($id, $postdata);
+                $this->success(json_encode($ret), 'index', 5);
+            }else {
+                $this->error(json_encode($ret), 'index', 5);
             }
-            $this->show(json_encode($ret));
+            
         }
     }
 
@@ -453,9 +456,10 @@ class CMBCController extends BaseDealUserController
             $ret = $msbank->modPaumentInfo($SourceData);
             if ($ret['status'] == 0) {
                 $stores->setPayment($id, $postdata);
-
+                $this->success(json_encode($ret), 'index', 5);
+            }else {
+                $this->error(json_encode($ret), 'index', 5);
             }
-            $this->show(json_encode($ret));
         }
     }
 

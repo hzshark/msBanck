@@ -71,6 +71,10 @@ class MSBank
         $base64X509CertData = C('BASE64X509CERTDATA');
         return lajp_call("cfca.sadk.api.SignatureKit::P1VerifyMessage", $signAlg1, base64_encode($SourceData['body']), $base64X509CertData, $SourceData['sign']);
     }
+    
+    function replace_unicode_escape_sequence($match) {
+        return mb_convert_encoding(pack('H*', $match[1]), 'UTF-8', 'UCS-2BE');
+    }
 
     private function cmbcAction($SourceData, $URL)
     {
@@ -111,7 +115,7 @@ class MSBank
             Log::write('CMBC Action RESPONES encrypte DATA:' . $result_body, 'DEBUG');
             if ($result_bodyarray['respCode'] != '0000') {
                 $result['status'] = 5;
-                $result['msg'] = 'CMBC Action Failed. Result:' . $result_bodyarray['errorMsg'];
+                $result['msg'] = 'CMBC Action Failed. Result:' . preg_replace_callback('/\\\\u([0-9a-f]{4})/i', 'replace_unicode_escape_sequence', $result_bodyarray['errorMsg']);
             } else {
                 $check_ret = $this->check_sign($backarray);
                 $ret = json_decode($check_ret, true);
