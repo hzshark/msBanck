@@ -71,7 +71,7 @@ class MSBank
         $base64X509CertData = C('BASE64X509CERTDATA');
         return lajp_call("cfca.sadk.api.SignatureKit::P1VerifyMessage", $signAlg1, base64_encode($SourceData['body']), $base64X509CertData, $SourceData['sign']);
     }
-    
+
     function replace_unicode_escape_sequence($match) {
         return mb_convert_encoding(pack('H*', $match[1]), 'UTF-8', 'UCS-2BE');
     }
@@ -87,7 +87,7 @@ class MSBank
         $sign = $this->getSign($base64SourceData);
         if ($sign == null) {
             $result['status'] = 2;
-            $result['msg'] = 'Generate Sign Failed.';
+            $result['msg'] = '生成秘钥失败！';
             return $result;
         }
         $SourceData = addslashes($SourceData);
@@ -115,22 +115,23 @@ class MSBank
             Log::write('CMBC Action RESPONES encrypte DATA:' . $result_body, 'DEBUG');
             if ($result_bodyarray['respCode'] != '0000') {
                 $result['status'] = 5;
-                $result['msg'] = 'CMBC Action Failed. Result:' . preg_replace_callback('/\\\\u([0-9a-f]{4})/i', 'replace_unicode_escape_sequence', $result_bodyarray['errorMsg']);
+                $result['msg'] = '民生接口请求失败: ' . preg_replace_callback('/\\\\u([0-9a-f]{4})/i', 'replace_unicode_escape_sequence', $result_bodyarray['errorMsg']);
+                Log::write('=============:' . preg_replace_callback('/\\\\u([0-9a-f]{4})/i', 'replace_unicode_escape_sequence', $result_bodyarray['errorMsg'], 'DEBUG'));
             } else {
                 $check_ret = $this->check_sign($backarray);
                 $ret = json_decode($check_ret, true);
                 if ($ret['Code'] == '90000000') {
                     $result['status'] = 0;
                     $result['respone'] = $backarray;
-                    $result['msg'] = 'CMBC Action Successfully. Chenk Sign Result:' . $ret['Result'];
+                    $result['msg'] = '民生接口请求成功. 检验秘钥结果:' . $ret['Result'];
                 } else {
                     $result['status'] = 4;
-                    $result['msg'] = 'CMBC Action Failed. Chenk Sign Result:' . $ret['Result'];
+                    $result['msg'] = '民生接口请求成功. 检验秘钥结果:' . $ret['Result'];
                 }
             }
         } else {
             $result['status'] = 3;
-            $result['msg'] = 'http request api failed, return http status:' . $httpreps[0];
+            $result['msg'] = '连接民生服务器异常:' . $httpreps[0];
         }
         return $result;
     }

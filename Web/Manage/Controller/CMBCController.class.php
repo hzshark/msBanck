@@ -3,6 +3,7 @@ namespace Manage\Controller;
 
 require_once (APP_PATH."Manage/Utils/basic.class.php");
 use Manage\Service\MSBank;
+use Think\Log;
 use Manage\Service\AlipaymaStores;
 use Manage\Service\Areas;
 // use Think\Controller;
@@ -201,7 +202,7 @@ class CMBCController extends BaseDealUserController
             $stores = new AlipaymaStores();
             $storeid = $stores->createStoreAndReturnId($postdata);
             $stores->createCmbcStore($storeid, $outMchntId, $user_id);
-            $this->success("商家入驻成功");
+            $this->success("商家入驻成功", 'index');
         }
     }
 
@@ -276,8 +277,6 @@ class CMBCController extends BaseDealUserController
             $stores = new AlipaymaStores();
             $id = isset($_GET['id']) ? $_GET['id'] : '';
             $storeInfo = $stores->queryStoreinfoById($id);
-
-            //$paymentInfo = $stores->queryPaymentByStoreIdAndApiCode($storeId, $apiCode)
             $this->assign("store", $storeInfo);
             $this->display('bindPayment', 'utf-8');
         } else {
@@ -305,10 +304,6 @@ class CMBCController extends BaseDealUserController
                 $specFeeRate = I('post.FeeRate');
             }
 
-
-//             $account = '6226223380006109';
-//             $pbcBankId = '305526061005';
-//             $acctName = '测试1247850073';
             $storeInfo = $stores->queryStoreinfoById($id);
 
             $txnSeq = generateOrderno(); // 流水号, 调用方生成，确保唯一
@@ -344,18 +339,29 @@ class CMBCController extends BaseDealUserController
                 "acctTelephone" =>$acctTelephone,
                 'idType'=>$idType,
             );
+
+            //先插入本地数据库
+            $stores->setPayment($id, $postdata);
             $SourceData = json_encode($postdata);
             $msbank = new MSBank();
             $ret = $msbank->bindPayment($SourceData);
             if ($ret['status'] == 0) {
-                $respone = $ret['respone'];
-                $stores->setPaymentSignIdByStoreId($id, $respone['cmbcSignId'], $apiCode);
-                $stores->setPayment($id, $postdata);
-                $this->success(json_encode($ret), 'index', 5);
+                if (!is_array($ret['respone']) ){
+                    $respone = json_decode($ret['respone'], true);
+                }else{
+                    $respone = $ret['respone'];
+                }
+                if (!is_array($respone['body']) ){
+                    $body = json_decode($respone['body'], true);
+                }else{
+                    $body = $respone['body'];
+                }
+                $stores->setPaymentSignIdByStoreId($id, $body['cmbcSignId'], $apiCode);
+                $this->success($ret['msg'], 'index', 5);
             }else {
-                $this->error(json_encode($ret), 'index', 5);
+                $this->error($ret['msg'], 'index', 5);
             }
-            
+
         }
     }
 
@@ -449,16 +455,25 @@ class CMBCController extends BaseDealUserController
                 'idCode' => $idCode,
                 "acctTelephone" =>$acctTelephone,
                 'idType'=>$idType,
-                'cmbcSignId' => $signId,
             );
-            $SourceData = json_encode($postdata);
+
             $msbank = new MSBank();
-            $ret = $msbank->modPaumentInfo($SourceData);
+            if ( $signId != null && isset($signId)){
+                $postdata['cmbcSignId'] = $signId;
+                $SourceData = json_encode($postdata);
+                $ret = $msbank->modPaumentInfo($SourceData);
+            }else{
+                $SourceData = json_encode($postdata);
+                $ret = $msbank->bindPayment($SourceData);
+                Log::write('bind ret:' . json_encode($ret), 'DEBUG');
+            }
             if ($ret['status'] == 0) {
                 $stores->setPayment($id, $postdata);
-                $this->success(json_encode($ret), 'index', 5);
+                $respone = $ret['respone'];
+                $stores->setPaymentSignIdByStoreId($id, $respone['cmbcSignId'], $apiCode);
+                $this->success($ret['msg'], 'index', 5);
             }else {
-                $this->error(json_encode($ret), 'index', 5);
+                $this->error($ret['msg'], 'index', 5);
             }
         }
     }

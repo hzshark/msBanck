@@ -1,6 +1,6 @@
 <?php
 namespace Manage\Service;
-
+use Think\Log;
 class AlipaymaStores
 {
     public $AUDIT_PASS = 1;
@@ -190,6 +190,7 @@ class AlipaymaStores
     }
 
     public function setPaymentSignIdByStoreId($storeId, $signId, $apiCode){
+        Log::write('Generate Sign ...'.$signId, 'DEBUG');
         $model = D("Cmbcstore");
         $where['storeid'] = $storeId;
         if ($apiCode == '005'){
@@ -204,7 +205,6 @@ class AlipaymaStores
 
     public function setPayment($storeId, $postdata){
         $model = D("Payment");
-        $data['apiCode'] = $postdata['apiCode'];
         $data['industryId'] = $postdata['industryId'];
         $data['operateType'] = $postdata['operateType'];
         $data['dayLimit'] = $postdata['dayLimit'];
@@ -219,12 +219,13 @@ class AlipaymaStores
         $data['idType'] = $postdata['idType'];
         $data['idCode'] = $postdata['idCode'];
         $data['acctTelephone'] = $postdata['acctTelephone'];
-
-        $payment = $this->queryPaymentByStoreId($storeId);
+        $payment = $this->queryPaymentByStoreIdAndApiCode($storeId, $postdata['apiCode']);
         if (count($payment)>0){
+            $where['apiCode'] = $postdata['apiCode'];
             $where['storeid'] = $storeId;
             $model->where($where)->save($data);
         }else{
+            $data['apiCode'] = $postdata['apiCode'];
             $data['storeid'] = $storeId;
             $data['indate'] = date('Y-m-d H:i:s', time());
             $model->add($data);
