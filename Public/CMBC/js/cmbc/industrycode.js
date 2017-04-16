@@ -43,9 +43,22 @@ $(function(){
 	});
 });
 
-function industryzfb() {
+
+function industry() {
+	var apicode = $("#apiCode").val();
+	var url ="";
+	if (apicode == "0005"){
+		url = "CMBC/IndustryWX"
+	}else{
+
+		if (apicode == "0007"){
+			url = "CMBC/IndustryZFB"
+		}else{
+			url = "CMBC/IndustryQQ"
+		}
+	}
 	$.ajax({
-		url : "CMBC/IndustryZFB", // 后台webservice里的方法名称
+		url : url,
 		type : "post",
 		dataType : "json",
 		contentType : "application/json",

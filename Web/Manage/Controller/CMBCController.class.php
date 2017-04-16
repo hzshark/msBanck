@@ -42,7 +42,7 @@ class CMBCController extends BaseDealUserController
                 $storesInfo = $stores->queryStoresByAcdCode($acdCode);
             }
         }else {
-        $storesInfo = $stores->queryAllStores();
+            $storesInfo = $stores->queryAllStores();
         }
         $this->assign("stores", $storesInfo);
 
