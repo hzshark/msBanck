@@ -1,28 +1,27 @@
 <?php
 namespace Manage\Service;
-
 class Areas
 {
-    public function getAreas(){
-
-    }
-
     public function queryNameByAreaCode($area_code) {
         $area = D("Areas");
         $where['area_code'] = $area_code;
         return $area->where($where)->field('name')->find();
     }
 
-    public function queryAreas($conent){
-        $help = D("Areas");
-        $data['info'] = $conent;
-        if ($id > 0){
-            $where['id'] = $id;
-            $help->where($where)->save($data);
-        }else{
-            $help->add($data);
-        }
+    public function queryAreaInfo($area_code) {
+        $area = D("Areas");
+        $where['area_code'] = $area_code;
+        return $area->where($where)->find();
     }
+
+    public function queryAreas($root_code, $p_code, $level){
+        $model = D("Areas");
+        $where['p_code'] = $p_code;
+        $where['level'] = $level;
+        $where['root_code'] = $root_code;
+        return $model->where($where)->select();
+    }
+
 }
 
 ?>

@@ -3,10 +3,11 @@ namespace Manage\Controller;
 
 require_once (APP_PATH."Manage/Utils/basic.class.php");
 use Manage\Service\MSBank;
+use Manage\Service\Industry;
 use Think\Log;
 use Manage\Service\AlipaymaStores;
 use Manage\Service\Areas;
-// use Think\Controller;
+use Think\Controller;
 
 class CMBCController extends BaseDealUserController
 // class CMBCController extends Controller
@@ -209,17 +210,29 @@ class CMBCController extends BaseDealUserController
     public function ModStore()
     {
         header("Content-Type:text/html; charset=utf-8");
+        $area = new Areas();
         if (IS_GET) {
             $store = new AlipaymaStores();
             $id = isset($_GET['id']) ? $_GET['id'] : '';
             $storeInfo = $store->queryStoreinfoById($id);
+            $areainfo = $area->queryAreaInfo($storeInfo['acdcode']);
+            $p_code = $area->queryAreas('0', '0', 1);
+            $c_code = $area->queryAreas($areainfo['root_code'], '0', 2);
+            $d_code = $area->queryAreas($areainfo['root_code'], $areainfo['p_code'], 3);
+            $this->assign("p_code", $p_code);
+            $this->assign("c_code", $c_code);
+            $this->assign("d_code", $d_code);
+            $this->assign("province_code", $areainfo['root_code']);
+            $this->assign("city_code", $areainfo['p_code']);
+            $this->assign("district_code", $storeInfo['acdcode']);
+            $this->assign("areainfo", $areainfo);
             $this->assign("store", $storeInfo);
             $this->display('modstore', 'utf-8');
         } else {
             $mchntName = isset($_POST['mchntName']) ? $_POST['mchntName'] : ''; // 商户简称
             $mchntFullName = isset($_POST['mchntFullName']) ? $_POST['mchntFullName'] : ''; // 商户全称,请填写营业执照上的全称
             $parentMchntId = isset($_POST['parentMchntId']) ? $_POST['parentMchntId'] : '';
-            $area = new Areas();
+
             $province = isset($_POST['province_code']) ? $_POST['province_code'] : '';
             $city = isset($_POST['city_code']) ? $_POST['city_code'] : '';
             $acdCode = isset($_POST['district_code']) ? $_POST['district_code'] : '';
@@ -373,7 +386,6 @@ class CMBCController extends BaseDealUserController
             $id = isset($_GET['id']) ? $_GET['id'] : '';
             $paymentid = I('get.paymentid', -1);
             $stores = new AlipaymaStores();
-
             if ($paymentid === -1){
                 $paymentInfo = $stores->queryPaymentByStoreId($id);
                 if (count($paymentInfo) == 0){
@@ -470,7 +482,7 @@ class CMBCController extends BaseDealUserController
             if ($ret['status'] == 0) {
                 $stores->setPayment($id, $postdata);
                 $respone = $ret['respone'];
-                $stores->setPaymentSignIdByStoreId($id, $respone['cmbcSignId'], $apiCode);
+                $stores->setPaymentSignIdByStoreId($id, isset($respone['cmbcSignId'])?$respone['cmbcSignId']:$postdata['cmbcSignId'], $apiCode);
                 $this->success($ret['msg'], 'index', 5);
             }else {
                 $this->error($ret['msg'], 'index', 5);
@@ -752,11 +764,36 @@ class CMBCController extends BaseDealUserController
         $this->show(json_encode($ret));
     }
 
-    public function area()
+    public function Areacodes()
     {
-        header("Content-Type:text/html; charset=utf-8");
-        $this->display('area', 'utf-8');
+        $areacode = new Areas();
+        $root_code = I('post.root_code', '0');
+        $p_code = I('post.p_code', '0');
+        $level = I('post.level', '1');
+        $areaData = $areacode->queryAreas($root_code, $p_code, $level);
+        $this->ajaxReturn($areaData, 'json');
     }
+
+    public function IndustryQQ(){
+        $industryQQ = new Industry();
+        $industry = I('post.industry', null);
+        $this->ajaxreturn($industryQQ->queryIndustryQQ($industry),'JSON');
+    }
+
+    public function IndustryWX(){
+        $industryWX = new Industry();
+        $industry = I('post.industry', null);
+        $storetype = I('post.storetype', null);
+        $this->ajaxreturn($industryWX->queryIndustryWx($storetype, $industry),'JSON');
+    }
+
+public function IndustryZFB(){
+        $industryZFB = new Industry();
+        $industry = I('post.industry', null);
+        $storetype = I('post.storetype', null);
+        $this->ajaxreturn($industryZFB->queryIndustryAlipay($storetype, $industry),'JSON');
+    }
+
     public function NoticeServlet()
     {
         header("Content-Type:text/html; charset=utf-8");
