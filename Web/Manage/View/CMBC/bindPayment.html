@@ -36,7 +36,7 @@
                       <div class="form_item clearfix">
                         <label class="item-label">支付通道：    	<i>*</i>    	</label>
                          <div class="controls">
-                        <select data-required="true" name="apiCode">
+                        <select data-required="true" name="apiCode" id="apiCode">
                             <option value="">--请选择--</option>
                             <option value="0005" <if condition="$payment.apicode == '0005'">selected = "selected"</if>>微信</option>
                             <option value="0007" <if condition="$payment.apicode == '0007'">selected = "selected"</if>>支付宝</option>
@@ -48,7 +48,16 @@
                         <div class="form_item clearfix">
                         <label class="item-label">商户类别：    	<i>*</i>    	</label>
                            <div class="controls">
-                        <input type="text" id="" name="industryId"  value="{$payment.industryid}" class="textBox" placeholder="" data-required="true" />
+                           <select data-required="true" name="storetype" id="storetype" >
+                            <option value="">--请选择--</option>
+                          </select>
+                          <select data-required="true" name="industry" id="industry" >
+                            <option value="">--请选择--</option>
+                          </select>
+                          <select data-required="true" name="industryId" id="industryId" >
+                            <option value="">--请选择--</option>
+                          </select>
+                        <!-- <input type="text" id="" name="industryId"  value="{$payment.industryid}" class="textBox" placeholder="" data-required="true" /> -->
                            </div>
                       </div>
                       <div class="form_item clearfix">
@@ -288,6 +297,108 @@
       alert(data);
       return false;*/
     });
+
+    $("#industry").change(function() {
+    	var apicode = $("#apiCode").val();
+    	var url ="";
+    	$("#industryId").html("<option value='0'>--请选择--</option>");
+    	if (apicode == "0005"){
+    		url = "/CMBC/IndustryWX"
+    	}else{
+    		if (apicode == "0007"){
+    			url = "/CMBC/IndustryZFB"
+    		}else{
+    			url = "/CMBC/IndustryQQ"
+    		}
+    	}
+    	$.ajax({
+    		url : url,
+    		type : "post",
+    		dataType : "json",
+    		traditional : true,
+    		data : {
+    			storetype : $("#storetype").val(),
+    			industry:$("#industry").val(),
+    		},
+    		success : function(data) {
+    			$.each(data, function (n, value) {
+    				optionstring = "<option value=\"" + value.apicode + "\" >" + value.category + "</option>";
+					$("#industryId").append(optionstring);
+    			});
+    			},
+    			error : function(msg) {
+    				alert("出错了！");
+    				}
+    			});
+    	});
+
+    $("#storetype").change(function() {
+    	var apicode = $("#apiCode").val();
+    	var url ="";
+    	$("#industry").html("<option value='0'>--请选择--</option>");
+    	$("#industryId").html("<option value='0'>--请选择--</option>");
+    	if (apicode == "0008"){
+			url = "/CMBC/IndustryQQ";
+    	}else{
+    		if (apicode == "0007"){
+    			url = "/CMBC/IndustryZFB";
+    		}else{
+    			url = "/CMBC/IndustryWX";
+    		}
+    	}
+	    	$.ajax({
+	    		url : url,
+	    		type : "post",
+	    		dataType : "json",
+	    		traditional : true,
+	    		data : {
+	    			storetype : $("#storetype").val(),
+	    		},
+	    		success : function(data) {
+	    			$.each(data, function (n, value) {
+	    				optionstring = "<option value=\"" + value.industry + "\" >" + value.industry + "</option>";
+						$("#industry").append(optionstring);
+	    			});
+	    			},
+	    			error : function(msg) {
+	    				alert("出错了！");
+	    				}
+	    			});
+    	});
+
+    $("#apiCode").change(function() {
+    	var apicode = $(this).val();
+    	var url ="";
+    	$("#storetype").html("<option value='0'>--请选择--</option>");
+    	$("#industry").html("<option value='0'>--请选择--</option>");
+    	$("#industryId").html("<option value='0'>--请选择--</option>");
+    	if (apicode == "0008"){
+    		optionstring = "<option value=\"0\" >QQ钱包</option>";
+    		$("#storetype").append(optionstring);
+    	}else{
+    		if (apicode == "0007"){
+    			url = "/CMBC/IndustryZFB"
+    		}else{
+    			url = "/CMBC/IndustryWX"
+    		}
+	    	$.ajax({
+	    		url : url,
+	    		type : "post",
+	    		dataType : "json",
+	    		contentType : "application/json",
+	    		traditional : true,
+	    		success : function(data) {
+	    			$.each(data, function (n, value) {
+	    				optionstring = "<option value=\"" + value.storetype + "\" >" + value.storetype + "</option>";
+						$("#storetype").append(optionstring);
+	    			});
+	    			},
+	    			error : function(msg) {
+	    				alert("出错了！");
+	    				}
+	    			});
+    		}
+    	});
   });
 
 </script>
