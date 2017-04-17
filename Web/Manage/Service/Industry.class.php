@@ -17,6 +17,23 @@ class Industry
         }
     }
 
+    public function queryIndustryWxByApiCode($apicode){
+        $modle = D('Industrywx');
+            $where['apicode'] = $apicode;
+            return $modle->where($where)->find();
+    }
+
+    public function queryIndustryQQByApiCode($apicode){
+        $modle = D('Industryqq');
+        $where['apicode'] = $apicode;
+        return $modle->where($where)->find();
+    }
+
+    public function queryIndustryAlipayByApiCode($apicode){
+        $modle = D('Industryalipay');
+        $where['apicode'] = $apicode;
+        return $modle->where($where)->find();
+    }
     public function queryIndustryQQ($industry){
         $modle = D('Industryqq');
         if (isset($industry)&& $industry != '') {

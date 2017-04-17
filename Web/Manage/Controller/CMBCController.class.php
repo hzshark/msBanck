@@ -388,16 +388,24 @@ class CMBCController extends BaseDealUserController
                     $this->display('selectModPayment', 'utf-8');
                 }
             }
+            $industry  = new Industry();
             $signinfo = $stores->queryCMBCIDByStoreId($id);
             $storeInfo = $stores->queryStoreinfoById($id);
             $paymentInfo = $stores->queryPaymentByid($paymentid);
+            $industryid = $paymentInfo['industryid'];
             if ('0005' == $paymentInfo['apicode']){
+                $industryInfo = $industry->queryIndustryWxByApiCode($industryid);
                 $this->assign("signid", $signinfo['wxsignid']);
+
             }elseif ('0007' == $paymentInfo['apicode']){
+                $industryInfo = $industry->queryIndustryAlipayByApiCode($industryid);
                 $this->assign("signid", $signinfo['alipaysignid']);
             }else{
+                $industryInfo = $industry->queryIndustryQQByApiCode($industryid);
+                $industryInfo['storetype'] = "QQ钱包";
                 $this->assign("signid", $signinfo['qqsignid']);
             }
+            $this->assign("industryInfo",$industryInfo);
             $this->assign("store", $storeInfo);
             $this->assign("payment", $paymentInfo);
             $this->display('modPayment', 'utf-8');

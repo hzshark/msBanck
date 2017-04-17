@@ -357,9 +357,9 @@ input{behavior:url(#default#savehistory)};
 
        	var apicode = "<?php echo $payment['apicode']; ?>";
        	var url ="";
-       	$("#storetype").html("<option value='0'>--请选择--</option>");
-       	$("#industry").html("<option value='0'>--请选择--</option>");
-       	$("#industryId").html("<option value='0'>--请选择--</option>");
+       	$("#storetype").html("<option value='<?php echo $industryInfo['storetype']; ?>'><?php echo $industryInfo['storetype']; ?></option>");
+       	$("#industry").html("<option value='<?php echo $industryInfo['industry']; ?>'><?php echo $industryInfo['industry']; ?></option>");
+       	$("#industryId").html("<option value='<?php echo $industryInfo['apicode']; ?>'><?php echo $industryInfo['category']; ?></option>");
        	if (apicode == "0008"){
        		optionstring = "<option value=\"0\" >QQ钱包</option>";
        		$("#storetype").append(optionstring);
