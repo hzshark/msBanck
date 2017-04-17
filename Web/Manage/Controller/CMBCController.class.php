@@ -107,7 +107,9 @@ class CMBCController extends BaseDealUserController
         $postdata['acdCode'] = $ret['acdcode'];
         $postdata['province'] = $ret['province'];
         $postdata['city'] = $ret['city'];
-        $postdata['address'] = $ret['address'];
+        $area = new Areas();
+        $area_name = $area->queryNameByAreaCode($ret['acdcode']);
+        $postdata['address'] = $area_name['name'].$ret['address'];
         $postdata['isCert'] = $ret['iscert'];
         $postdata['licId'] = $ret['licid'];
         $postdata['licValidity'] = $ret['licvalidity'];
@@ -142,7 +144,7 @@ class CMBCController extends BaseDealUserController
         } else {
             $stores->setStoreStatus($id, $stores->AUDIT_FAILED);
             $this->show("商户审核入驻失败,失败原因:<br />" );
-            $this->show(json_encode($ret['msg']));
+            $this->show($ret['msg']);
         }
     }
 
@@ -163,13 +165,11 @@ class CMBCController extends BaseDealUserController
             $addr = isset($_POST['addr']) ? $_POST['addr'] : '';
             $province_name = $area->queryNameByAreaCode($province);
             $city_name = $area->queryNameByAreaCode($city);
-            $area_name = $area->queryNameByAreaCode($acdCode);
-            $address = $area_name['name'] . $addr; // 地址
             $isCert = isset($_POST['isCert']) ? $_POST['isCert'] : '0';
             $licId = isset($_POST['licId']) ? $_POST['licId'] : '-'; // 营业执照号, 若没有，可填默认值-
             $licValidity = isset($_POST['licValidity']) ? $_POST['licValidity'] : '-'; // 营业执照有效期,若没有，可填默认值-
             $corpName = isset($_POST['corpName']) ? $_POST['corpName'] : ''; // 法人/联系人
-            $idtCard = isset($_POST['idtCard ']) ? $_POST['idtCard '] : '-'; // 法人/联系人证件号,若没有，可填默认值-
+            $idtCard = isset($_POST['idtCard']) ? $_POST['idtCard'] : '-'; // 法人/联系人证件号,若没有，可填默认值-
             $contactName = isset($_POST['contactName']) ? $_POST['contactName'] : ''; // 负责人,
             $telephone = isset($_POST['telephone']) ? $_POST['telephone'] : ''; // 负责人手机号
             $servTel = isset($_POST['servTel']) ? $_POST['servTel'] : ''; // 客服电话
@@ -186,7 +186,7 @@ class CMBCController extends BaseDealUserController
                 'acdCode' => $acdCode,
                 'province' => $province_name['name'],
                 'city' => $city_name['name'],
-                'address' => $address,
+                'address' => $addr,
                 'isCert' => $isCert,
                 'licId' => $licId,
                 'licValidity' => $licValidity,
@@ -216,12 +216,6 @@ class CMBCController extends BaseDealUserController
             $id = isset($_GET['id']) ? $_GET['id'] : '';
             $storeInfo = $store->queryStoreinfoById($id);
             $areainfo = $area->queryAreaInfo($storeInfo['acdcode']);
-            $p_code = $area->queryAreas('0', '0', 1);
-            $c_code = $area->queryAreas($areainfo['root_code'], '0', 2);
-            $d_code = $area->queryAreas($areainfo['root_code'], $areainfo['p_code'], 3);
-            $this->assign("p_code", $p_code);
-            $this->assign("c_code", $c_code);
-            $this->assign("d_code", $d_code);
             $this->assign("province_code", $areainfo['root_code']);
             $this->assign("city_code", $areainfo['p_code']);
             $this->assign("district_code", $storeInfo['acdcode']);
@@ -239,13 +233,11 @@ class CMBCController extends BaseDealUserController
             $addr = isset($_POST['addr']) ? $_POST['addr'] : '';
             $province_name = $area->queryNameByAreaCode($province);
             $city_name = $area->queryNameByAreaCode($city);
-            $area_name = $area->queryNameByAreaCode($acdCode);
-            $address = $addr; // 地址
             $isCert = isset($_POST['isCert']) ? $_POST['isCert'] : '0';
             $licId = isset($_POST['licId']) ? $_POST['licId'] : '-'; // 营业执照号, 若没有，可填默认值-
             $licValidity = isset($_POST['licValidity']) ? $_POST['licValidity'] : '-'; // 营业执照有效期,若没有，可填默认值-
             $corpName = isset($_POST['corpName']) ? $_POST['corpName'] : ''; // 法人/联系人
-            $idtCard = isset($_POST['idtCard ']) ? $_POST['idtCard '] : '-'; // 法人/联系人证件号,若没有，可填默认值-
+            $idtCard = isset($_POST['idtCard']) ? $_POST['idtCard'] : '-'; // 法人/联系人证件号,若没有，可填默认值-
             $contactName = isset($_POST['contactName']) ? $_POST['contactName'] : ''; // 负责人,
             $telephone = isset($_POST['telephone']) ? $_POST['telephone'] : ''; // 负责人手机号
             $servTel = isset($_POST['servTel']) ? $_POST['servTel'] : ''; // 客服电话
@@ -261,7 +253,7 @@ class CMBCController extends BaseDealUserController
                 'acdCode' => $acdCode,
                 'province' => $province_name['name'],
                 'city' => $city_name['name'],
-                'address' => $address,
+                'address' => $addr,
                 'isCert' => $isCert,
                 'licId' => $licId,
                 'licValidity' => $licValidity,

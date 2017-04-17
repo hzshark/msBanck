@@ -57,8 +57,16 @@ input{behavior:url(#default#savehistory)};
                         <span>一次只能绑定一个通道，不同通道可分多次绑定</span>
                         <div class="form_item clearfix">
                         <label class="item-label">商户类别：    	<i>*</i>    	</label>
-                           <div class="controls" id="industryId">
-                        	<input type="text"  name="industryId"  value="{$payment.industryid}" class="textBox" placeholder="" data-required="true" />
+                           <div class="controls">
+                        	<select data-required="true" name="storetype" id="storetype" >
+                            <option value="">--请选择--</option>
+                          </select>
+                          <select data-required="true" name="industry" id="industry" >
+                            <option value="">--请选择--</option>
+                          </select>
+                          <select data-required="true" name="industryId" id="industryId" >
+                            <option value="">--请选择--</option>
+                          </select>
                            </div>
                       </div>
                       <div class="form_item clearfix">
@@ -298,42 +306,87 @@ input{behavior:url(#default#savehistory)};
       return false;*/
     });
 
-    function industry() {
-    	var apicode = "<?php echo $payment['apicode']; ?>";
-    	var url ="";
-    	if (apicode == "0005"){
-    		url = "/CMBC/IndustryWX"
-    	}else{
 
-    		if (apicode == "0007"){
-    			url = "/CMBC/IndustryZFB"
-    		}else{
-    			url = "/CMBC/IndustryQQ"
-    		}
-    	}
-    	$.ajax({
-    		url : url,
-    		type : "post",
-    		dataType : "json",
-    		contentType : "application/json",
-    		traditional : true,
-    		data : {
-    			root_code : $("#storetype").val(),
-    			p_code:$("#industry").val(),
-    		},
-    		success : function(data) {
-    			var optionstring = "<option value='请选择'>请选择...</option> ";
-    			$.each(data, function (n, value) {
-    				optionstring = "<option value=\"" + value.storetype + "\" >" + value.storetype + "</option>";
-					$("#industryId").append(optionstring);
-    			});
-    			},
-    			error : function(msg) {
-    				alert("出错了！");
-    				}
-    			});
-    	};
-    	//industry();
+   	$("#industry").change(function() {
+       	$("#industryId").html("<option value='0'>--请选择--</option>");
+
+       	$.ajax({
+       		url : url,
+       		type : "post",
+       		dataType : "json",
+       		traditional : true,
+       		data : {
+       			storetype : $("#storetype").val(),
+       			industry:$("#industry").val(),
+       		},
+       		success : function(data) {
+       			$.each(data, function (n, value) {
+       				optionstring = "<option value=\"" + value.apicode + "\" >" + value.category + "</option>";
+   					$("#industryId").append(optionstring);
+       			});
+       			},
+       			error : function(msg) {
+       				alert("出错了！");
+       				}
+       			});
+       	});
+
+       $("#storetype").change(function() {
+       	$("#industry").html("<option value='0'>--请选择--</option>");
+       	$("#industryId").html("<option value='0'>--请选择--</option>");
+
+   	    	$.ajax({
+   	    		url : url,
+   	    		type : "post",
+   	    		dataType : "json",
+   	    		traditional : true,
+   	    		data : {
+   	    			storetype : $("#storetype").val(),
+   	    		},
+   	    		success : function(data) {
+   	    			$.each(data, function (n, value) {
+   	    				optionstring = "<option value=\"" + value.industry + "\" >" + value.industry + "</option>";
+   						$("#industry").append(optionstring);
+   	    			});
+   	    			},
+   	    			error : function(msg) {
+   	    				alert("出错了！");
+   	    				}
+   	    			});
+       	});
+
+       	var apicode = "<?php echo $payment['apicode']; ?>";
+       	var url ="";
+       	$("#storetype").html("<option value='0'>--请选择--</option>");
+       	$("#industry").html("<option value='0'>--请选择--</option>");
+       	$("#industryId").html("<option value='0'>--请选择--</option>");
+       	if (apicode == "0008"){
+       		optionstring = "<option value=\"0\" >QQ钱包</option>";
+       		$("#storetype").append(optionstring);
+       		url = "/CMBC/IndustryQQ"
+       	}else{
+       		if (apicode == "0007"){
+       			url = "/CMBC/IndustryZFB"
+       		}else{
+       			url = "/CMBC/IndustryWX"
+       		}
+   	    	$.ajax({
+   	    		url : url,
+   	    		type : "post",
+   	    		dataType : "json",
+   	    		contentType : "application/json",
+   	    		traditional : true,
+   	    		success : function(data) {
+   	    			$.each(data, function (n, value) {
+   	    				optionstring = "<option value=\"" + value.storetype + "\" >" + value.storetype + "</option>";
+   						$("#storetype").append(optionstring);
+   	    			});
+   	    			},
+   	    			error : function(msg) {
+   	    				alert("出错了！");
+   	    				}
+   	    			});
+       		}
     	});
 </script>
 
