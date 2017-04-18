@@ -282,6 +282,10 @@ class CMBCController extends BaseDealUserController
             $stores = new AlipaymaStores();
             $id = isset($_GET['id']) ? $_GET['id'] : '';
             $storeInfo = $stores->queryStoreinfoById($id);
+            $payment = $stores->queryPaymentByStoreId($id);
+            if (count($payment) > 0){
+                $this->assign("payment", $payment[0]);
+            }
             $this->assign("store", $storeInfo);
             $this->display('bindPayment', 'utf-8');
         } else {
