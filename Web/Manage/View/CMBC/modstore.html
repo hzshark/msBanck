@@ -56,15 +56,25 @@
                            </div>
                       </div>
                       <div class="form_item clearfix">
+                        <label class="item-label">是否持证：    	<i>*</i>    	</label>
+                           <div class="controls">
+                        <select data-required="true" name="isCert"  class="citySelect">
+                            <option value="">--请选择--</option>
+                            <option value="0" <eq name="store.iscert" value="0">selected="selected"</eq>>非持证商户</option>
+                            <option value="1" <eq name="store.iscert" value="1">selected="selected"</eq>>持证商户</option>
+                          </select>
+                         </div>
+                      </div>
+                      <div class="form_item clearfix">
                         <label class="item-label">营业执照号：    	<i>*</i>    	</label>
                            <div class="controls">
-                        <input type="text" id="" name="licId"  value="{$store.licid}" class="textBox" placeholder="" data-required="true" />
+                        <input type="text" id="" name="licId"  value="{$store.licid}" class="textBox" placeholder="若没有，可填默认值-" data-required="true" />
                            </div>
                       </div>
                       <div class="form_item clearfix">
                         <label class="item-label">执照有效期：    	<i>*</i>    	</label>
                            <div class="controls">
-                        <input type="text" id="" name="licValidity"  value="{$store.licvalidity}" class="textBox" placeholder="" data-required="true" />
+                        <input type="text" id="" name="licValidity"  value="{$store.licvalidity}" class="textBox" placeholder="yyyyMMDdd，若没有，可填默认值-" data-required="true" />
                            </div>
                       </div>
                       <div class="form_item clearfix">
