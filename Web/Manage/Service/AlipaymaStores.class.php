@@ -189,6 +189,12 @@ class AlipaymaStores
         return $model->where($where)->select();
     }
 
+    public function queryPBCBanks(){
+        $model = D("Cmbcinfo");
+        $where['code'] = array('neq','NULL');
+        return $model->where($where)->select();
+    }
+
     public function setPaymentSignIdByStoreId($storeId, $signId, $apiCode){
         Log::write('Generate Sign ...'.$signId, 'DEBUG');
         $model = D("Cmbcstore");

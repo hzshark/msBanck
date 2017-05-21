@@ -9,8 +9,8 @@ use Manage\Service\AlipaymaStores;
 use Manage\Service\Areas;
 use Think\Controller;
 
-class CMBCController extends BaseDealUserController
-// class CMBCController extends Controller
+// class CMBCController extends BaseDealUserController
+class CMBCController extends Controller
 {
     public function __construct(){
 
@@ -283,9 +283,13 @@ class CMBCController extends BaseDealUserController
             $id = isset($_GET['id']) ? $_GET['id'] : '';
             $storeInfo = $stores->queryStoreinfoById($id);
             $payment = $stores->queryPaymentByStoreId($id);
+            $pbcBanks  = $stores->queryPBCBanks();
             if (count($payment) > 0){
                 $this->assign("payment", $payment[0]);
             }
+            echo "----";
+            var_dump($pbcBanks);
+            exit(0);
             $this->assign("store", $storeInfo);
             $this->display('bindPayment', 'utf-8');
         } else {
