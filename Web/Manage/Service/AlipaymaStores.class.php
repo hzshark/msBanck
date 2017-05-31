@@ -11,6 +11,11 @@ class AlipaymaStores
         return $store->select();
     }
 
+    public function queryStores($Page){
+        $store = D("Store");
+        return $store->limit($Page->firstRow.','.$Page->listRows)->select();
+    }
+
     public function queryStoresByStoreId($id){
         $store = D("Store");
         $where['id'] = $id;

@@ -9,8 +9,8 @@ use Manage\Service\AlipaymaStores;
 use Manage\Service\Areas;
 use Think\Controller;
 
-// class CMBCController extends BaseDealUserController
-class CMBCController extends Controller
+class CMBCController extends BaseDealUserController
+// class CMBCController extends Controller
 {
     public function __construct(){
 
@@ -24,6 +24,7 @@ class CMBCController extends Controller
     public function Index()
     {
         header("Content-Type:text/html; charset=utf-8");
+        $uid = $this->getParamUserId();
         $stores = new AlipaymaStores();
         $storesInfo = null;
         $name = I('get.content', 0);
@@ -44,8 +45,33 @@ class CMBCController extends Controller
         }else {
             $storesInfo = $stores->queryAllStores();
         }
-        $this->assign("stores", $storesInfo);
 
+        $Page = new \Think\Page(count($storesInfo), C("DEFAULT_PAGESIZE")); // 实例化分页类 传入总记录数和每页显示的记录数
+        $Page->setConfig('header', '共%TOTAL_ROW%条');
+        $Page->setConfig('first', '首页');
+        $Page->setConfig('last', '共%TOTAL_PAGE%页');
+        $Page->setConfig('prev', '上一页');
+        $Page->setConfig('next', '下一页');
+        $Page->setConfig('link', 'indexpagenumb'); // pagenumb 会替换成页码
+        $Page->setConfig('theme', '%HEADER% %FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END%');
+        $page = $Page->show();
+
+        if ($name !== 0){
+            $storesInfo = $stores->queryStoresByLikeName($name);
+        }elseif ($acdCode !==0 ){
+            if ($store_id !== 0 && $store_id!=''){
+                $storesInfo = $stores->queryStoresByStoreId($store_id);
+            }elseif ($store_name === 0){
+                $storesInfo = $stores->queryStoresByAcdCodeAndName($acdCode);
+            }else {
+                $storesInfo = $stores->queryStoresByAcdCode($acdCode);
+            }
+        }else {
+            $storesInfo = $stores->queryStores($Page);
+        }
+
+        $this->assign("stores", $storesInfo);
+        $this->assign("page", $page);
         $this->display('index', 'utf-8');
     }
 
@@ -283,13 +309,9 @@ class CMBCController extends Controller
             $id = isset($_GET['id']) ? $_GET['id'] : '';
             $storeInfo = $stores->queryStoreinfoById($id);
             $payment = $stores->queryPaymentByStoreId($id);
-            $pbcBanks  = $stores->queryPBCBanks();
             if (count($payment) > 0){
                 $this->assign("payment", $payment[0]);
             }
-            echo "----";
-            var_dump($pbcBanks);
-            exit(0);
             $this->assign("store", $storeInfo);
             $this->display('bindPayment', 'utf-8');
         } else {
@@ -389,7 +411,7 @@ class CMBCController extends Controller
             if ($paymentid === -1){
                 $paymentInfo = $stores->queryPaymentByStoreId($id);
                 if (count($paymentInfo) == 0){
-                    $this->error("没有绑定支付通道，请先绑定一个支付通过");
+                    $this->error("没有绑定支付通道，请先绑定一个支付通道");
                 }else{
                     $this->assign("id", $id);
                     $this->assign("payment", $paymentInfo);
